@@ -1,7 +1,8 @@
 {
     "hero": {
         "badge": "Cryptographic Copyright Deposit",
-        "title": "Prove your code is yours — without notaries",
+        "titleLine1": "Prove your code is yours —",
+        "titleLine2": "without notaries",
         "subtitle": "Sign your source files locally, anchor the proof in the Bitcoin blockchain, and download a certificate of ownership. Anyone can verify it forever, even if this site disappears.",
         "cta": "Deposit my code",
         "ctaHint": "Free · No account · Runs in your browser"

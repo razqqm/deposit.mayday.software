@@ -81,12 +81,115 @@
 .title {
     font-size: clamp(2rem, 5vw, 3.2rem);
     font-weight: 800;
-    line-height: 1.1;
+    line-height: 1.15;
     margin: 0 0 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.15em;
+}
+
+.title-line {
+    display: inline-block;
     background: linear-gradient(120deg, #fff 30%, #fbbf24 100%);
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
+    animation: line-fade-in 0.7s ease-out both;
+}
+
+.title-line:nth-child(1) {
+    animation-delay: 0.05s;
+}
+
+.title-line--struck {
+    position: relative;
+    display: inline-block;
+    padding: 0.2em 0.4em;
+    animation-delay: 0.25s;
+}
+
+.title-text {
+    position: relative;
+    z-index: 1;
+}
+
+.title-strike {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 2;
+    overflow: visible;
+}
+
+.strike-stamp,
+.strike-stamp-inner {
+    stroke-dasharray: 220;
+    stroke-dashoffset: 220;
+    transform-origin: 300px 40px;
+    animation: stamp-draw 1.2s cubic-bezier(0.65, 0, 0.35, 1) 0.9s forwards,
+               stamp-pulse 4s ease-in-out 2.4s infinite;
+}
+
+.strike-stamp-inner {
+    animation: stamp-draw 1.4s cubic-bezier(0.65, 0, 0.35, 1) 1s forwards,
+               stamp-pulse 4s ease-in-out 2.4s infinite;
+}
+
+.strike-slash {
+    stroke-dasharray: 700;
+    stroke-dashoffset: 700;
+    filter: drop-shadow(0 0 8px rgba(251, 191, 36, 0.55));
+    animation: slash-draw 0.55s cubic-bezier(0.7, 0, 0.3, 1) 1.7s forwards;
+}
+
+@keyframes line-fade-in {
+    from {
+        opacity: 0;
+        transform: translateY(12px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes stamp-draw {
+    to {
+        stroke-dashoffset: 0;
+    }
+}
+
+@keyframes stamp-pulse {
+    0%, 100% {
+        opacity: 0.85;
+    }
+    50% {
+        opacity: 0.45;
+    }
+}
+
+@keyframes slash-draw {
+    to {
+        stroke-dashoffset: 0;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .title-line,
+    .strike-stamp,
+    .strike-stamp-inner,
+    .strike-slash {
+        animation: none;
+    }
+    .strike-stamp,
+    .strike-stamp-inner,
+    .strike-slash {
+        stroke-dashoffset: 0;
+        opacity: 0.6;
+    }
 }
 
 .subtitle {

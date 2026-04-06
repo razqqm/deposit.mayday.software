@@ -30,7 +30,28 @@ interface FormState {
             </div>
             <div class="hero-body">
                 <span class="badge">{{ 'hero.badge' | translate }}</span>
-                <h1 class="title">{{ 'hero.title' | translate }}</h1>
+                <h1 class="title">
+                    <span class="title-line">{{ 'hero.titleLine1' | translate }}</span>
+                    <span class="title-line title-line--struck">
+                        <span class="title-text">{{ 'hero.titleLine2' | translate }}</span>
+                        <svg class="title-strike" viewBox="0 0 600 80" preserveAspectRatio="none" aria-hidden="true">
+                            <defs>
+                                <linearGradient id="strikeGold" x1="0" y1="0" x2="1" y2="0">
+                                    <stop offset="0" stop-color="#fbbf24" stop-opacity="0"/>
+                                    <stop offset="0.15" stop-color="#fbbf24"/>
+                                    <stop offset="0.5" stop-color="#f97316"/>
+                                    <stop offset="0.85" stop-color="#fbbf24"/>
+                                    <stop offset="1" stop-color="#fbbf24" stop-opacity="0"/>
+                                </linearGradient>
+                            </defs>
+                            <!-- Notary stamp circle being canceled -->
+                            <circle class="strike-stamp" cx="300" cy="40" r="34" fill="none" stroke="url(#strikeGold)" stroke-width="2.5"/>
+                            <circle class="strike-stamp-inner" cx="300" cy="40" r="26" fill="none" stroke="url(#strikeGold)" stroke-width="1" stroke-dasharray="3 4"/>
+                            <!-- Cancellation slash that draws across the entire line -->
+                            <path class="strike-slash" d="M 20 62 Q 200 8, 580 22" fill="none" stroke="url(#strikeGold)" stroke-width="5" stroke-linecap="round"/>
+                        </svg>
+                    </span>
+                </h1>
                 <p class="subtitle">{{ 'hero.subtitle' | translate }}</p>
                 <a href="#deposit" class="cta">{{ 'hero.cta' | translate }}</a>
                 <p class="cta-hint">{{ 'hero.ctaHint' | translate }}</p>

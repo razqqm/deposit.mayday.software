@@ -175,8 +175,9 @@ ots verify manifest.cff.ots
   roadmap.
 - **Деплой**: один `wrangler deploy` из корня репо. Сборка фронта,
   загрузка ассетов в Static Assets и публикация Worker'а — одной
-  командой. CI делает то же самое через GitHub Actions
-  ([.github/workflows/deploy.yml](.github/workflows/deploy.yml)).
+  командой. В production CI делает то же самое нативно через
+  Cloudflare Workers Builds (не GitHub Actions) — CF сам подключается
+  к GitHub-репозиторию и пересобирает Worker на каждый push в `main`.
 
 ## Roadmap MVP
 
@@ -291,17 +292,23 @@ npm run deploy
 - `worker/src/index.ts` как `main` (обработчик `/api/*`)
 - `not_found_handling = "single-page-application"` чтобы Angular routes работали
 
-### CI/CD через GitHub Actions
+### CI/CD через Cloudflare Workers Builds
 
-[.github/workflows/deploy.yml](.github/workflows/deploy.yml) запускается
-на каждый push в `main`, собирает фронт и деплоит через
-`cloudflare/wrangler-action@v3`.
+Никаких GitHub Actions не нужно — Cloudflare сам умеет билдить и
+деплоить Worker по push'у в репозиторий. Настраивается один раз в
+dashboard:
 
-Нужны два repository secrets:
-- `CLOUDFLARE_API_TOKEN` — токен с правами `Workers Scripts: Edit` +
-  `Account Settings: Read`
-- `CLOUDFLARE_ACCOUNT_ID` — id аккаунта (есть в Cloudflare dashboard
-  справа на главной)
+1. Cloudflare dashboard → **Workers & Pages** → выбрать
+   `mayday-software` → **Settings** → **Builds** → **Connect**.
+2. Подключить GitHub-аккаунт, выбрать репозиторий и ветку `main`.
+3. Заполнить:
+   - **Build command**: `cd frontend && npm ci && npm run build`
+   - **Deploy command**: `npx wrangler deploy` *(стоит по умолчанию)*
+   - **Root directory**: `/`
+4. Сохранить. CF сам пересобирает Worker на каждый push в `main`.
+
+Никаких repo secrets, никаких токенов в репозитории, никаких
+workflow-файлов.
 
 ### Custom domain
 
