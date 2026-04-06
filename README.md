@@ -136,51 +136,82 @@ ots verify manifest.cff.ots
 
 Подробный страновой обзор по СНГ — в [docs/RESEARCH_CIS.md](docs/RESEARCH_CIS.md).
 
-## Стек MVP
+## Архитектура
 
-- **Frontend**: Angular 21, static SPA (как [tg.ilia.ae](https://tg.ilia.ae)).
+```
+┌────────────────────────────┐         ┌──────────────────────────┐
+│  Browser (Angular SPA)     │         │  Cloudflare Worker       │
+│  ────────────────────────  │  POST   │  workers/tsa-proxy       │
+│  - WebCrypto SHA-256       │ ──────▶ │  - allowlist of TSAs     │
+│  - CITATION.cff manifest   │         │  - allowlist of OTS cals │
+│  - pkijs RFC 3161 builder  │ ◀────── │  - byte-relay, no logs   │
+│  - .ots assembler          │         └────────┬─────────────────┘
+│  - SVG certificate         │                  │
+└────────────────────────────┘                  ▼
+                                    ┌─────────────────────────┐
+                                    │  FreeTSA / DigiCert /   │
+                                    │  Sectigo (RFC 3161)     │
+                                    │  alice.btc / finney /   │
+                                    │  bob / catallaxy (OTS)  │
+                                    └─────────────────────────┘
+```
+
+- **Frontend**: Angular 21, static SPA. Всё хеширование, манифест,
+  построение TimeStampReq и сборка .ots файлов — в браузере. Файлы
+  пользователя никуда не уходят.
 - **i18n**: `@ngx-translate`, EN / RU.
-- **Backend MVP**: тонкий слой поверх CLI-инструментов — `gpg`,
-  `ots-client` ([opentimestamps-client](https://pypi.org/project/opentimestamps-client/)),
-  `cffconvert`. Первый прототип может быть полностью client-side
-  (WebCrypto + openpgp.js + ots.js).
-- **Хранилище доказательств**: у пользователя локально + опционально
-  зеркало в R2/S3. Сам Bitcoin — это уже хранилище.
-- **Деплой**: aaPanel + git sparse checkout (как в tg.ilia.ae).
+- **Backend**: единственный сервис — тонкий [Cloudflare Worker](workers/tsa-proxy/),
+  существующий ровно для одной задачи: публичные TSA и OTS-сервера
+  не отдают `Access-Control-Allow-Origin`, поэтому браузер не может
+  постучаться к ним напрямую. Worker — это byte-relay с allowlist
+  провайдеров. Никакого хранилища, никакого PII, никаких логов.
+- **Хранилище доказательств**: у пользователя локально. Сам Bitcoin
+  и сами TSA — это уже хранилище. Опциональное зеркало в R2/S3 — в
+  roadmap.
+- **Деплой фронта**: aaPanel + git sparse checkout. Деплой Worker'а:
+  `wrangler deploy` из [workers/tsa-proxy](workers/tsa-proxy/).
 
 ## Roadmap MVP
 
 - [x] Landing + объяснение принципа (one-pager, EN/RU).
 - [x] Client-side flow: drag-n-drop файлов/папок → SHA-256 → CFF-манифест → скачать.
 - [x] Генерация SVG-сертификата владения + печать в PDF.
-- [ ] **Multi-anchor таймштампы**: одновременная отправка хеша манифеста
-      в несколько независимых источников, каждый показывается в
-      сертификате как отдельное доказательство:
-    - [ ] **RFC 3161 TSA** — несколько публичных серверов параллельно
-          (FreeTSA, DigiCert, Sectigo, GlobalSign). Мгновенно, не
-          требует ожидания.
-    - [ ] **eIDAS Qualified Time-Stamp** — хотя бы один TSA из
+- [x] **Multi-anchor таймштампы** — отпечаток манифеста параллельно
+      отправляется в несколько независимых источников через
+      [Cloudflare Worker proxy](workers/tsa-proxy/), каждый якорь
+      показывается в сертификате отдельно:
+    - [x] **RFC 3161 TSA** — FreeTSA, DigiCert, Sectigo (через Worker,
+          т.к. публичные TSA не отдают CORS). Мгновенно, проверяется
+          через `openssl ts -verify`.
+    - [x] **OpenTimestamps / Bitcoin** — собственная реализация
+          (`opentimestamps` npm-пакет тянет Node-only deps). Шлём 32
+          байта SHA-256 в alice/finney calendar-серверы, упаковываем
+          ответ в валидный `.ots` файл прямо в браузере. Каждый
+          calendar = отдельный proof-файл, апгрейдится через
+          `ots upgrade *.ots` после Bitcoin-конфирма.
+    - [ ] **eIDAS Qualified Time-Stamp** — TSA из
           [EU Trusted List](https://eidas.ec.europa.eu/efda/tl-browser/).
-          Даёт прямую презумпцию точности в судах ЕС по ст. 41 eIDAS.
-    - [ ] **OpenTimestamps / Bitcoin** — через
-          [javascript-opentimestamps](https://github.com/opentimestamps/javascript-opentimestamps).
-          Тот самый «нельзя подделать никому, включая нас».
-    - [ ] **Ethereum L2 anchor** (опц.) — calldata в Base/Optimism как
-          дешёвая избыточность.
-- [ ] **PDF-отчёт «для судьи»** — отдельный документ рядом с .ots,
-      который объясняет на простом языке: что такое хеш, что такое
-      RFC 3161, что такое OpenTimestamps, как это проверить. Без
-      этого судья без технического бэкграунда не сможет принять
-      доказательство — по ресёрчу СНГ это критический gap.
+          Даёт прямую презумпцию точности в судах ЕС по ст. 41 eIDAS,
+          но требует коммерческого аккаунта — отдельный заход.
+    - [ ] **Ethereum L2 anchor** — calldata в Base/Optimism как
+          дешёвая избыточность (после стабилизации основной связки).
+- [ ] **PDF-отчёт «для судьи»** — отдельный документ рядом с
+      proof-файлами, который объясняет на простом языке: что такое
+      хеш, что такое RFC 3161, что такое OpenTimestamps, как это
+      проверить через openssl. Без этого судья без технического
+      бэкграунда не сможет принять доказательство — по ресёрчу СНГ
+      это критический gap.
 - [ ] Интеграция GPG через [openpgp.js](https://openpgpjs.org/)
-      (браузерная подпись), затем YubiKey через WebHID.
+      (браузерная подпись), затем YubiKey через WebHID. Сейчас «КТО»
+      — это просто заявление автора в форме, без криптографической
+      подписи имени.
 - [ ] Страница `/verify`: drag-n-drop сертификата + манифеста +
       proof-файлов → показываем кто / что / когда / где якорь.
 - [ ] Git-интеграция: стемпить не архив, а commit hash (как у
       Teensy/LED).
 - [ ] Опциональное зеркало доказательств в R2/S3 на случай потери
       локальной копии (но не обязательное — основное хранилище это
-      сам Bitcoin/Ethereum/TSA).
+      сам Bitcoin / TSA).
 
 ## Reference implementation
 

@@ -1,9 +1,11 @@
 import { Injectable } from '@angular/core';
 import { BuiltManifest, ManifestInput } from './manifest.service';
+import { AnchorAttestation } from './anchors/anchor';
 
 export interface CertificateData {
     input: ManifestInput;
     manifest: BuiltManifest;
+    anchors: AnchorAttestation[];
 }
 
 /**
@@ -13,7 +15,7 @@ export interface CertificateData {
  */
 @Injectable({ providedIn: 'root' })
 export class CertificateService {
-    render({ input, manifest }: CertificateData): string {
+    render({ input, manifest, anchors }: CertificateData): string {
         const author = [input.authorGivenNames, input.authorFamilyNames].filter(Boolean).join(' ').trim() || '—';
         const issuedDate = new Date(manifest.issuedAt);
         const issuedHuman = issuedDate.toUTCString();
@@ -22,9 +24,16 @@ export class CertificateService {
         const totalSizeHuman = formatBytes(totalSize);
         const hashTop = manifest.sha256.slice(0, 32);
         const hashBot = manifest.sha256.slice(32);
+        const confirmedAnchors = anchors.filter((a) => a.status === 'confirmed');
+        const anchorLines = confirmedAnchors.length > 0
+            ? confirmedAnchors.slice(0, 6).map((a, i) => {
+                const time = a.anchoredAt ? new Date(a.anchoredAt).toISOString().replace('T', ' ').slice(0, 19) + ' UTC' : '—';
+                return `<text text-anchor="middle" y="${i * 18}" fill="rgba(255,255,255,0.78)" font-size="12">${escapeXml(a.providerLabel)} · ${escapeXml(time)}</text>`;
+            }).join('\n    ')
+            : `<text text-anchor="middle" fill="rgba(255,255,255,0.4)" font-size="12">Pending — re-issue this certificate after anchors confirm</text>`;
 
         return `<?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 850" width="1200" height="850" font-family="'Manrope', 'IBM Plex Sans', 'Helvetica Neue', sans-serif">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 950" width="1200" height="950" font-family="'Manrope', 'IBM Plex Sans', 'Helvetica Neue', sans-serif">
   <defs>
     <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
       <stop offset="0" stop-color="#0b0f1a"/>
@@ -41,12 +50,12 @@ export class CertificateService {
   </defs>
 
   <!-- Background -->
-  <rect width="1200" height="850" fill="url(#bg)"/>
-  <rect width="1200" height="850" fill="url(#grid)"/>
+  <rect width="1200" height="950" fill="url(#bg)"/>
+  <rect width="1200" height="950" fill="url(#grid)"/>
 
   <!-- Outer frame -->
-  <rect x="40" y="40" width="1120" height="770" fill="none" stroke="url(#gold)" stroke-width="3"/>
-  <rect x="50" y="50" width="1100" height="750" fill="none" stroke="rgba(245,158,11,0.25)" stroke-width="1"/>
+  <rect x="40" y="40" width="1120" height="870" fill="none" stroke="url(#gold)" stroke-width="3"/>
+  <rect x="50" y="50" width="1100" height="850" fill="none" stroke="rgba(245,158,11,0.25)" stroke-width="1"/>
 
   <!-- Header -->
   <g transform="translate(600,140)">
@@ -72,20 +81,41 @@ export class CertificateService {
   </g>
 
   <!-- Hash block -->
-  <g transform="translate(600,640)">
+  <g transform="translate(600,620)">
     <text text-anchor="middle" fill="rgba(245,158,11,0.65)" font-size="11" letter-spacing="3">MANIFEST FINGERPRINT (SHA-256)</text>
     <text text-anchor="middle" y="26" fill="#fbbf24" font-size="16" font-family="'JetBrains Mono','SF Mono',Menlo,monospace" letter-spacing="1">${hashTop}</text>
     <text text-anchor="middle" y="48" fill="#fbbf24" font-size="16" font-family="'JetBrains Mono','SF Mono',Menlo,monospace" letter-spacing="1">${hashBot}</text>
   </g>
 
+  <!-- Anchors block -->
+  <g transform="translate(600,720)">
+    <line x1="-380" y1="-12" x2="380" y2="-12" stroke="rgba(245,158,11,0.2)" stroke-width="1"/>
+    <text text-anchor="middle" fill="rgba(245,158,11,0.65)" font-size="11" letter-spacing="3">ANCHORED IN</text>
+    <g transform="translate(0,22)">
+    ${anchorLines}
+    </g>
+  </g>
+
   <!-- Footer -->
-  <g transform="translate(600,760)">
+  <g transform="translate(600,860)">
     <line x1="-300" y1="-22" x2="300" y2="-22" stroke="rgba(245,158,11,0.25)" stroke-width="1"/>
     <text text-anchor="middle" fill="rgba(255,255,255,0.55)" font-size="12">Issued ${escapeXml(issuedHuman)}</text>
-    <text text-anchor="middle" y="20" fill="rgba(255,255,255,0.35)" font-size="11">Verifiable via OpenTimestamps · mayday.software</text>
+    <text text-anchor="middle" y="20" fill="rgba(255,255,255,0.35)" font-size="11">Verifiable via OpenSSL (RFC 3161) · OpenTimestamps · mayday.software</text>
   </g>
 </svg>
 `;
+    }
+
+    downloadBytes(filename: string, bytes: Uint8Array, mime = 'application/octet-stream'): void {
+        const blob = new Blob([bytes as BlobPart], { type: mime });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
     }
 
     download(filename: string, content: string, mime: string): void {

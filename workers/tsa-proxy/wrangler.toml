@@ -1,0 +1,7 @@
+name = "mayday-tsa-proxy"
+main = "src/index.ts"
+compatibility_date = "2025-01-01"
+
+# No env vars, no secrets, no bindings — this Worker is intentionally
+# stateless. It just relays bytes between the browser and a small
+# allowlist of public TSA / OpenTimestamps calendar servers.

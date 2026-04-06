@@ -4,6 +4,8 @@ import { TranslateModule } from '@ngx-translate/core';
 import { HashedFile, HashingService } from '@/app/shared/services/deposit/hashing.service';
 import { BuiltManifest, ManifestService } from '@/app/shared/services/deposit/manifest.service';
 import { CertificateService } from '@/app/shared/services/deposit/certificate.service';
+import { AnchorOrchestratorService } from '@/app/shared/services/deposit/anchors/anchor-orchestrator.service';
+import { AnchorAttestation } from '@/app/shared/services/deposit/anchors/anchor';
 
 interface FormState {
     title: string;
@@ -130,7 +132,41 @@ interface FormState {
                         </div>
                     </div>
 
-                    <p class="btc-note">{{ 'result.btcNote' | translate }}</p>
+                    <div class="anchors-block">
+                        <h3>{{ 'anchors.title' | translate }}</h3>
+                        <p class="anchors-help">{{ 'anchors.help' | translate }}</p>
+
+                        @for (a of anchors(); track a.provider) {
+                            <div class="anchor-row anchor-row--{{ a.status }}">
+                                <span class="anchor-icon">
+                                    @if (a.status === 'submitting' || a.status === 'pending') {
+                                        <span class="anchor-spinner"></span>
+                                    } @else if (a.status === 'confirmed') {
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-12"/></svg>
+                                    } @else {
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M6 6l12 12M6 18L18 6"/></svg>
+                                    }
+                                </span>
+                                <div class="anchor-body">
+                                    <div class="anchor-title">{{ a.providerLabel }}</div>
+                                    <div class="anchor-summary">
+                                        @if (a.status === 'confirmed') {
+                                            {{ a.humanSummary }}
+                                        } @else if (a.status === 'failed') {
+                                            <span class="anchor-error">{{ 'anchors.failed' | translate }}: {{ a.error }}</span>
+                                        } @else {
+                                            {{ 'anchors.submitting' | translate }}
+                                        }
+                                    </div>
+                                </div>
+                                @if (a.status === 'confirmed' && a.proofBytes) {
+                                    <button type="button" class="anchor-download" (click)="downloadProof(a)">
+                                        {{ 'anchors.download' | translate }}
+                                    </button>
+                                }
+                            </div>
+                        }
+                    </div>
 
                     <div class="actions">
                         <button type="button" class="primary" (click)="downloadCertificate()">
@@ -138,6 +174,9 @@ interface FormState {
                         </button>
                         <button type="button" class="ghost" (click)="downloadManifest()">
                             {{ 'actions.downloadManifest' | translate }}
+                        </button>
+                        <button type="button" class="ghost" (click)="downloadAllProofs()" [disabled]="!hasAnyConfirmedAnchor()">
+                            {{ 'anchors.downloadAll' | translate }}
                         </button>
                     </div>
 
@@ -184,8 +223,10 @@ export class HomePage {
     private readonly hashingSvc = inject(HashingService);
     private readonly manifestSvc = inject(ManifestService);
     private readonly certSvc = inject(CertificateService);
+    private readonly orchestrator = inject(AnchorOrchestratorService);
 
     readonly fileInput = viewChild.required<ElementRef<HTMLInputElement>>('fileInput');
+    readonly anchors = this.orchestrator.anchors;
 
     readonly dragOver = signal(false);
     readonly hashing = signal(false);
@@ -292,6 +333,7 @@ export class HomePage {
     async generate(): Promise<void> {
         if (!this.canGenerate()) return;
         this.generating.set(true);
+        this.orchestrator.reset();
         try {
             const m = await this.manifestSvc.build({
                 title: this.form.title,
@@ -304,8 +346,31 @@ export class HomePage {
             });
             this.manifest.set(m);
             queueMicrotask(() => document.querySelector('.result')?.scrollIntoView({ behavior: 'smooth', block: 'start' }));
+
+            // Submit fingerprint to all anchors in parallel — non-blocking.
+            const digest = hexToBytes(m.sha256);
+            void this.orchestrator.submit({ manifestHashHex: m.sha256, manifestDigest: digest });
         } finally {
             this.generating.set(false);
+        }
+    }
+
+    hasAnyConfirmedAnchor(): boolean {
+        return this.anchors().some((a) => a.status === 'confirmed' && !!a.proofBytes);
+    }
+
+    downloadProof(a: AnchorAttestation): void {
+        if (!a.proofBytes) return;
+        const m = this.manifest();
+        const stem = m ? `CITATION-${m.sha256.slice(0, 12)}` : 'mayday-proof';
+        this.certSvc.downloadBytes(`${stem}.cff.${a.proofExtension}`, a.proofBytes);
+    }
+
+    downloadAllProofs(): void {
+        for (const a of this.anchors()) {
+            if (a.status === 'confirmed' && a.proofBytes) {
+                this.downloadProof(a);
+            }
         }
     }
 
@@ -322,7 +387,8 @@ export class HomePage {
                 authorEmail: this.form.authorEmail,
                 files: this.hashedFiles()
             },
-            manifest: m
+            manifest: m,
+            anchors: this.anchors()
         });
         this.certSvc.print(svg);
         this.certSvc.download(`mayday-certificate-${m.sha256.slice(0, 12)}.svg`, svg, 'image/svg+xml');
@@ -333,6 +399,14 @@ export class HomePage {
         if (!m) return;
         this.certSvc.download(`CITATION-${m.sha256.slice(0, 12)}.cff`, m.yaml, 'text/yaml');
     }
+}
+
+function hexToBytes(hex: string): Uint8Array {
+    const out = new Uint8Array(hex.length / 2);
+    for (let i = 0; i < out.length; i++) {
+        out[i] = parseInt(hex.substr(i * 2, 2), 16);
+    }
+    return out;
 }
 
 function formatBytes(bytes: number): string {

@@ -35,6 +35,14 @@
         "downloadManifest": "Download manifest (.cff)",
         "verify": "Verify a certificate"
     },
+    "anchors": {
+        "title": "Independent timestamp anchors",
+        "help": "The manifest fingerprint is submitted to multiple independent sources in parallel. Each one is a separate piece of evidence: if any single source survives a future dispute, the proof works.",
+        "submitting": "Submitting…",
+        "failed": "Failed",
+        "download": "Download proof",
+        "downloadAll": "Download all proofs"
+    },
     "result": {
         "title": "Certificate ready",
         "what": "WHAT — content fingerprint",
