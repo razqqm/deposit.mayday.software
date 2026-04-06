@@ -1,8 +1,14 @@
 # Dependencies
+node_modules/
 frontend/node_modules/
+worker/node_modules/
 
 # Build output
 frontend/dist/
+
+# Cloudflare / Wrangler
+.wrangler/
+.dev.vars
 
 # Angular cache
 frontend/.angular/

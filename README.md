@@ -139,37 +139,44 @@ ots verify manifest.cff.ots
 ## Архитектура
 
 ```
-┌────────────────────────────┐         ┌──────────────────────────┐
-│  Browser (Angular SPA)     │         │  Cloudflare Worker       │
-│  ────────────────────────  │  POST   │  workers/tsa-proxy       │
-│  - WebCrypto SHA-256       │ ──────▶ │  - allowlist of TSAs     │
-│  - CITATION.cff manifest   │         │  - allowlist of OTS cals │
-│  - pkijs RFC 3161 builder  │ ◀────── │  - byte-relay, no logs   │
-│  - .ots assembler          │         └────────┬─────────────────┘
-│  - SVG certificate         │                  │
-└────────────────────────────┘                  ▼
-                                    ┌─────────────────────────┐
-                                    │  FreeTSA / DigiCert /   │
-                                    │  Sectigo (RFC 3161)     │
-                                    │  alice.btc / finney /   │
-                                    │  bob / catallaxy (OTS)  │
-                                    └─────────────────────────┘
+                  ┌─────────────────────────────────────┐
+                  │       Cloudflare (mayday.software)  │
+                  │   ┌─────────────────────────────┐   │
+   browser ─────▶ │   │  Static Assets (Angular)    │   │
+                  │   │  frontend/dist/...          │   │
+                  │   └─────────────────────────────┘   │
+                  │   ┌─────────────────────────────┐   │
+   POST /api/* ─▶ │   │  Worker (worker/src/*)      │   │
+                  │   │  - /api/tsa/:provider       │   │
+                  │   │  - /api/ots/:calendar       │   │
+                  │   └────────────┬────────────────┘   │
+                  └────────────────┼────────────────────┘
+                                   ▼
+                    ┌─────────────────────────────┐
+                    │  FreeTSA / DigiCert /       │
+                    │  Sectigo (RFC 3161)         │
+                    │  alice.btc / finney /       │
+                    │  bob / catallaxy (OTS)      │
+                    └─────────────────────────────┘
 ```
 
 - **Frontend**: Angular 21, static SPA. Всё хеширование, манифест,
   построение TimeStampReq и сборка .ots файлов — в браузере. Файлы
   пользователя никуда не уходят.
 - **i18n**: `@ngx-translate`, EN / RU.
-- **Backend**: единственный сервис — тонкий [Cloudflare Worker](workers/tsa-proxy/),
-  существующий ровно для одной задачи: публичные TSA и OTS-сервера
-  не отдают `Access-Control-Allow-Origin`, поэтому браузер не может
-  постучаться к ним напрямую. Worker — это byte-relay с allowlist
-  провайдеров. Никакого хранилища, никакого PII, никаких логов.
+- **Backend**: единственный Cloudflare Worker [worker/src/index.ts](worker/src/index.ts),
+  который на одном origin раздаёт SPA-ассеты и обрабатывает
+  `/api/tsa/*` + `/api/ots/*`. Публичные TSA и OTS-сервера не отдают
+  CORS, поэтому браузер не может постучаться к ним напрямую — Worker
+  это byte-relay с allowlist'ом провайдеров. Никакого хранилища, PII
+  или логов. Так как SPA и API на одном origin, CORS вообще не нужен.
 - **Хранилище доказательств**: у пользователя локально. Сам Bitcoin
   и сами TSA — это уже хранилище. Опциональное зеркало в R2/S3 — в
   roadmap.
-- **Деплой фронта**: aaPanel + git sparse checkout. Деплой Worker'а:
-  `wrangler deploy` из [workers/tsa-proxy](workers/tsa-proxy/).
+- **Деплой**: один `wrangler deploy` из корня репо. Сборка фронта,
+  загрузка ассетов в Static Assets и публикация Worker'а — одной
+  командой. CI делает то же самое через GitHub Actions
+  ([.github/workflows/deploy.yml](.github/workflows/deploy.yml)).
 
 ## Roadmap MVP
 
@@ -220,7 +227,9 @@ ots verify manifest.cff.ots
 живая документация `docs/SIGNING.md` и `docs/PRIOR_ART.md`, которые
 стоит прочитать перед тем как трогать код здесь.
 
-## Local Development
+## Local development
+
+### Только фронт (быстрее всего)
 
 ```bash
 cd frontend
@@ -229,44 +238,73 @@ npm start
 # → http://localhost:4200/
 ```
 
-## Production Build
+В этом режиме якоря не работают — нет Worker'а на этом порту.
+Пригодится для UI/стилей.
+
+### Фронт + Worker (полный стек)
 
 ```bash
-cd frontend
-npm run build
-# Output: frontend/dist/mayday-software/browser/
+# 1. Один раз — установить wrangler в корне репо
+npm install
+
+# 2. В отдельном терминале — Worker через wrangler dev
+npx wrangler dev
+# → http://localhost:8787   (раздаёт и SPA, и /api/*)
 ```
 
-## Deploy (aaPanel + Git Manager)
+`wrangler dev` сам собирает фронт через `[assets]` директиву, так что
+после редактирования файлов в `frontend/src/` нужно пересобрать:
 
-### 1. Nginx config
-
-В aaPanel → Site → mayday.software → Config, внутри `server {}`:
-
-```nginx
-location / {
-    try_files $uri $uri/ /index.html;
-}
-
-location ~* \.(js|css|png|jpg|jpeg|gif|ico|svg|woff2?|ttf|eot)$ {
-    expires 1y;
-    add_header Cache-Control "public, immutable";
-}
-
-location = /index.html {
-    add_header Cache-Control "no-cache, no-store, must-revalidate";
-}
+```bash
+cd frontend && npm run build
 ```
 
-### 2. Deployment Script
+Альтернатива — поднять `ng serve` на 4200 и `wrangler dev` на 8787,
+проставить в DevTools `window.__MAYDAY_WORKER_BASE__ = 'http://localhost:8787'`
+до бутстрапа Angular. Тогда HMR работает, а якоря ходят к локальному
+Worker'у через CORS.
 
-В aaPanel → Site → Git Manager → Script tab → Add:
-- **Alias**: `build`
-- **Script**: содержимое [deploy.sh](deploy.sh) из корня репо
+## Production build
 
-### 3. Flow
+```bash
+cd frontend && npm run build
+# → frontend/dist/mayday-software/browser/
+```
 
-1. `git push origin main`
-2. aaPanel → Git Manager → Deploy (или webhook)
-3. Скрипт пуллит код, запускает `npm ci && npm run build`, копирует
-   результат в корень сайта.
+## Deploy (Cloudflare Workers)
+
+Один `wrangler deploy` собирает SPA, заливает в Static Assets и
+публикует Worker:
+
+```bash
+# Один раз — авторизация
+npx wrangler login
+
+# Деплой
+npm run deploy
+# → https://mayday-software.<account>.workers.dev
+# (или mayday.software, если домен привязан в Cloudflare dashboard)
+```
+
+[wrangler.toml](wrangler.toml) указывает на:
+- `frontend/dist/mayday-software/browser` как `[assets]` директорию
+- `worker/src/index.ts` как `main` (обработчик `/api/*`)
+- `not_found_handling = "single-page-application"` чтобы Angular routes работали
+
+### CI/CD через GitHub Actions
+
+[.github/workflows/deploy.yml](.github/workflows/deploy.yml) запускается
+на каждый push в `main`, собирает фронт и деплоит через
+`cloudflare/wrangler-action@v3`.
+
+Нужны два repository secrets:
+- `CLOUDFLARE_API_TOKEN` — токен с правами `Workers Scripts: Edit` +
+  `Account Settings: Read`
+- `CLOUDFLARE_ACCOUNT_ID` — id аккаунта (есть в Cloudflare dashboard
+  справа на главной)
+
+### Custom domain
+
+После первого деплоя в Cloudflare dashboard → Workers & Pages →
+mayday-software → Settings → Domains & Routes → Add Custom Domain →
+`mayday.software`. CF сам настроит DNS и SSL.

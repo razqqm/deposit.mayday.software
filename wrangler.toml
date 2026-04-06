@@ -1,0 +1,13 @@
+name = "mayday-software"
+main = "worker/src/index.ts"
+compatibility_date = "2026-04-06"
+
+# Static SPA assets — Cloudflare Workers Static Assets serves these
+# directly without spinning up the Worker for static GETs.
+[assets]
+directory = "frontend/dist/mayday-software/browser"
+not_found_handling = "single-page-application"
+binding = "ASSETS"
+
+# The Worker handles only the dynamic /api/* routes (TSA + OTS proxies).
+# Anything else falls through to ASSETS via env.ASSETS.fetch(request).

@@ -51,7 +51,7 @@ export class Rfc3161Anchor implements Anchor {
         try {
             const tsq = buildTimeStampReq(request.manifestDigest);
 
-            const url = `${WORKER_BASE}/tsa/${this.provider}`;
+            const url = `${WORKER_BASE}/api/tsa/${this.provider}`;
             const resp = await fetch(url, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/timestamp-query' },

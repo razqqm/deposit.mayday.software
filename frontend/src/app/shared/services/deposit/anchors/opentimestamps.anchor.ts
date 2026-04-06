@@ -57,7 +57,7 @@ export class OpentimestampsAnchor implements Anchor {
         };
 
         try {
-            const url = `${WORKER_BASE}/ots/${this.calendar.id}`;
+            const url = `${WORKER_BASE}/api/ots/${this.calendar.id}`;
             const resp = await fetch(url, {
                 method: 'POST',
                 headers: {
