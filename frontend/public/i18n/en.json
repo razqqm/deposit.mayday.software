@@ -1,0 +1,76 @@
+{
+    "hero": {
+        "badge": "Cryptographic Copyright Deposit",
+        "title": "Prove your code is yours — without notaries",
+        "subtitle": "Sign your source files locally, anchor the proof in the Bitcoin blockchain, and download a certificate of ownership. Anyone can verify it forever, even if this site disappears.",
+        "cta": "Deposit my code",
+        "ctaHint": "Free · No account · Runs in your browser"
+    },
+    "drop": {
+        "title": "Drop your source files here",
+        "subtitle": "or click to browse — multiple files and folders supported",
+        "computing": "Computing SHA-256…",
+        "ready": "Ready to sign",
+        "filesCount": "{{count}} file(s)",
+        "totalSize": "Total size",
+        "browse": "Browse files",
+        "clear": "Clear"
+    },
+    "form": {
+        "author": "Author full name",
+        "authorPh": "e.g. Ilia Arestov",
+        "email": "Author email",
+        "emailPh": "you@example.com",
+        "title": "Work title",
+        "titlePh": "e.g. mayday.software MVP — Angular SPA",
+        "version": "Version",
+        "versionPh": "0.1.0",
+        "license": "License",
+        "licensePh": "MIT, Apache-2.0, proprietary…"
+    },
+    "actions": {
+        "generate": "Generate certificate",
+        "generating": "Generating…",
+        "download": "Download certificate (PDF)",
+        "downloadManifest": "Download manifest (.cff)",
+        "verify": "Verify a certificate"
+    },
+    "result": {
+        "title": "Certificate ready",
+        "what": "WHAT — content fingerprint",
+        "who": "WHO — author",
+        "when": "WHEN — local timestamp",
+        "btcNote": "Bitcoin anchor pending — submit the manifest to OpenTimestamps to get an immutable timestamp from the next Bitcoin block (~10 min). The proof file will then be valid forever, independently of this site.",
+        "manifest": "Manifest preview"
+    },
+    "how": {
+        "title": "How it works",
+        "step1Title": "1. Hash",
+        "step1Desc": "SHA-256 of every file is computed in your browser via WebCrypto. Files never leave your machine.",
+        "step2Title": "2. Sign",
+        "step2Desc": "We bundle the hashes into a CITATION.cff manifest and sign it. (MVP: local signature; v2: GPG / YubiKey via WebHID.)",
+        "step3Title": "3. Anchor in Bitcoin",
+        "step3Desc": "The manifest hash is submitted to OpenTimestamps and embedded into the next Bitcoin block. Nobody — not even you — can change the date afterwards.",
+        "step4Title": "4. Certificate",
+        "step4Desc": "You get a printable PDF certificate plus the raw proof files. Both can be independently verified by anyone with an internet connection."
+    },
+    "why": {
+        "title": "Why Bitcoin?",
+        "p1": "GPG signatures prove WHO signed something — but the timestamp inside a signature is just whatever the signer's clock said. It can be backdated trivially. The time problem has to be solved separately.",
+        "p2": "Bitcoin solves the WHEN problem without trusting anyone. Once a hash lands inside a Bitcoin block, claiming it existed earlier is mathematically impossible — the entire proof-of-work chain would have to be rewritten by the global mining network.",
+        "p3": "OpenTimestamps aggregates millions of files into a single Merkle root and writes it on-chain. Your proof is a tiny binary file that can be verified offline against any Bitcoin node. No trust in mayday.software required.",
+        "p4": "This is no longer theoretical. On 20 March 2025 the Paris Judicial Tribunal accepted a Bitcoin/OpenTimestamps anchor as proof of the creation date of a copyrighted work — the first such ruling in continental Europe.",
+        "alt": "Bitcoin is not the only option. RFC 3161 Time-Stamp Authorities (and their EU eIDAS-qualified versions) provide instant timestamps with explicit legal force in the EU but require trust in the TSA. Ethereum can also serve as an anchor. The plan is to support all three in parallel — multiple independent stamps make the proof effectively unforgeable."
+    },
+    "legal": {
+        "title": "Is this legally valid?",
+        "p1": "Under the Berne Convention (Art. 5), copyright arises automatically the moment a work is created — registration is nowhere required for the right to exist. What matters in court is being able to prove authorship and the date a particular version existed.",
+        "p2": "In the EU, Bitcoin-anchored timestamps via OpenTimestamps qualify as advanced electronic timestamps under eIDAS Regulation 910/2014, and the Paris Tribunal has accepted them as evidence (March 2025). RFC 3161 timestamps from EU-qualified TSAs go even further — they carry a legal presumption of accuracy under Art. 41 eIDAS.",
+        "p3": "Important — this is a complement, not a replacement. In Russia the Supreme Court (ruling № 305-ЭС17-4311, 17 Sep 2020) confirmed that deposit by itself does not create a presumption of authorship. The only mechanism that does is state registration in Rospatent under Art. 1262 of the Civil Code. mayday.software does not replace that — it gives you an independent cryptographic layer that costs nothing, takes ten minutes, and survives any institution.",
+        "p4": "Use it the way professional engineers use signed git commits: as one of several independent pieces of evidence. Combined with Rospatent / n'RIS / a notary, a verifiable hash anchored in a public chain is hard for any opposing expert to discredit."
+    },
+    "footer": {
+        "tagline": "Cryptographic copyright deposit",
+        "disclaimer": "All hashing and signing happens locally in your browser. We do not store or transmit your files."
+    }
+}

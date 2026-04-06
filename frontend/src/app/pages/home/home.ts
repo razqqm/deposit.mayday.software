@@ -1,0 +1,385 @@
+import { ChangeDetectionStrategy, Component, ElementRef, computed, inject, signal, viewChild } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { TranslateModule } from '@ngx-translate/core';
+import { HashedFile, HashingService } from '@/app/shared/services/deposit/hashing.service';
+import { BuiltManifest, ManifestService } from '@/app/shared/services/deposit/manifest.service';
+import { CertificateService } from '@/app/shared/services/deposit/certificate.service';
+
+interface FormState {
+    title: string;
+    version: string;
+    license: string;
+    authorGivenNames: string;
+    authorFamilyNames: string;
+    authorEmail: string;
+}
+
+@Component({
+    selector: 'app-home',
+    standalone: true,
+    imports: [TranslateModule, FormsModule],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    template: `
+        <section class="hero">
+            <div class="hero-bg" aria-hidden="true">
+                <div class="hero-grid"></div>
+                <div class="hero-orb orb-a"></div>
+                <div class="hero-orb orb-b"></div>
+            </div>
+            <div class="hero-body">
+                <span class="badge">{{ 'hero.badge' | translate }}</span>
+                <h1 class="title">{{ 'hero.title' | translate }}</h1>
+                <p class="subtitle">{{ 'hero.subtitle' | translate }}</p>
+                <a href="#deposit" class="cta">{{ 'hero.cta' | translate }}</a>
+                <p class="cta-hint">{{ 'hero.ctaHint' | translate }}</p>
+            </div>
+        </section>
+
+        <section id="deposit" class="deposit">
+            <div
+                class="drop"
+                [class.drop--active]="dragOver()"
+                [class.drop--has-files]="hashedFiles().length > 0"
+                (dragover)="onDragOver($event)"
+                (dragleave)="onDragLeave($event)"
+                (drop)="onDrop($event)"
+                (click)="openFileDialog()"
+            >
+                <input #fileInput type="file" multiple hidden (change)="onFilesPicked($event)" />
+
+                @if (hashing()) {
+                    <div class="drop-state">
+                        <div class="spinner"></div>
+                        <p>{{ 'drop.computing' | translate }}</p>
+                        <p class="muted">{{ hashedCount() }} / {{ totalFiles() }}</p>
+                    </div>
+                } @else if (hashedFiles().length === 0) {
+                    <div class="drop-state">
+                        <svg class="drop-icon" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M32 8v32"/>
+                            <path d="M20 20l12-12 12 12"/>
+                            <path d="M8 44v8a4 4 0 0 0 4 4h40a4 4 0 0 0 4-4v-8"/>
+                        </svg>
+                        <p class="drop-title">{{ 'drop.title' | translate }}</p>
+                        <p class="drop-sub">{{ 'drop.subtitle' | translate }}</p>
+                    </div>
+                } @else {
+                    <div class="drop-state ready">
+                        <svg class="drop-icon ok" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="32" cy="32" r="28"/>
+                            <path d="M20 32l8 8 16-16"/>
+                        </svg>
+                        <p class="drop-title">{{ 'drop.ready' | translate }}</p>
+                        <p class="drop-sub">{{ hashedFiles().length }} files · {{ totalSizeHuman() }}</p>
+                        <button type="button" class="link-btn" (click)="clear($event)">{{ 'drop.clear' | translate }}</button>
+                    </div>
+                }
+            </div>
+
+            @if (hashedFiles().length > 0) {
+                <div class="form">
+                    <div class="form-row">
+                        <label>
+                            <span>{{ 'form.author' | translate }}</span>
+                            <input type="text" [(ngModel)]="form.authorGivenNames" [placeholder]="'form.authorPh' | translate" />
+                        </label>
+                        <label>
+                            <span>{{ 'form.email' | translate }}</span>
+                            <input type="email" [(ngModel)]="form.authorEmail" [placeholder]="'form.emailPh' | translate" />
+                        </label>
+                    </div>
+                    <div class="form-row">
+                        <label class="grow">
+                            <span>{{ 'form.title' | translate }}</span>
+                            <input type="text" [(ngModel)]="form.title" [placeholder]="'form.titlePh' | translate" />
+                        </label>
+                    </div>
+                    <div class="form-row">
+                        <label>
+                            <span>{{ 'form.version' | translate }}</span>
+                            <input type="text" [(ngModel)]="form.version" [placeholder]="'form.versionPh' | translate" />
+                        </label>
+                        <label>
+                            <span>{{ 'form.license' | translate }}</span>
+                            <input type="text" [(ngModel)]="form.license" [placeholder]="'form.licensePh' | translate" />
+                        </label>
+                    </div>
+
+                    <button type="button" class="primary" [disabled]="generating() || !canGenerate()" (click)="generate()">
+                        {{ (generating() ? 'actions.generating' : 'actions.generate') | translate }}
+                    </button>
+                </div>
+            }
+
+            @if (manifest(); as m) {
+                <div class="result">
+                    <h2>{{ 'result.title' | translate }}</h2>
+
+                    <div class="proof-grid">
+                        <div class="proof">
+                            <span class="proof-label">{{ 'result.what' | translate }}</span>
+                            <code class="proof-hash">{{ m.sha256 }}</code>
+                        </div>
+                        <div class="proof">
+                            <span class="proof-label">{{ 'result.who' | translate }}</span>
+                            <span class="proof-value">{{ form.authorGivenNames }} {{ form.authorFamilyNames }}<br/><span class="muted">{{ form.authorEmail }}</span></span>
+                        </div>
+                        <div class="proof">
+                            <span class="proof-label">{{ 'result.when' | translate }}</span>
+                            <span class="proof-value">{{ issuedHuman() }}</span>
+                        </div>
+                    </div>
+
+                    <p class="btc-note">{{ 'result.btcNote' | translate }}</p>
+
+                    <div class="actions">
+                        <button type="button" class="primary" (click)="downloadCertificate()">
+                            {{ 'actions.download' | translate }}
+                        </button>
+                        <button type="button" class="ghost" (click)="downloadManifest()">
+                            {{ 'actions.downloadManifest' | translate }}
+                        </button>
+                    </div>
+
+                    <details class="manifest-preview">
+                        <summary>{{ 'result.manifest' | translate }}</summary>
+                        <pre>{{ m.yaml }}</pre>
+                    </details>
+                </div>
+            }
+        </section>
+
+        <section class="info">
+            <div class="info-block">
+                <h2>{{ 'how.title' | translate }}</h2>
+                <ol class="steps">
+                    <li><strong>{{ 'how.step1Title' | translate }}</strong><span>{{ 'how.step1Desc' | translate }}</span></li>
+                    <li><strong>{{ 'how.step2Title' | translate }}</strong><span>{{ 'how.step2Desc' | translate }}</span></li>
+                    <li><strong>{{ 'how.step3Title' | translate }}</strong><span>{{ 'how.step3Desc' | translate }}</span></li>
+                    <li><strong>{{ 'how.step4Title' | translate }}</strong><span>{{ 'how.step4Desc' | translate }}</span></li>
+                </ol>
+            </div>
+
+            <div class="info-block">
+                <h2>{{ 'why.title' | translate }}</h2>
+                <p>{{ 'why.p1' | translate }}</p>
+                <p>{{ 'why.p2' | translate }}</p>
+                <p>{{ 'why.p3' | translate }}</p>
+                <p class="callout">{{ 'why.p4' | translate }}</p>
+                <p class="muted-p">{{ 'why.alt' | translate }}</p>
+            </div>
+
+            <div class="info-block">
+                <h2>{{ 'legal.title' | translate }}</h2>
+                <p>{{ 'legal.p1' | translate }}</p>
+                <p>{{ 'legal.p2' | translate }}</p>
+                <p>{{ 'legal.p3' | translate }}</p>
+                <p>{{ 'legal.p4' | translate }}</p>
+            </div>
+        </section>
+    `,
+    styleUrl: './home.scss'
+})
+export class HomePage {
+    private readonly hashingSvc = inject(HashingService);
+    private readonly manifestSvc = inject(ManifestService);
+    private readonly certSvc = inject(CertificateService);
+
+    readonly fileInput = viewChild.required<ElementRef<HTMLInputElement>>('fileInput');
+
+    readonly dragOver = signal(false);
+    readonly hashing = signal(false);
+    readonly hashedCount = signal(0);
+    readonly totalFiles = signal(0);
+    readonly hashedFiles = signal<HashedFile[]>([]);
+    readonly generating = signal(false);
+    readonly manifest = signal<BuiltManifest | null>(null);
+
+    form: FormState = {
+        title: '',
+        version: '0.1.0',
+        license: 'MIT',
+        authorGivenNames: '',
+        authorFamilyNames: '',
+        authorEmail: ''
+    };
+
+    readonly totalSizeHuman = computed(() => formatBytes(this.hashedFiles().reduce((s, f) => s + f.size, 0)));
+
+    readonly issuedHuman = computed(() => {
+        const m = this.manifest();
+        return m ? new Date(m.issuedAt).toUTCString() : '';
+    });
+
+    openFileDialog(): void {
+        this.fileInput().nativeElement.click();
+    }
+
+    canGenerate(): boolean {
+        return !!this.form.title && !!this.form.authorGivenNames && this.hashedFiles().length > 0;
+    }
+
+    onDragOver(e: DragEvent): void {
+        e.preventDefault();
+        this.dragOver.set(true);
+    }
+
+    onDragLeave(e: DragEvent): void {
+        e.preventDefault();
+        this.dragOver.set(false);
+    }
+
+    async onDrop(e: DragEvent): Promise<void> {
+        e.preventDefault();
+        this.dragOver.set(false);
+        const items = e.dataTransfer?.items;
+        const files: File[] = [];
+        if (items && items.length) {
+            const promises: Promise<void>[] = [];
+            for (let i = 0; i < items.length; i++) {
+                const entry = (items[i] as DataTransferItem & { webkitGetAsEntry?: () => FileSystemEntry | null }).webkitGetAsEntry?.();
+                if (entry) {
+                    promises.push(walkEntry(entry, '', files));
+                } else {
+                    const f = items[i].getAsFile();
+                    if (f) files.push(f);
+                }
+            }
+            await Promise.all(promises);
+        } else if (e.dataTransfer?.files) {
+            for (let i = 0; i < e.dataTransfer.files.length; i++) {
+                files.push(e.dataTransfer.files[i]);
+            }
+        }
+        await this.processFiles(files);
+    }
+
+    async onFilesPicked(e: Event): Promise<void> {
+        const input = e.target as HTMLInputElement;
+        if (!input.files) return;
+        const files: File[] = [];
+        for (let i = 0; i < input.files.length; i++) files.push(input.files[i]);
+        await this.processFiles(files);
+        input.value = '';
+    }
+
+    clear(e: Event): void {
+        e.stopPropagation();
+        this.hashedFiles.set([]);
+        this.manifest.set(null);
+    }
+
+    private async processFiles(files: File[]): Promise<void> {
+        if (!files.length) return;
+        this.hashing.set(true);
+        this.hashedCount.set(0);
+        this.totalFiles.set(files.length);
+        const out: HashedFile[] = [];
+        for (const f of files) {
+            try {
+                out.push(await this.hashingSvc.hashFile(f));
+            } catch {
+                /* skip unreadable files */
+            }
+            this.hashedCount.update((n) => n + 1);
+        }
+        out.sort((a, b) => a.path.localeCompare(b.path));
+        this.hashedFiles.set(out);
+        this.hashing.set(false);
+        this.manifest.set(null);
+    }
+
+    async generate(): Promise<void> {
+        if (!this.canGenerate()) return;
+        this.generating.set(true);
+        try {
+            const m = await this.manifestSvc.build({
+                title: this.form.title,
+                version: this.form.version,
+                license: this.form.license,
+                authorGivenNames: this.form.authorGivenNames,
+                authorFamilyNames: this.form.authorFamilyNames,
+                authorEmail: this.form.authorEmail,
+                files: this.hashedFiles()
+            });
+            this.manifest.set(m);
+            queueMicrotask(() => document.querySelector('.result')?.scrollIntoView({ behavior: 'smooth', block: 'start' }));
+        } finally {
+            this.generating.set(false);
+        }
+    }
+
+    downloadCertificate(): void {
+        const m = this.manifest();
+        if (!m) return;
+        const svg = this.certSvc.render({
+            input: {
+                title: this.form.title,
+                version: this.form.version,
+                license: this.form.license,
+                authorGivenNames: this.form.authorGivenNames,
+                authorFamilyNames: this.form.authorFamilyNames,
+                authorEmail: this.form.authorEmail,
+                files: this.hashedFiles()
+            },
+            manifest: m
+        });
+        this.certSvc.print(svg);
+        this.certSvc.download(`mayday-certificate-${m.sha256.slice(0, 12)}.svg`, svg, 'image/svg+xml');
+    }
+
+    downloadManifest(): void {
+        const m = this.manifest();
+        if (!m) return;
+        this.certSvc.download(`CITATION-${m.sha256.slice(0, 12)}.cff`, m.yaml, 'text/yaml');
+    }
+}
+
+function formatBytes(bytes: number): string {
+    if (bytes < 1024) return `${bytes} B`;
+    if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+    if (bytes < 1024 * 1024 * 1024) return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+    return `${(bytes / (1024 * 1024 * 1024)).toFixed(2)} GB`;
+}
+
+interface FsEntry {
+    isFile: boolean;
+    isDirectory: boolean;
+    name: string;
+    file?: (cb: (f: File) => void, err: () => void) => void;
+    createReader?: () => { readEntries: (cb: (entries: FsEntry[]) => void) => void };
+}
+
+async function walkEntry(entry: FileSystemEntry | FsEntry, path: string, out: File[]): Promise<void> {
+    const e = entry as FsEntry;
+    if (e.isFile && e.file) {
+        await new Promise<void>((resolve) => {
+            e.file!(
+                (file: File) => {
+                    try {
+                        Object.defineProperty(file, 'webkitRelativePath', { value: path + e.name });
+                    } catch {
+                        /* read-only on some browsers */
+                    }
+                    out.push(file);
+                    resolve();
+                },
+                () => resolve()
+            );
+        });
+    } else if (e.isDirectory && e.createReader) {
+        const reader = e.createReader();
+        await new Promise<void>((resolve) => {
+            const readBatch = () => {
+                reader.readEntries(async (entries: FsEntry[]) => {
+                    if (!entries.length) return resolve();
+                    for (const child of entries) {
+                        await walkEntry(child, path + e.name + '/', out);
+                    }
+                    readBatch();
+                });
+            };
+            readBatch();
+        });
+    }
+}

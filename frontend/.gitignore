@@ -1,0 +1,31 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+out-tsc/
+
+# IDE
+.idea/
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Angular cache
+.angular/
+
+# npm
+npm-debug.log*
+.npm
+
+# Misc
+*.tgz
+.env
+.env.*

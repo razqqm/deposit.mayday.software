@@ -1,0 +1,68 @@
+@use 'primeicons/primeicons.css';
+
+/* Global box-sizing */
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+html {
+    font-size: 16px;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    scroll-behavior: smooth;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Manrope', 'IBM Plex Sans', 'Segoe UI', Roboto, Arial, sans-serif;
+    line-height: 1.5;
+}
+
+a {
+    text-underline-offset: 0.2em;
+}
+
+a:focus-visible,
+button:focus-visible {
+    outline: 2px solid #0ea5e9;
+    outline-offset: 2px;
+}
+
+.skip-link {
+    position: absolute;
+    left: 0.5rem;
+    top: -100px;
+    z-index: 100;
+    background: #ffffff;
+    color: #0f172a;
+    border-radius: 0.4rem;
+    padding: 0.5rem 0.75rem;
+    font-weight: 700;
+    text-decoration: none;
+    transition: top 0.2s ease;
+}
+
+.skip-link:focus {
+    top: 0.5rem;
+}
+
+/* Nav link styles for topbar */
+.nav-link-top {
+    color: rgba(255, 255, 255, 0.85);
+    text-decoration: none;
+    font-size: 0.875rem;
+    font-weight: 500;
+    padding: 0.25rem 0.75rem;
+    transition: color 0.2s;
+    white-space: nowrap;
+
+    &:hover {
+        color: #ffffff;
+    }
+}
+
+.nav-link--active {
+    color: #ffffff;
+    font-weight: 700;
+}
