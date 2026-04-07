@@ -108,19 +108,50 @@ interface FormState {
 
                             <!-- Stage 4: Anchor broadcast -->
                             <div class="stage stage-anchor">
-                                <div class="anchor-ring">
-                                    <span class="ar-dot ar-dot--btc"></span>
-                                    <span class="ar-dot ar-dot--tsa1"></span>
-                                    <span class="ar-dot ar-dot--tsa2"></span>
-                                    <span class="ar-dot ar-dot--tsa3"></span>
-                                    <span class="ar-dot ar-dot--eth"></span>
+                                <div class="anch anch--btc">
+                                    <span class="anch-proto">OTS</span>
+                                    <div class="anch-body">
+                                        <span class="anch-name">Bitcoin</span>
+                                        <span class="anch-ep">opentimestamps.org</span>
+                                    </div>
+                                    <div class="anch-track"><div class="anch-bar"></div></div>
+                                    <span class="anch-ok">✓</span>
                                 </div>
-                                <div class="anchor-labels">
-                                    <span>Bitcoin</span>
-                                    <span>FreeTSA</span>
-                                    <span>DigiCert</span>
-                                    <span>Sectigo</span>
-                                    <span>Base L2</span>
+                                <div class="anch anch--tsa1">
+                                    <span class="anch-proto">3161</span>
+                                    <div class="anch-body">
+                                        <span class="anch-name">FreeTSA</span>
+                                        <span class="anch-ep">freetsa.org/tsr</span>
+                                    </div>
+                                    <div class="anch-track"><div class="anch-bar"></div></div>
+                                    <span class="anch-ok">✓</span>
+                                </div>
+                                <div class="anch anch--tsa2">
+                                    <span class="anch-proto">3161</span>
+                                    <div class="anch-body">
+                                        <span class="anch-name">DigiCert</span>
+                                        <span class="anch-ep">timestamp.digicert.com</span>
+                                    </div>
+                                    <div class="anch-track"><div class="anch-bar"></div></div>
+                                    <span class="anch-ok">✓</span>
+                                </div>
+                                <div class="anch anch--tsa3">
+                                    <span class="anch-proto">3161</span>
+                                    <div class="anch-body">
+                                        <span class="anch-name">Sectigo</span>
+                                        <span class="anch-ep">timestamp.sectigo.com</span>
+                                    </div>
+                                    <div class="anch-track"><div class="anch-bar"></div></div>
+                                    <span class="anch-ok">✓</span>
+                                </div>
+                                <div class="anch anch--eth">
+                                    <span class="anch-proto">EVM</span>
+                                    <div class="anch-body">
+                                        <span class="anch-name">Base L2</span>
+                                        <span class="anch-ep">base-mainnet</span>
+                                    </div>
+                                    <div class="anch-track"><div class="anch-bar"></div></div>
+                                    <span class="anch-ok">✓</span>
                                 </div>
                             </div>
 

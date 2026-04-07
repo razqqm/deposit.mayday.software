@@ -136,7 +136,7 @@
 
 @media (min-width: 960px) {
     .hero-grid {
-        grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
         gap: 4rem;
     }
 }
@@ -269,8 +269,8 @@
 
 /* ── Hero Demo — Looping Pipeline ────────────────────────── */
 
-/* Full cycle = 8s. Each stage enter → hold → exit. */
-$cycle: 8s;
+/* Full cycle = 14s. Each stage enter → hold → exit. */
+$cycle: 14s;
 
 .hero-demo {
     display: flex;
@@ -281,9 +281,9 @@ $cycle: 8s;
 
 .demo-card {
     width: 100%;
-    max-width: 380px;
+    max-width: 480px;
     position: relative;
-    padding: 1.5rem 1.25rem;
+    padding: 2rem 1.5rem;
     background: var(--bg-overlay);
     backdrop-filter: blur(16px) saturate(160%);
     -webkit-backdrop-filter: blur(16px) saturate(160%);
@@ -324,7 +324,7 @@ $cycle: 8s;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 0.6rem;
+    gap: 0.8rem;
     position: relative;
     z-index: 1;
 }
@@ -347,10 +347,10 @@ $cycle: 8s;
 }
 
 .stage-file   { animation-delay: 0.0s; }
-.stage-hash   { animation-delay: 0.3s; }
-.stage-proof  { animation-delay: 0.6s; }
-.stage-anchor { animation-delay: 0.9s; }
-.stage-seal   { animation-delay: 1.2s; }
+.stage-hash   { animation-delay: 0.5s; }
+.stage-proof  { animation-delay: 1.0s; }
+.stage-anchor { animation-delay: 1.5s; }
+.stage-seal   { animation-delay: 2.0s; }
 
 /* ── File stage ────────────────────────────────────────── */
 .stage-file {
@@ -540,9 +540,9 @@ $cycle: 8s;
     animation: chip-bounce $cycle var(--ease-out) infinite;
 }
 
-.proof-chip--what { animation-delay: 0.7s; }
-.proof-chip--who  { animation-delay: 0.85s; }
-.proof-chip--when { animation-delay: 1.0s; }
+.proof-chip--what { animation-delay: 1.2s; }
+.proof-chip--who  { animation-delay: 1.5s; }
+.proof-chip--when { animation-delay: 1.8s; }
 
 @keyframes chip-bounce {
     0%, 5%  { transform: scale(0.85); opacity: 0; }
@@ -566,66 +566,124 @@ $cycle: 8s;
     color: var(--text);
 }
 
-/* ── Anchor ring stage ─────────────────────────────────── */
+/* ── Anchor rows stage ──────────────────────────────────── */
 .stage-anchor {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    gap: 0.35rem;
+    gap: 0.3rem;
 }
 
-.anchor-ring {
+.anch {
     display: flex;
-    gap: 0.7rem;
     align-items: center;
-    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.4rem 0.6rem;
+    background: var(--bg-sunk);
+    border: 1px solid var(--border);
+    border-radius: var(--r-sm);
+    border-left: 3px solid var(--ac);
+    opacity: 0;
+    transform: translateX(-10px);
+    animation: anch-enter $cycle var(--ease-out) infinite;
+    animation-delay: var(--ad);
 }
 
-.ar-dot {
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    background: var(--success);
+.anch--btc  { --ac: oklch(0.74 0.16 60);  --ad: 2.0s; }
+.anch--tsa1 { --ac: oklch(0.65 0.19 145); --ad: 2.4s; }
+.anch--tsa2 { --ac: oklch(0.58 0.16 250); --ad: 2.8s; }
+.anch--tsa3 { --ac: oklch(0.62 0.16 300); --ad: 3.2s; }
+.anch--eth  { --ac: oklch(0.55 0.18 260); --ad: 3.6s; }
+
+@keyframes anch-enter {
+    0%, 5%   { opacity: 0; transform: translateX(-10px); }
+    12%      { opacity: 1; transform: translateX(0); }
+    72%      { opacity: 1; transform: translateX(0); }
+    84%, 100% { opacity: 0; transform: translateX(-10px); }
+}
+
+.anch-proto {
+    font-size: 0.48rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ac);
+    background: color-mix(in oklch, var(--ac) 12%, transparent);
+    padding: 0.12rem 0.3rem;
+    border-radius: var(--r-sm);
+    flex-shrink: 0;
+    min-width: 2rem;
+    text-align: center;
+}
+
+.anch-body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.02rem;
+    min-width: 0;
+    flex: 1;
+}
+
+.anch-name {
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--text);
+    white-space: nowrap;
+}
+
+.anch-ep {
+    font-size: 0.48rem;
+    font-family: var(--font-mono);
+    color: var(--text-dim);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    letter-spacing: 0.01em;
+}
+
+.anch-track {
+    width: 36px;
+    height: 3px;
+    background: var(--border);
+    border-radius: 2px;
+    flex-shrink: 0;
+    overflow: hidden;
+}
+
+.anch-bar {
+    width: 100%;
+    height: 100%;
+    background: var(--ac);
+    border-radius: 2px;
+    transform-origin: left;
+    transform: scaleX(0);
+    animation: anch-fill $cycle var(--ease-out) infinite;
+    animation-delay: var(--ad);
+}
+
+@keyframes anch-fill {
+    0%, 12%  { transform: scaleX(0); }
+    28%      { transform: scaleX(1); }
+    72%      { transform: scaleX(1); }
+    84%, 100% { transform: scaleX(0); }
+}
+
+.anch-ok {
+    font-size: 0.65rem;
+    font-weight: 700;
+    color: var(--ac);
     opacity: 0;
     transform: scale(0);
-    animation: dot-burst $cycle var(--ease-out) infinite;
-    box-shadow: 0 0 8px color-mix(in oklch, var(--success) 50%, transparent);
+    flex-shrink: 0;
+    animation: anch-check $cycle var(--ease-out) infinite;
+    animation-delay: var(--ad);
 }
 
-.ar-dot--btc  {
-    background: oklch(0.74 0.16 60);
-    box-shadow: 0 0 8px color-mix(in oklch, oklch(0.74 0.16 60) 50%, transparent);
-    animation-delay: 1.0s;
-}
-.ar-dot--tsa1 { animation-delay: 1.15s; }
-.ar-dot--tsa2 { animation-delay: 1.3s; }
-.ar-dot--tsa3 { animation-delay: 1.45s; }
-.ar-dot--eth  {
-    background: oklch(0.55 0.18 260);
-    box-shadow: 0 0 8px color-mix(in oklch, oklch(0.55 0.18 260) 50%, transparent);
-    animation-delay: 1.6s;
-}
-
-@keyframes dot-burst {
-    0%, 10%  { opacity: 0; transform: scale(0); }
-    22%      { opacity: 1; transform: scale(1.4); }
-    28%      { transform: scale(1); }
-    78%      { opacity: 1; transform: scale(1); }
-    90%, 100% { opacity: 0; transform: scale(0); }
-}
-
-.anchor-labels {
-    display: flex;
-    gap: 0.5rem;
-    justify-content: center;
-    flex-wrap: wrap;
-}
-
-.anchor-labels span {
-    font-size: 0.6rem;
-    font-weight: 500;
-    color: var(--text-dim);
-    letter-spacing: 0.02em;
+@keyframes anch-check {
+    0%, 24%  { opacity: 0; transform: scale(0); }
+    32%      { opacity: 1; transform: scale(1.3); }
+    36%      { transform: scale(1); }
+    72%      { opacity: 1; transform: scale(1); }
+    84%, 100% { opacity: 0; transform: scale(0); }
 }
 
 /* ── Seal stage ────────────────────────────────────────── */
@@ -636,8 +694,8 @@ $cycle: 8s;
 }
 
 .seal-svg {
-    width: 64px;
-    height: 64px;
+    width: 76px;
+    height: 76px;
 }
 
 .seal-outer {
@@ -704,7 +762,15 @@ $cycle: 8s;
 @media (max-width: 639px) {
     .demo-card {
         max-width: 100%;
-        padding: 1.1rem 0.9rem;
+        padding: 1.25rem 1rem;
+    }
+
+    .anch-ep {
+        display: none;
+    }
+
+    .anch-track {
+        width: 28px;
     }
 }
 
