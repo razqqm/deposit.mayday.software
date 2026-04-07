@@ -32,7 +32,11 @@
                             "src/assets/styles.scss",
                             "src/assets/tailwind.css"
                         ],
-                        "scripts": []
+                        "scripts": [],
+                        "allowedCommonJsDependencies": [
+                            "pdfmake",
+                            "pvtsutils"
+                        ]
                     },
                     "configurations": {
                         "production": {

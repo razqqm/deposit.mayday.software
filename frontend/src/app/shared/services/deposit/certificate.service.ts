@@ -1,11 +1,13 @@
 import { Injectable } from '@angular/core';
 import { BuiltManifest, ManifestInput } from './manifest.service';
 import { AnchorAttestation } from './anchors/anchor';
+import { SigningResult } from './signing.service';
 
 export interface CertificateData {
     input: ManifestInput;
     manifest: BuiltManifest;
     anchors: AnchorAttestation[];
+    gpgSignature?: SigningResult;
 }
 
 /**
@@ -15,7 +17,7 @@ export interface CertificateData {
  */
 @Injectable({ providedIn: 'root' })
 export class CertificateService {
-    render({ input, manifest, anchors }: CertificateData): string {
+    render({ input, manifest, anchors, gpgSignature }: CertificateData): string {
         const author = [input.authorGivenNames, input.authorFamilyNames].filter(Boolean).join(' ').trim() || '—';
         const issuedDate = new Date(manifest.issuedAt);
         const issuedHuman = issuedDate.toUTCString();
@@ -78,6 +80,7 @@ export class CertificateService {
     <text text-anchor="middle" y="68" fill="rgba(255,255,255,0.5)" font-size="13" letter-spacing="2">IS THE AUTHOR OF</text>
     <text text-anchor="middle" y="104" fill="#ffffff" font-size="22" font-weight="600">${escapeXml(input.title || '—')}</text>
     <text text-anchor="middle" y="130" fill="rgba(255,255,255,0.55)" font-size="14">version ${escapeXml(input.version || '—')} · ${escapeXml(input.license || 'unspecified license')} · ${fileCount} file(s) · ${totalSizeHuman}</text>
+    ${gpgSignature ? `<text text-anchor="middle" y="160" fill="rgba(245,158,11,0.75)" font-size="12" letter-spacing="1">GPG signed by: ${escapeXml(gpgSignature.userId)} · Key ${escapeXml(gpgSignature.keyId)}</text>` : `<text text-anchor="middle" y="160" fill="rgba(255,255,255,0.3)" font-size="12">Author identity: self-declared (no cryptographic signature)</text>`}
   </g>
 
   <!-- Hash block -->

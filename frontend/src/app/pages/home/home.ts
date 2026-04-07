@@ -6,6 +6,8 @@ import { BuiltManifest, ManifestService } from '@/app/shared/services/deposit/ma
 import { CertificateService } from '@/app/shared/services/deposit/certificate.service';
 import { AnchorOrchestratorService } from '@/app/shared/services/deposit/anchors/anchor-orchestrator.service';
 import { AnchorAttestation } from '@/app/shared/services/deposit/anchors/anchor';
+import { SigningService, SigningResult } from '@/app/shared/services/deposit/signing.service';
+import { ReportService } from '@/app/shared/services/deposit/report.service';
 import { RevealDirective } from '@/app/shared/directives/reveal.directive';
 
 interface FormState {
@@ -15,6 +17,8 @@ interface FormState {
     authorGivenNames: string;
     authorFamilyNames: string;
     authorEmail: string;
+    gpgPrivateKey: string;
+    gpgPassphrase: string;
 }
 
 @Component({
@@ -68,32 +72,32 @@ interface FormState {
 
                 <aside class="hero-bento" aria-hidden="true">
                     <div class="bento bento-hash">
-                        <span class="bento-label">SHA-256 fingerprint</span>
+                        <span class="bento-label">{{ 'hero.bento.sha256' | translate }}</span>
                         <code class="bento-mono">9c07646d781e43fe<br/>35c63773a6374293<br/>7aa9e79b1b09138e<br/>f3f0c2e4392856d2</code>
                     </div>
 
                     <div class="bento bento-anchors">
-                        <span class="bento-label">5 sources of truth</span>
+                        <span class="bento-label">{{ 'hero.bento.sources' | translate }}</span>
                         <ul class="bento-list">
-                            <li><span class="dot dot-btc"></span>Bitcoin · OpenTimestamps</li>
-                            <li><span class="dot"></span>FreeTSA · RFC 3161</li>
-                            <li><span class="dot"></span>DigiCert · RFC 3161</li>
-                            <li><span class="dot"></span>Sectigo · RFC 3161</li>
-                            <li><span class="dot dot-mute"></span>eIDAS QTSP · soon</li>
+                            <li><span class="dot dot-btc"></span>{{ 'hero.bento.bitcoin' | translate }}</li>
+                            <li><span class="dot"></span>{{ 'hero.bento.freetsa' | translate }}</li>
+                            <li><span class="dot"></span>{{ 'hero.bento.digicert' | translate }}</li>
+                            <li><span class="dot"></span>{{ 'hero.bento.sectigo' | translate }}</li>
+                            <li><span class="dot dot-mute"></span>{{ 'hero.bento.eidas' | translate }}</li>
                         </ul>
                     </div>
 
                     <div class="bento bento-layers">
-                        <span class="bento-label">3 proof layers</span>
+                        <span class="bento-label">{{ 'hero.bento.layers' | translate }}</span>
                         <div class="layer-grid">
-                            <div class="layer"><span class="layer-key">WHAT</span><span class="layer-val">Hash</span></div>
-                            <div class="layer"><span class="layer-key">WHO</span><span class="layer-val">Author</span></div>
-                            <div class="layer"><span class="layer-key">WHEN</span><span class="layer-val">Anchor</span></div>
+                            <div class="layer"><span class="layer-key">{{ 'hero.bento.what' | translate }}</span><span class="layer-val">{{ 'hero.bento.whatVal' | translate }}</span></div>
+                            <div class="layer"><span class="layer-key">{{ 'hero.bento.who' | translate }}</span><span class="layer-val">{{ 'hero.bento.whoVal' | translate }}</span></div>
+                            <div class="layer"><span class="layer-key">{{ 'hero.bento.when' | translate }}</span><span class="layer-val">{{ 'hero.bento.whenVal' | translate }}</span></div>
                         </div>
                     </div>
 
                     <div class="bento bento-cert">
-                        <span class="bento-label">Certificate</span>
+                        <span class="bento-label">{{ 'hero.bento.cert' | translate }}</span>
                         <svg class="bento-cert-svg" viewBox="0 0 200 130" xmlns="http://www.w3.org/2000/svg">
                             <rect x="6" y="6" width="188" height="118" rx="8" fill="none" stroke="var(--brand)" stroke-width="1.5"/>
                             <rect x="14" y="14" width="172" height="102" rx="4" fill="none" stroke="var(--brand)" stroke-width="0.5" stroke-opacity="0.5"/>
@@ -111,9 +115,9 @@ interface FormState {
 
         <section id="deposit" class="deposit" appReveal>
             <header class="section-head">
-                <span class="eyebrow">Step 1</span>
-                <h2 class="section-title">Drop your source — we never see it</h2>
-                <p class="section-sub">Hashing happens entirely in your browser via WebCrypto. The only thing that ever reaches our infrastructure is the 32-byte fingerprint of your manifest.</p>
+                <span class="eyebrow">{{ 'deposit.eyebrow' | translate }}</span>
+                <h2 class="section-title">{{ 'deposit.sectionTitle' | translate }}</h2>
+                <p class="section-sub">{{ 'deposit.sectionSub' | translate }}</p>
             </header>
 
             <div
@@ -185,6 +189,29 @@ interface FormState {
                         </label>
                     </div>
 
+                    <details class="gpg-section">
+                        <summary class="gpg-toggle">
+                            {{ 'gpg.title' | translate }}
+                            <span class="gpg-optional">({{ 'gpg.optional' | translate }})</span>
+                        </summary>
+                        <p class="gpg-help">{{ 'gpg.help' | translate }}</p>
+                        <label class="gpg-key-label">
+                            <textarea
+                                class="gpg-key-input"
+                                [(ngModel)]="form.gpgPrivateKey"
+                                [placeholder]="'gpg.pasteKey' | translate"
+                                rows="4"
+                                spellcheck="false"
+                                autocomplete="off"
+                            ></textarea>
+                        </label>
+                        <label class="gpg-passphrase-label">
+                            <span>{{ 'gpg.passphrase' | translate }}</span>
+                            <input type="password" [(ngModel)]="form.gpgPassphrase" autocomplete="off" />
+                        </label>
+                        <p class="gpg-skip-hint">{{ 'gpg.skipHint' | translate }}</p>
+                    </details>
+
                     <button type="button" class="primary" [disabled]="generating() || !canGenerate()" (click)="generate()">
                         {{ (generating() ? 'actions.generating' : 'actions.generate') | translate }}
                     </button>
@@ -194,7 +221,7 @@ interface FormState {
             @if (manifest(); as m) {
                 <div class="result card">
                     <header class="result-head">
-                        <span class="eyebrow eyebrow--success">Done</span>
+                        <span class="eyebrow eyebrow--success">{{ 'deposit.doneEyebrow' | translate }}</span>
                         <h2>{{ 'result.title' | translate }}</h2>
                     </header>
 
@@ -205,7 +232,14 @@ interface FormState {
                         </div>
                         <div class="proof">
                             <span class="proof-label">{{ 'result.who' | translate }}</span>
-                            <span class="proof-value">{{ form.authorGivenNames }} {{ form.authorFamilyNames }}<br/><span class="muted">{{ form.authorEmail }}</span></span>
+                            @if (gpgSignature(); as gpg) {
+                                <span class="proof-value">
+                                    {{ gpg.userId }}<br/>
+                                    <span class="muted">{{ 'gpg.keyId' | translate }}: {{ gpg.keyId }}</span>
+                                </span>
+                            } @else {
+                                <span class="proof-value">{{ form.authorGivenNames }} {{ form.authorFamilyNames }}<br/><span class="muted">{{ form.authorEmail }}</span><br/><span class="muted gpg-note">{{ 'gpg.skipped' | translate }}</span></span>
+                            }
                         </div>
                         <div class="proof">
                             <span class="proof-label">{{ 'result.when' | translate }}</span>
@@ -256,8 +290,16 @@ interface FormState {
                         <button type="button" class="ghost" (click)="downloadManifest()">
                             {{ 'actions.downloadManifest' | translate }}
                         </button>
+                        @if (gpgSignature()) {
+                            <button type="button" class="ghost" (click)="downloadGpgSignature()">
+                                {{ 'gpg.downloadAsc' | translate }}
+                            </button>
+                        }
                         <button type="button" class="ghost" (click)="downloadAllProofs()" [disabled]="!hasAnyConfirmedAnchor()">
                             {{ 'anchors.downloadAll' | translate }}
+                        </button>
+                        <button type="button" class="ghost" (click)="downloadReport()" [disabled]="!hasAnyConfirmedAnchor()">
+                            {{ 'report.download' | translate }}
                         </button>
                     </div>
 
@@ -272,7 +314,7 @@ interface FormState {
         <section class="info">
             <div class="info-grid">
                 <div class="info-block info-block--wide card" appReveal>
-                    <span class="eyebrow">How it works</span>
+                    <span class="eyebrow">{{ 'info.howEyebrow' | translate }}</span>
                     <h2>{{ 'how.title' | translate }}</h2>
                     <ol class="steps">
                         <li>
@@ -307,7 +349,7 @@ interface FormState {
                 </div>
 
                 <div class="info-block card" appReveal>
-                    <span class="eyebrow">Why Bitcoin</span>
+                    <span class="eyebrow">{{ 'info.whyEyebrow' | translate }}</span>
                     <h2>{{ 'why.title' | translate }}</h2>
                     <p>{{ 'why.p1' | translate }}</p>
                     <p>{{ 'why.p2' | translate }}</p>
@@ -317,7 +359,7 @@ interface FormState {
                 </div>
 
                 <div class="info-block card" appReveal>
-                    <span class="eyebrow">Legal</span>
+                    <span class="eyebrow">{{ 'info.legalEyebrow' | translate }}</span>
                     <h2>{{ 'legal.title' | translate }}</h2>
                     <p>{{ 'legal.p1' | translate }}</p>
                     <p>{{ 'legal.p2' | translate }}</p>
@@ -334,6 +376,8 @@ export class HomePage {
     private readonly manifestSvc = inject(ManifestService);
     private readonly certSvc = inject(CertificateService);
     private readonly orchestrator = inject(AnchorOrchestratorService);
+    private readonly signingSvc = inject(SigningService);
+    private readonly reportSvc = inject(ReportService);
 
     readonly fileInput = viewChild.required<ElementRef<HTMLInputElement>>('fileInput');
     readonly anchors = this.orchestrator.anchors;
@@ -345,6 +389,9 @@ export class HomePage {
     readonly hashedFiles = signal<HashedFile[]>([]);
     readonly generating = signal(false);
     readonly manifest = signal<BuiltManifest | null>(null);
+    readonly gpgSignature = signal<SigningResult | null>(null);
+    readonly gpgSigning = signal(false);
+    readonly gpgError = signal<string | null>(null);
 
     form: FormState = {
         title: '',
@@ -352,7 +399,9 @@ export class HomePage {
         license: 'MIT',
         authorGivenNames: '',
         authorFamilyNames: '',
-        authorEmail: ''
+        authorEmail: '',
+        gpgPrivateKey: '',
+        gpgPassphrase: ''
     };
 
     readonly totalSizeHuman = computed(() => formatBytes(this.hashedFiles().reduce((s, f) => s + f.size, 0)));
@@ -418,6 +467,8 @@ export class HomePage {
         e.stopPropagation();
         this.hashedFiles.set([]);
         this.manifest.set(null);
+        this.gpgSignature.set(null);
+        this.gpgError.set(null);
     }
 
     private async processFiles(files: File[]): Promise<void> {
@@ -444,6 +495,8 @@ export class HomePage {
         if (!this.canGenerate()) return;
         this.generating.set(true);
         this.orchestrator.reset();
+        this.gpgSignature.set(null);
+        this.gpgError.set(null);
         try {
             const m = await this.manifestSvc.build({
                 title: this.form.title,
@@ -455,6 +508,27 @@ export class HomePage {
                 files: this.hashedFiles()
             });
             this.manifest.set(m);
+
+            // GPG signing (optional — only if user provided a key)
+            if (this.form.gpgPrivateKey.trim()) {
+                this.gpgSigning.set(true);
+                try {
+                    const result = await this.signingSvc.sign(
+                        m.yaml,
+                        this.form.gpgPrivateKey,
+                        this.form.gpgPassphrase || undefined
+                    );
+                    this.gpgSignature.set(result);
+                } catch (err) {
+                    this.gpgError.set(err instanceof Error ? err.message : String(err));
+                } finally {
+                    this.gpgSigning.set(false);
+                    // Clear sensitive key material immediately
+                    this.form.gpgPrivateKey = '';
+                    this.form.gpgPassphrase = '';
+                }
+            }
+
             queueMicrotask(() => document.querySelector('.result')?.scrollIntoView({ behavior: 'smooth', block: 'start' }));
 
             // Submit fingerprint to all anchors in parallel — non-blocking.
@@ -498,16 +572,44 @@ export class HomePage {
                 files: this.hashedFiles()
             },
             manifest: m,
-            anchors: this.anchors()
+            anchors: this.anchors(),
+            gpgSignature: this.gpgSignature() ?? undefined
         });
         this.certSvc.print(svg);
         this.certSvc.download(`mayday-certificate-${m.sha256.slice(0, 12)}.svg`, svg, 'image/svg+xml');
+    }
+
+    downloadGpgSignature(): void {
+        const gpg = this.gpgSignature();
+        const m = this.manifest();
+        if (!gpg || !m) return;
+        const stem = `CITATION-${m.sha256.slice(0, 12)}`;
+        this.certSvc.download(`${stem}.cff.asc`, gpg.asciiArmor, 'application/pgp-signature');
     }
 
     downloadManifest(): void {
         const m = this.manifest();
         if (!m) return;
         this.certSvc.download(`CITATION-${m.sha256.slice(0, 12)}.cff`, m.yaml, 'text/yaml');
+    }
+
+    downloadReport(): void {
+        const m = this.manifest();
+        if (!m) return;
+        this.reportSvc.generate({
+            input: {
+                title: this.form.title,
+                version: this.form.version,
+                license: this.form.license,
+                authorGivenNames: this.form.authorGivenNames,
+                authorFamilyNames: this.form.authorFamilyNames,
+                authorEmail: this.form.authorEmail,
+                files: this.hashedFiles()
+            },
+            manifest: m,
+            anchors: this.anchors(),
+            gpgSignature: this.gpgSignature() ?? undefined
+        });
     }
 }
 

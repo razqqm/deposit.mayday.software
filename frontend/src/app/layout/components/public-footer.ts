@@ -17,11 +17,11 @@ import { TranslateModule } from '@ngx-translate/core';
                 </div>
 
                 <div class="badges">
-                    <a class="b" href="https://angular.dev" target="_blank" rel="noopener noreferrer" title="Angular 21">Angular</a>
-                    <a class="b" href="https://www.typescriptlang.org" target="_blank" rel="noopener noreferrer" title="TypeScript">TypeScript</a>
-                    <a class="b" href="https://opentimestamps.org" target="_blank" rel="noopener noreferrer" title="OpenTimestamps">OpenTimestamps</a>
-                    <a class="b" href="https://bitcoin.org" target="_blank" rel="noopener noreferrer" title="Bitcoin">Bitcoin</a>
-                    <a class="b" href="https://citation-file-format.github.io" target="_blank" rel="noopener noreferrer" title="Citation File Format">CITATION.cff</a>
+                    <a class="b" href="https://angular.dev" target="_blank" rel="noopener noreferrer" [title]="'footer.badge.angular' | translate">Angular</a>
+                    <a class="b" href="https://www.typescriptlang.org" target="_blank" rel="noopener noreferrer" [title]="'footer.badge.typescript' | translate">TypeScript</a>
+                    <a class="b" href="https://opentimestamps.org" target="_blank" rel="noopener noreferrer" [title]="'footer.badge.opentimestamps' | translate">OpenTimestamps</a>
+                    <a class="b" href="https://bitcoin.org" target="_blank" rel="noopener noreferrer" [title]="'footer.badge.bitcoin' | translate">Bitcoin</a>
+                    <a class="b" href="https://citation-file-format.github.io" target="_blank" rel="noopener noreferrer" [title]="'footer.badge.citation' | translate">CITATION.cff</a>
                 </div>
             </div>
         </footer>

@@ -613,6 +613,119 @@
     color: var(--text-dim);
 }
 
+/* ── GPG section ────────────────────────────────────────── */
+
+.gpg-section {
+    margin-top: 0.5rem;
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
+    padding: 0;
+}
+
+.gpg-section[open] {
+    padding: 0.75rem 1rem 1rem;
+}
+
+.gpg-toggle {
+    padding: 0.65rem 1rem;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--text-mute);
+    cursor: pointer;
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.gpg-toggle::-webkit-details-marker { display: none; }
+
+.gpg-toggle::before {
+    content: '▸';
+    font-size: 0.7rem;
+    transition: transform var(--dur-fast) var(--ease-out);
+}
+
+.gpg-section[open] .gpg-toggle::before {
+    transform: rotate(90deg);
+}
+
+.gpg-optional {
+    font-weight: 400;
+    color: var(--text-dim);
+    font-size: 0.75rem;
+}
+
+.gpg-help {
+    font-size: 0.78rem;
+    color: var(--text-dim);
+    line-height: 1.5;
+    margin: 0 0 0.75rem;
+}
+
+.gpg-key-input {
+    width: 100%;
+    min-height: 80px;
+    padding: 0.6rem 0.75rem;
+    border-radius: var(--r-sm);
+    border: 1px solid var(--border);
+    background: var(--bg-sunk);
+    color: var(--text);
+    font-family: 'JetBrains Mono', 'SF Mono', Menlo, monospace;
+    font-size: 0.72rem;
+    line-height: 1.45;
+    resize: vertical;
+    transition: border-color var(--dur-fast) var(--ease-out);
+}
+
+.gpg-key-input:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-soft);
+}
+
+.gpg-passphrase-label {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    margin-top: 0.6rem;
+}
+
+.gpg-passphrase-label span {
+    font-size: 0.78rem;
+    color: var(--text-mute);
+    font-weight: 500;
+}
+
+.gpg-passphrase-label input {
+    padding: 0.55rem 0.75rem;
+    border-radius: var(--r-sm);
+    border: 1px solid var(--border);
+    background: var(--bg-sunk);
+    color: var(--text);
+    font: inherit;
+    font-size: 0.85rem;
+    transition: border-color var(--dur-fast) var(--ease-out);
+}
+
+.gpg-passphrase-label input:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-soft);
+}
+
+.gpg-skip-hint {
+    font-size: 0.72rem;
+    color: var(--text-dim);
+    margin: 0.6rem 0 0;
+    line-height: 1.45;
+}
+
+.gpg-note {
+    font-size: 0.72rem;
+    font-style: italic;
+}
+
 button.primary {
     align-self: flex-start;
     padding: 0.9rem 1.85rem;

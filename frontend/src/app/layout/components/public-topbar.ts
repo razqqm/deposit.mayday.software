@@ -1,12 +1,13 @@
 import { Component, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { TranslateModule } from '@ngx-translate/core';
 import { LanguageService } from '@/app/shared/services/language.service';
 import { ThemeService } from '@/app/shared/services/theme.service';
 
 @Component({
     selector: 'app-public-topbar',
     standalone: true,
-    imports: [RouterLink],
+    imports: [RouterLink, TranslateModule],
     template: `
         <nav class="topbar" aria-label="Main navigation">
             <div class="topbar-inner">
@@ -18,6 +19,10 @@ import { ThemeService } from '@/app/shared/services/theme.service';
                     </svg>
                     <span class="logo-text">mayday<span class="logo-text-dim">.software</span></span>
                 </a>
+
+                <nav class="nav-links">
+                    <a routerLink="/verify" class="nav-link">{{ 'verify.title' | translate }}</a>
+                </nav>
 
                 <div class="controls">
                     <button (click)="cycleTheme()" class="ctrl-btn"
@@ -106,6 +111,25 @@ import { ThemeService } from '@/app/shared/services/theme.service';
         .logo-text-dim {
             color: var(--text-dim);
             font-weight: 500;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .nav-link {
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: var(--text-mute);
+            text-decoration: none;
+            letter-spacing: 0.01em;
+            transition: color var(--dur-fast) var(--ease-out);
+        }
+
+        .nav-link:hover {
+            color: var(--brand);
         }
 
         .controls {

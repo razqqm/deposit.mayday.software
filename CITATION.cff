@@ -1,0 +1,25 @@
+cff-version: 1.2.0
+type: software
+title: "mayday.software"
+message: "If you use this software, please cite it as below."
+version: "0.1.0"
+date-released: "2026-04-06"
+license: MIT
+url: "https://mayday.software"
+repository-code: "https://github.com/nicenemo/mayday.software"
+abstract: >-
+  MVP service for cryptographic copyright deposit using SHA-256 hashing,
+  RFC 3161 timestamps, and Bitcoin/OpenTimestamps anchoring. All operations
+  run client-side — files never leave the browser.
+authors:
+  - given-names: Ilia
+    family-names: Arestov
+keywords:
+  - copyright
+  - cryptography
+  - bitcoin
+  - opentimestamps
+  - rfc3161
+  - sha256
+  - citation-file-format
+  - angular
