@@ -1,0 +1,111 @@
+/* ============================================================
+   mayday.software — design tokens
+   ─────────────────────────────────────────────────────────────
+   Single source of truth for colour, typography, spacing,
+   motion. Both themes are derived from one brand value via
+   color-mix(in oklch, ...). Add nothing to this file lightly:
+   if a value is not here, it should not be in the codebase.
+   ============================================================ */
+
+:root {
+    /* ── Brand ──────────────────────────────────────────── */
+    --brand:        oklch(0.78 0.16 65);   /* equivalent to ~#f59e0b */
+    --brand-strong: oklch(0.72 0.19 50);
+    --brand-text:   oklch(0.18 0.04 60);   /* always-dark text on brand fills */
+
+    /* ── Light theme surfaces (default) ─────────────────── */
+    --bg:             oklch(0.99 0.005 80);
+    --bg-elev:        oklch(0.97 0.005 80);
+    --bg-sunk:        oklch(0.95 0.008 80);
+    --bg-overlay:     oklch(0.99 0.005 80 / 0.78);
+
+    --text:           oklch(0.18 0.02 260);
+    --text-mute:      oklch(0.42 0.02 260);
+    --text-dim:       oklch(0.60 0.02 260);
+
+    --border:         oklch(0.90 0.005 260);
+    --border-strong:  oklch(0.82 0.008 260);
+
+    /* ── Semantic ───────────────────────────────────────── */
+    --accent:         var(--brand);
+    --accent-soft:    color-mix(in oklch, var(--brand) 12%, var(--bg));
+    --accent-glow:    color-mix(in oklch, var(--brand) 35%, transparent);
+    --success:        oklch(0.66 0.16 145);
+    --success-soft:   color-mix(in oklch, oklch(0.66 0.16 145) 12%, var(--bg));
+    --danger:         oklch(0.60 0.20 25);
+    --danger-soft:    color-mix(in oklch, oklch(0.60 0.20 25) 10%, var(--bg));
+
+    /* ── Typography ─────────────────────────────────────── */
+    --font-display: 'Manrope', 'Inter', system-ui, -apple-system, sans-serif;
+    --font-mono:    'JetBrains Mono', 'SF Mono', Menlo, Consolas, monospace;
+
+    /* ── Radius ─────────────────────────────────────────── */
+    --r-sm:  6px;
+    --r-md:  10px;
+    --r-lg:  16px;
+    --r-xl:  22px;
+
+    /* ── Motion ─────────────────────────────────────────── */
+    --ease-out:    cubic-bezier(0.22, 1, 0.36, 1);
+    --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+    --dur-fast:    140ms;
+    --dur-base:    220ms;
+    --dur-slow:    420ms;
+
+    /* ── Shadows (theme-aware via mix on bg) ────────────── */
+    --shadow-sm: 0 1px 2px color-mix(in oklch, var(--text) 8%, transparent);
+    --shadow-md: 0 4px 16px color-mix(in oklch, var(--text) 10%, transparent);
+    --shadow-lg: 0 16px 40px color-mix(in oklch, var(--text) 14%, transparent);
+    --shadow-glow: 0 0 0 1px var(--accent), 0 12px 36px var(--accent-glow);
+}
+
+/* ── Dark theme overrides ──────────────────────────────── */
+:root.app-dark {
+    --bg:             oklch(0.16 0.018 260);
+    --bg-elev:        oklch(0.20 0.018 260);
+    --bg-sunk:        oklch(0.12 0.018 260);
+    --bg-overlay:     oklch(0.16 0.018 260 / 0.78);
+
+    --text:           oklch(0.97 0.005 80);
+    --text-mute:      oklch(0.72 0.012 260);
+    --text-dim:       oklch(0.52 0.012 260);
+
+    --border:         oklch(0.28 0.012 260);
+    --border-strong:  oklch(0.40 0.012 260);
+
+    --accent-soft:    color-mix(in oklch, var(--brand) 18%, var(--bg));
+    --accent-glow:    color-mix(in oklch, var(--brand) 45%, transparent);
+
+    --success-soft:   color-mix(in oklch, oklch(0.66 0.16 145) 18%, var(--bg));
+    --danger-soft:    color-mix(in oklch, oklch(0.60 0.20 25) 18%, var(--bg));
+
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+    --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.45);
+    --shadow-lg: 0 16px 40px rgba(0, 0, 0, 0.55);
+}
+
+/* ── Hex fallback for ancient browsers ─────────────────── */
+@supports not (color: oklch(0 0 0)) {
+    :root {
+        --bg: #fafafa;
+        --bg-elev: #ffffff;
+        --bg-sunk: #f3f4f6;
+        --text: #0f172a;
+        --text-mute: #475569;
+        --text-dim: #94a3b8;
+        --border: #e5e7eb;
+        --border-strong: #cbd5e1;
+        --brand: #f59e0b;
+        --brand-strong: #f97316;
+    }
+    :root.app-dark {
+        --bg: #0b0f1a;
+        --bg-elev: #131826;
+        --bg-sunk: #080b14;
+        --text: #f8fafc;
+        --text-mute: #cbd5e1;
+        --text-dim: #64748b;
+        --border: #1f2937;
+        --border-strong: #334155;
+    }
+}

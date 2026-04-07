@@ -6,6 +6,7 @@ import { BuiltManifest, ManifestService } from '@/app/shared/services/deposit/ma
 import { CertificateService } from '@/app/shared/services/deposit/certificate.service';
 import { AnchorOrchestratorService } from '@/app/shared/services/deposit/anchors/anchor-orchestrator.service';
 import { AnchorAttestation } from '@/app/shared/services/deposit/anchors/anchor';
+import { RevealDirective } from '@/app/shared/directives/reveal.directive';
 
 interface FormState {
     title: string;
@@ -19,48 +20,104 @@ interface FormState {
 @Component({
     selector: 'app-home',
     standalone: true,
-    imports: [TranslateModule, FormsModule],
+    imports: [TranslateModule, FormsModule, RevealDirective],
     changeDetection: ChangeDetectionStrategy.OnPush,
     template: `
         <section class="hero">
-            <div class="hero-bg" aria-hidden="true">
-                <div class="hero-grid"></div>
-                <div class="hero-orb orb-a"></div>
-                <div class="hero-orb orb-b"></div>
+            <div class="hero-mesh" aria-hidden="true">
+                <div class="mesh mesh-a"></div>
+                <div class="mesh mesh-b"></div>
+                <div class="mesh mesh-c"></div>
             </div>
-            <div class="hero-body">
-                <span class="badge">{{ 'hero.badge' | translate }}</span>
-                <h1 class="title">
-                    <span class="title-line">{{ 'hero.titleLine1' | translate }}</span>
-                    <span class="title-line title-line--struck">
-                        <span class="title-text">{{ 'hero.titleLine2' | translate }}</span>
-                        <svg class="title-strike" viewBox="0 0 600 80" preserveAspectRatio="none" aria-hidden="true">
-                            <defs>
-                                <linearGradient id="strikeGold" x1="0" y1="0" x2="1" y2="0">
-                                    <stop offset="0" stop-color="#fbbf24" stop-opacity="0"/>
-                                    <stop offset="0.15" stop-color="#fbbf24"/>
-                                    <stop offset="0.5" stop-color="#f97316"/>
-                                    <stop offset="0.85" stop-color="#fbbf24"/>
-                                    <stop offset="1" stop-color="#fbbf24" stop-opacity="0"/>
-                                </linearGradient>
-                            </defs>
-                            <!-- Notary stamp circle being canceled -->
-                            <circle class="strike-stamp" cx="300" cy="40" r="34" fill="none" stroke="url(#strikeGold)" stroke-width="2.5"/>
-                            <circle class="strike-stamp-inner" cx="300" cy="40" r="26" fill="none" stroke="url(#strikeGold)" stroke-width="1" stroke-dasharray="3 4"/>
-                            <!-- Cancellation slash that draws across the entire line -->
-                            <path class="strike-slash" d="M 20 62 Q 200 8, 580 22" fill="none" stroke="url(#strikeGold)" stroke-width="5" stroke-linecap="round"/>
-                        </svg>
+
+            <div class="hero-grid">
+                <div class="hero-copy">
+                    <span class="badge">
+                        <span class="badge-dot" aria-hidden="true"></span>
+                        {{ 'hero.badge' | translate }}
                     </span>
-                </h1>
-                <p class="subtitle">{{ 'hero.subtitle' | translate }}</p>
-                <a href="#deposit" class="cta">{{ 'hero.cta' | translate }}</a>
-                <p class="cta-hint">{{ 'hero.ctaHint' | translate }}</p>
+                    <h1 class="title">
+                        <span class="title-line">{{ 'hero.titleLine1' | translate }}</span>
+                        <span class="title-line title-line--struck">
+                            <span class="title-text">{{ 'hero.titleLine2' | translate }}</span>
+                            <svg class="title-strike" viewBox="0 0 600 80" preserveAspectRatio="none" aria-hidden="true">
+                                <defs>
+                                    <linearGradient id="strikeGold" x1="0" y1="0" x2="1" y2="0">
+                                        <stop offset="0" stop-color="#fbbf24" stop-opacity="0"/>
+                                        <stop offset="0.15" stop-color="#fbbf24"/>
+                                        <stop offset="0.5" stop-color="#f97316"/>
+                                        <stop offset="0.85" stop-color="#fbbf24"/>
+                                        <stop offset="1" stop-color="#fbbf24" stop-opacity="0"/>
+                                    </linearGradient>
+                                </defs>
+                                <circle class="strike-stamp" cx="300" cy="40" r="34" fill="none" stroke="url(#strikeGold)" stroke-width="2.5"/>
+                                <circle class="strike-stamp-inner" cx="300" cy="40" r="26" fill="none" stroke="url(#strikeGold)" stroke-width="1" stroke-dasharray="3 4"/>
+                                <path class="strike-slash" d="M 20 62 Q 200 8, 580 22" fill="none" stroke="url(#strikeGold)" stroke-width="5" stroke-linecap="round"/>
+                            </svg>
+                        </span>
+                    </h1>
+                    <p class="subtitle">{{ 'hero.subtitle' | translate }}</p>
+                    <div class="cta-row">
+                        <a href="#deposit" class="cta cta--primary">
+                            {{ 'hero.cta' | translate }}
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+                        </a>
+                    </div>
+                    <p class="cta-hint">{{ 'hero.ctaHint' | translate }}</p>
+                </div>
+
+                <aside class="hero-bento" aria-hidden="true">
+                    <div class="bento bento-hash">
+                        <span class="bento-label">SHA-256 fingerprint</span>
+                        <code class="bento-mono">9c07646d781e43fe<br/>35c63773a6374293<br/>7aa9e79b1b09138e<br/>f3f0c2e4392856d2</code>
+                    </div>
+
+                    <div class="bento bento-anchors">
+                        <span class="bento-label">5 sources of truth</span>
+                        <ul class="bento-list">
+                            <li><span class="dot dot-btc"></span>Bitcoin · OpenTimestamps</li>
+                            <li><span class="dot"></span>FreeTSA · RFC 3161</li>
+                            <li><span class="dot"></span>DigiCert · RFC 3161</li>
+                            <li><span class="dot"></span>Sectigo · RFC 3161</li>
+                            <li><span class="dot dot-mute"></span>eIDAS QTSP · soon</li>
+                        </ul>
+                    </div>
+
+                    <div class="bento bento-layers">
+                        <span class="bento-label">3 proof layers</span>
+                        <div class="layer-grid">
+                            <div class="layer"><span class="layer-key">WHAT</span><span class="layer-val">Hash</span></div>
+                            <div class="layer"><span class="layer-key">WHO</span><span class="layer-val">Author</span></div>
+                            <div class="layer"><span class="layer-key">WHEN</span><span class="layer-val">Anchor</span></div>
+                        </div>
+                    </div>
+
+                    <div class="bento bento-cert">
+                        <span class="bento-label">Certificate</span>
+                        <svg class="bento-cert-svg" viewBox="0 0 200 130" xmlns="http://www.w3.org/2000/svg">
+                            <rect x="6" y="6" width="188" height="118" rx="8" fill="none" stroke="var(--brand)" stroke-width="1.5"/>
+                            <rect x="14" y="14" width="172" height="102" rx="4" fill="none" stroke="var(--brand)" stroke-width="0.5" stroke-opacity="0.5"/>
+                            <line x1="40" y1="36" x2="160" y2="36" stroke="var(--text)" stroke-width="1.2" stroke-opacity="0.4"/>
+                            <line x1="60" y1="48" x2="140" y2="48" stroke="var(--text)" stroke-width="1.2" stroke-opacity="0.25"/>
+                            <circle cx="100" cy="76" r="14" fill="none" stroke="var(--brand)" stroke-width="1.2"/>
+                            <circle cx="100" cy="76" r="10" fill="none" stroke="var(--brand)" stroke-width="0.5" stroke-dasharray="2 2"/>
+                            <line x1="30" y1="104" x2="170" y2="104" stroke="var(--text)" stroke-width="0.6" stroke-opacity="0.3"/>
+                            <line x1="48" y1="111" x2="152" y2="111" stroke="var(--text)" stroke-width="0.6" stroke-opacity="0.2"/>
+                        </svg>
+                    </div>
+                </aside>
             </div>
         </section>
 
-        <section id="deposit" class="deposit">
+        <section id="deposit" class="deposit" appReveal>
+            <header class="section-head">
+                <span class="eyebrow">Step 1</span>
+                <h2 class="section-title">Drop your source — we never see it</h2>
+                <p class="section-sub">Hashing happens entirely in your browser via WebCrypto. The only thing that ever reaches our infrastructure is the 32-byte fingerprint of your manifest.</p>
+            </header>
+
             <div
-                class="drop"
+                class="drop card"
                 [class.drop--active]="dragOver()"
                 [class.drop--has-files]="hashedFiles().length > 0"
                 (dragover)="onDragOver($event)"
@@ -100,7 +157,7 @@ interface FormState {
             </div>
 
             @if (hashedFiles().length > 0) {
-                <div class="form">
+                <div class="form card">
                     <div class="form-row">
                         <label>
                             <span>{{ 'form.author' | translate }}</span>
@@ -135,8 +192,11 @@ interface FormState {
             }
 
             @if (manifest(); as m) {
-                <div class="result">
-                    <h2>{{ 'result.title' | translate }}</h2>
+                <div class="result card">
+                    <header class="result-head">
+                        <span class="eyebrow eyebrow--success">Done</span>
+                        <h2>{{ 'result.title' | translate }}</h2>
+                    </header>
 
                     <div class="proof-grid">
                         <div class="proof">
@@ -210,31 +270,60 @@ interface FormState {
         </section>
 
         <section class="info">
-            <div class="info-block">
-                <h2>{{ 'how.title' | translate }}</h2>
-                <ol class="steps">
-                    <li><strong>{{ 'how.step1Title' | translate }}</strong><span>{{ 'how.step1Desc' | translate }}</span></li>
-                    <li><strong>{{ 'how.step2Title' | translate }}</strong><span>{{ 'how.step2Desc' | translate }}</span></li>
-                    <li><strong>{{ 'how.step3Title' | translate }}</strong><span>{{ 'how.step3Desc' | translate }}</span></li>
-                    <li><strong>{{ 'how.step4Title' | translate }}</strong><span>{{ 'how.step4Desc' | translate }}</span></li>
-                </ol>
-            </div>
+            <div class="info-grid">
+                <div class="info-block info-block--wide card" appReveal>
+                    <span class="eyebrow">How it works</span>
+                    <h2>{{ 'how.title' | translate }}</h2>
+                    <ol class="steps">
+                        <li>
+                            <span class="step-num">1</span>
+                            <div>
+                                <strong>{{ 'how.step1Title' | translate }}</strong>
+                                <span>{{ 'how.step1Desc' | translate }}</span>
+                            </div>
+                        </li>
+                        <li>
+                            <span class="step-num">2</span>
+                            <div>
+                                <strong>{{ 'how.step2Title' | translate }}</strong>
+                                <span>{{ 'how.step2Desc' | translate }}</span>
+                            </div>
+                        </li>
+                        <li>
+                            <span class="step-num">3</span>
+                            <div>
+                                <strong>{{ 'how.step3Title' | translate }}</strong>
+                                <span>{{ 'how.step3Desc' | translate }}</span>
+                            </div>
+                        </li>
+                        <li>
+                            <span class="step-num">4</span>
+                            <div>
+                                <strong>{{ 'how.step4Title' | translate }}</strong>
+                                <span>{{ 'how.step4Desc' | translate }}</span>
+                            </div>
+                        </li>
+                    </ol>
+                </div>
 
-            <div class="info-block">
-                <h2>{{ 'why.title' | translate }}</h2>
-                <p>{{ 'why.p1' | translate }}</p>
-                <p>{{ 'why.p2' | translate }}</p>
-                <p>{{ 'why.p3' | translate }}</p>
-                <p class="callout">{{ 'why.p4' | translate }}</p>
-                <p class="muted-p">{{ 'why.alt' | translate }}</p>
-            </div>
+                <div class="info-block card" appReveal>
+                    <span class="eyebrow">Why Bitcoin</span>
+                    <h2>{{ 'why.title' | translate }}</h2>
+                    <p>{{ 'why.p1' | translate }}</p>
+                    <p>{{ 'why.p2' | translate }}</p>
+                    <p>{{ 'why.p3' | translate }}</p>
+                    <p class="callout">{{ 'why.p4' | translate }}</p>
+                    <p class="muted-p">{{ 'why.alt' | translate }}</p>
+                </div>
 
-            <div class="info-block">
-                <h2>{{ 'legal.title' | translate }}</h2>
-                <p>{{ 'legal.p1' | translate }}</p>
-                <p>{{ 'legal.p2' | translate }}</p>
-                <p>{{ 'legal.p3' | translate }}</p>
-                <p>{{ 'legal.p4' | translate }}</p>
+                <div class="info-block card" appReveal>
+                    <span class="eyebrow">Legal</span>
+                    <h2>{{ 'legal.title' | translate }}</h2>
+                    <p>{{ 'legal.p1' | translate }}</p>
+                    <p>{{ 'legal.p2' | translate }}</p>
+                    <p>{{ 'legal.p3' | translate }}</p>
+                    <p>{{ 'legal.p4' | translate }}</p>
+                </div>
             </div>
         </section>
     `,

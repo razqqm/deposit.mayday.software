@@ -1,6 +1,7 @@
 @use 'primeicons/primeicons.css';
+@use './tokens';
+@use './motion';
 
-/* Global box-sizing */
 *, *::before, *::after {
     box-sizing: border-box;
 }
@@ -10,23 +11,42 @@ html {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     scroll-behavior: smooth;
+    color-scheme: light;
+}
+
+html.app-dark {
+    color-scheme: dark;
 }
 
 body {
     margin: 0;
     padding: 0;
-    font-family: 'Manrope', 'IBM Plex Sans', 'Segoe UI', Roboto, Arial, sans-serif;
-    line-height: 1.5;
+    font-family: var(--font-display);
+    line-height: 1.55;
+    background: var(--bg);
+    color: var(--text);
+    transition: background-color var(--dur-base) var(--ease-out),
+                color var(--dur-base) var(--ease-out);
+    min-height: 100vh;
 }
 
 a {
+    color: inherit;
     text-underline-offset: 0.2em;
 }
 
+::selection {
+    background: var(--accent-soft);
+    color: var(--text);
+}
+
 a:focus-visible,
-button:focus-visible {
-    outline: 2px solid #0ea5e9;
+button:focus-visible,
+input:focus-visible,
+[role='button']:focus-visible {
+    outline: 2px solid var(--accent);
     outline-offset: 2px;
+    border-radius: 4px;
 }
 
 .skip-link {
@@ -34,35 +54,23 @@ button:focus-visible {
     left: 0.5rem;
     top: -100px;
     z-index: 100;
-    background: #ffffff;
-    color: #0f172a;
-    border-radius: 0.4rem;
+    background: var(--bg-elev);
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: var(--r-sm);
     padding: 0.5rem 0.75rem;
     font-weight: 700;
     text-decoration: none;
-    transition: top 0.2s ease;
+    transition: top var(--dur-base) var(--ease-out);
 }
 
 .skip-link:focus {
     top: 0.5rem;
 }
 
-/* Nav link styles for topbar */
-.nav-link-top {
-    color: rgba(255, 255, 255, 0.85);
-    text-decoration: none;
-    font-size: 0.875rem;
-    font-weight: 500;
-    padding: 0.25rem 0.75rem;
-    transition: color 0.2s;
-    white-space: nowrap;
-
-    &:hover {
-        color: #ffffff;
-    }
-}
-
-.nav-link--active {
-    color: #ffffff;
-    font-weight: 700;
+/* View Transition crossfade for theme switch */
+::view-transition-old(root),
+::view-transition-new(root) {
+    animation-duration: 320ms;
+    animation-timing-function: var(--ease-in-out);
 }

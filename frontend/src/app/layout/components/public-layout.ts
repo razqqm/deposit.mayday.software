@@ -10,22 +10,30 @@ import { ThemeService } from '@/app/shared/services/theme.service';
     standalone: true,
     imports: [RouterOutlet, PublicTopbar, PublicFooter],
     template: `
-        <div class="min-h-screen flex flex-col bg-surface-0 dark:bg-surface-950">
+        <div class="shell">
             <a class="skip-link" href="#main-content">Skip to main content</a>
 
-            <header>
-                <app-public-topbar />
-            </header>
+            <app-public-topbar />
 
-            <main id="main-content" class="flex-1 pt-12" role="main" aria-label="Main content">
+            <main id="main-content" role="main" aria-label="Main content">
                 <router-outlet />
             </main>
 
-            <footer>
-                <app-public-footer />
-            </footer>
+            <app-public-footer />
         </div>
-    `
+    `,
+    styles: [`
+        .shell {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+    `]
 })
 export class PublicLayout implements OnInit {
     private readonly lang = inject(LanguageService);

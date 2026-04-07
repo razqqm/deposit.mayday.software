@@ -35,7 +35,7 @@
 
         <!-- Mobile -->
         <meta name="theme-color" content="#0b0f1a" media="(prefers-color-scheme: dark)" />
-        <meta name="theme-color" content="#0b0f1a" media="(prefers-color-scheme: light)" />
+        <meta name="theme-color" content="#fafafa" media="(prefers-color-scheme: light)" />
         <meta name="mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 
@@ -62,9 +62,28 @@
         <link rel="icon" type="image/svg+xml" href="images/favicon.svg" />
         <link rel="apple-touch-icon" href="images/favicon.svg" />
 
-        <!-- Preloader -->
+        <!-- Resolve theme before paint to avoid FOUC -->
+        <script>
+            (function () {
+                try {
+                    var saved = localStorage.getItem('theme');
+                    var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                    var dark = saved === 'dark' || ((saved === 'auto' || !saved) && prefersDark);
+                    if (dark) document.documentElement.classList.add('app-dark');
+                } catch (e) {}
+            })();
+        </script>
+
+        <!-- Preloader (theme-aware via system preference) -->
         <style>
-.layout-preloader-container{width:100%;min-height:100%;background-color:#0b0f1a;position:absolute}.layout-preloader-content{text-align:center;position:absolute;top:50%;left:50%;margin-left:-32px;margin-top:-32px}.layout-preloader{animation:rotator 1.4s linear infinite}@keyframes rotator{0%{transform:rotate(0deg)}100%{transform:rotate(270deg)}}.layout-preloader-path{stroke-dasharray:187;stroke-dashoffset:0;transform-origin:center;animation:dash 1.4s ease-in-out infinite,colors 5.6s ease-in-out infinite}@keyframes colors{0%{stroke:#f59e0b}25%{stroke:#fbbf24}50%{stroke:#f97316}75%{stroke:#fde68a}100%{stroke:#f59e0b}}@keyframes dash{0%{stroke-dashoffset:187}50%{stroke-dashoffset:93.5;transform:rotate(135deg)}100%{stroke-dashoffset:187;transform:rotate(450deg)}}
+            :root { --pre-bg: #fafafa; --pre-stroke: #f59e0b; }
+            html.app-dark { --pre-bg: #0b0f1a; }
+            .layout-preloader-container{width:100%;min-height:100vh;background-color:var(--pre-bg);position:absolute;inset:0}
+            .layout-preloader-content{text-align:center;position:absolute;top:50%;left:50%;margin-left:-32px;margin-top:-32px}
+            .layout-preloader{animation:rotator 1.4s linear infinite}
+            @keyframes rotator{0%{transform:rotate(0deg)}100%{transform:rotate(270deg)}}
+            .layout-preloader-path{stroke:var(--pre-stroke);stroke-dasharray:187;stroke-dashoffset:0;transform-origin:center;animation:dash 1.4s ease-in-out infinite}
+            @keyframes dash{0%{stroke-dashoffset:187}50%{stroke-dashoffset:93.5;transform:rotate(135deg)}100%{stroke-dashoffset:187;transform:rotate(450deg)}}
         </style>
     </head>
     <body>

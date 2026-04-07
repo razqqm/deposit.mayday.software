@@ -1,0 +1,76 @@
+/* ============================================================
+   mayday.software — shared keyframes & motion utilities
+   ============================================================ */
+
+@keyframes fade-up {
+    from {
+        opacity: 0;
+        transform: translateY(14px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fade-in {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+@keyframes mesh-float {
+    0%, 100% { transform: translate3d(0, 0, 0); }
+    50%      { transform: translate3d(2%, -3%, 0); }
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+@keyframes stamp-draw {
+    to { stroke-dashoffset: 0; }
+}
+
+@keyframes stamp-pulse {
+    0%, 100% { opacity: 0.85; }
+    50%      { opacity: 0.45; }
+}
+
+@keyframes slash-draw {
+    to { stroke-dashoffset: 0; }
+}
+
+@keyframes pulse-dot {
+    0%, 100% { opacity: 0.55; transform: scale(1); }
+    50%      { opacity: 1;    transform: scale(1.15); }
+}
+
+/* Reveal-on-scroll utility used by [appReveal] directive */
+[data-reveal] {
+    opacity: 0;
+    transform: translateY(14px);
+    transition:
+        opacity var(--dur-slow) var(--ease-out),
+        transform var(--dur-slow) var(--ease-out);
+}
+
+[data-reveal].is-visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+    [data-reveal] {
+        opacity: 1;
+        transform: none;
+    }
+}
