@@ -1029,10 +1029,6 @@ button.ghost:disabled {
     .info-grid {
         grid-template-columns: 1.1fr 1fr 1fr;
     }
-    .info-block--wide {
-        grid-column: 1 / 2;
-        grid-row: 1 / 3;
-    }
 }
 
 .info-block {
