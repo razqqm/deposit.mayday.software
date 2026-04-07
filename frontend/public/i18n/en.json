@@ -24,7 +24,8 @@
             "whatVal": "Hash",
             "whoVal": "Author",
             "whenVal": "Anchor",
-            "cert": "Certificate"
+            "cert": "Certificate",
+            "certHint": "Click to see example →"
         }
     },
     "drop": {

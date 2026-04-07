@@ -96,8 +96,9 @@ interface FormState {
                         </div>
                     </div>
 
-                    <div class="bento bento-cert">
+                    <div class="bento bento-cert" role="button" tabindex="0" (click)="showExampleCert()" (keydown.enter)="showExampleCert()">
                         <span class="bento-label">{{ 'hero.bento.cert' | translate }}</span>
+                        <span class="bento-cert-hint">{{ 'hero.bento.certHint' | translate }}</span>
                         <svg class="bento-cert-svg" viewBox="0 0 200 130" xmlns="http://www.w3.org/2000/svg">
                             <rect x="6" y="6" width="188" height="118" rx="8" fill="none" stroke="var(--brand)" stroke-width="1.5"/>
                             <rect x="14" y="14" width="172" height="102" rx="4" fill="none" stroke="var(--brand)" stroke-width="0.5" stroke-opacity="0.5"/>
@@ -610,6 +611,42 @@ export class HomePage {
             anchors: this.anchors(),
             gpgSignature: this.gpgSignature() ?? undefined
         });
+    }
+
+    showExampleCert(): void {
+        const svg = this.certSvc.render({
+            input: {
+                title: 'neural-style-transfer',
+                version: '2.4.0',
+                license: 'Apache-2.0',
+                authorGivenNames: 'Alice',
+                authorFamilyNames: 'Nakamoto',
+                authorEmail: 'alice@example.org',
+                files: [
+                    { path: 'src/model.py', size: 42_310, sha256: 'a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2' },
+                    { path: 'src/train.py', size: 18_720, sha256: 'f6e5d4c3b2a1f6e5d4c3b2a1f6e5d4c3b2a1f6e5d4c3b2a1f6e5d4c3b2a1f6e5' },
+                    { path: 'weights/v2.4.bin', size: 3_145_728, sha256: '0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef' },
+                ]
+            },
+            manifest: {
+                yaml: '',
+                sha256: '9c07646d781e43fe35c63773a63742937aa9e79b1b09138ef3f0c2e4392856d2',
+                issuedAt: '2025-03-20T14:32:00Z'
+            },
+            anchors: [
+                { kind: 'opentimestamps', provider: 'opentimestamps-alice', providerLabel: 'Bitcoin · OpenTimestamps', proofExtension: 'ots', status: 'confirmed', anchoredAt: '2025-03-20T15:04:22Z', humanSummary: 'Bitcoin block #890241' },
+                { kind: 'rfc3161', provider: 'freetsa', providerLabel: 'FreeTSA · RFC 3161', proofExtension: 'tsr.freetsa', status: 'confirmed', anchoredAt: '2025-03-20T14:32:08Z' },
+                { kind: 'rfc3161', provider: 'digicert', providerLabel: 'DigiCert · RFC 3161', proofExtension: 'tsr.digicert', status: 'confirmed', anchoredAt: '2025-03-20T14:32:12Z' },
+            ],
+            gpgSignature: {
+                asciiArmor: '',
+                keyId: 'A1B2C3D4E5F6A1B2',
+                fingerprint: 'A1B2C3D4E5F6A1B2C3D4E5F6A1B2C3D4E5F6A1B2',
+                signedAt: new Date('2025-03-20T14:32:00Z'),
+                userId: 'Alice Nakamoto <alice@example.org>'
+            }
+        });
+        this.certSvc.print(svg);
     }
 }
 
