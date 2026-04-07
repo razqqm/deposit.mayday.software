@@ -16,7 +16,7 @@ import { ThemeService } from '@/app/shared/services/theme.service';
 
             <app-public-topbar />
 
-            <main id="main-content" role="main" aria-label="Main content">
+            <main id="main-content" role="main" [attr.aria-label]="'a11y.mainContent' | translate">
                 <router-outlet />
             </main>
 

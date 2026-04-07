@@ -1,4 +1,5 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
 import { BuiltManifest, ManifestInput } from './manifest.service';
 import { AnchorAttestation } from './anchors/anchor';
 import { SigningResult } from './signing.service';
@@ -17,7 +18,10 @@ export interface CertificateData {
  */
 @Injectable({ providedIn: 'root' })
 export class CertificateService {
+    private readonly translate = inject(TranslateService);
+
     render({ input, manifest, anchors, gpgSignature }: CertificateData): string {
+        const t = (key: string): string => this.translate.instant(key);
         const author = [input.authorGivenNames, input.authorFamilyNames].filter(Boolean).join(' ').trim() || '—';
         const issuedDate = new Date(manifest.issuedAt);
         const issuedHuman = issuedDate.toUTCString();
@@ -32,7 +36,7 @@ export class CertificateService {
                 const time = a.anchoredAt ? new Date(a.anchoredAt).toISOString().replace('T', ' ').slice(0, 19) + ' UTC' : '—';
                 return `<text text-anchor="middle" y="${i * 18}" fill="rgba(255,255,255,0.78)" font-size="12">${escapeXml(a.providerLabel)} · ${escapeXml(time)}</text>`;
             }).join('\n    ')
-            : `<text text-anchor="middle" fill="rgba(255,255,255,0.4)" font-size="12">Pending — re-issue this certificate after anchors confirm</text>`;
+            : `<text text-anchor="middle" fill="rgba(255,255,255,0.4)" font-size="12">${escapeXml(t('cert.pendingAnchors'))}</text>`;
 
         return `<?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 950" width="1200" height="950" font-family="'Manrope', 'IBM Plex Sans', 'Helvetica Neue', sans-serif">
@@ -61,9 +65,9 @@ export class CertificateService {
 
   <!-- Header -->
   <g transform="translate(600,140)">
-    <text text-anchor="middle" fill="rgba(245,158,11,0.7)" font-size="14" letter-spacing="6" font-weight="600">MAYDAY · SOFTWARE</text>
-    <text text-anchor="middle" y="60" fill="#fbbf24" font-size="46" letter-spacing="2" font-weight="800">CERTIFICATE OF AUTHORSHIP</text>
-    <text text-anchor="middle" y="92" fill="rgba(255,255,255,0.45)" font-size="13" letter-spacing="3">CRYPTOGRAPHIC COPYRIGHT DEPOSIT</text>
+    <text text-anchor="middle" fill="rgba(245,158,11,0.7)" font-size="14" letter-spacing="6" font-weight="600">${escapeXml(t('cert.brand'))}</text>
+    <text text-anchor="middle" y="60" fill="#fbbf24" font-size="46" letter-spacing="2" font-weight="800">${escapeXml(t('cert.title'))}</text>
+    <text text-anchor="middle" y="92" fill="rgba(255,255,255,0.45)" font-size="13" letter-spacing="3">${escapeXml(t('cert.subtitle'))}</text>
   </g>
 
   <!-- Decorative seal -->
@@ -75,17 +79,17 @@ export class CertificateService {
 
   <!-- Body -->
   <g transform="translate(600,440)">
-    <text text-anchor="middle" fill="rgba(255,255,255,0.45)" font-size="11" letter-spacing="3">THIS CERTIFIES THAT</text>
+    <text text-anchor="middle" fill="rgba(255,255,255,0.45)" font-size="11" letter-spacing="3">${escapeXml(t('cert.certifies'))}</text>
     <text text-anchor="middle" y="38" fill="#ffffff" font-size="32" font-weight="700">${escapeXml(author)}</text>
-    <text text-anchor="middle" y="68" fill="rgba(255,255,255,0.5)" font-size="13" letter-spacing="2">IS THE AUTHOR OF</text>
+    <text text-anchor="middle" y="68" fill="rgba(255,255,255,0.5)" font-size="13" letter-spacing="2">${escapeXml(t('cert.isAuthor'))}</text>
     <text text-anchor="middle" y="104" fill="#ffffff" font-size="22" font-weight="600">${escapeXml(input.title || '—')}</text>
-    <text text-anchor="middle" y="130" fill="rgba(255,255,255,0.55)" font-size="14">version ${escapeXml(input.version || '—')} · ${escapeXml(input.license || 'unspecified license')} · ${fileCount} file(s) · ${totalSizeHuman}</text>
-    ${gpgSignature ? `<text text-anchor="middle" y="160" fill="rgba(245,158,11,0.75)" font-size="12" letter-spacing="1">GPG signed by: ${escapeXml(gpgSignature.userId)} · Key ${escapeXml(gpgSignature.keyId)}</text>` : `<text text-anchor="middle" y="160" fill="rgba(255,255,255,0.3)" font-size="12">Author identity: self-declared (no cryptographic signature)</text>`}
+    <text text-anchor="middle" y="130" fill="rgba(255,255,255,0.55)" font-size="14">v${escapeXml(input.version || '—')} · ${escapeXml(input.license || '—')} · ${fileCount} ${escapeXml(t('cert.files'))} · ${totalSizeHuman}</text>
+    ${gpgSignature ? `<text text-anchor="middle" y="160" fill="rgba(245,158,11,0.75)" font-size="12" letter-spacing="1">${escapeXml(t('cert.gpgSignedBy'))} ${escapeXml(gpgSignature.userId)} · Key ${escapeXml(gpgSignature.keyId)}</text>` : `<text text-anchor="middle" y="160" fill="rgba(255,255,255,0.3)" font-size="12">${escapeXml(t('cert.selfDeclared'))}</text>`}
   </g>
 
   <!-- Hash block -->
   <g transform="translate(600,620)">
-    <text text-anchor="middle" fill="rgba(245,158,11,0.65)" font-size="11" letter-spacing="3">MANIFEST FINGERPRINT (SHA-256)</text>
+    <text text-anchor="middle" fill="rgba(245,158,11,0.65)" font-size="11" letter-spacing="3">${escapeXml(t('cert.fingerprint'))}</text>
     <text text-anchor="middle" y="26" fill="#fbbf24" font-size="16" font-family="'JetBrains Mono','SF Mono',Menlo,monospace" letter-spacing="1">${hashTop}</text>
     <text text-anchor="middle" y="48" fill="#fbbf24" font-size="16" font-family="'JetBrains Mono','SF Mono',Menlo,monospace" letter-spacing="1">${hashBot}</text>
   </g>
@@ -93,7 +97,7 @@ export class CertificateService {
   <!-- Anchors block -->
   <g transform="translate(600,720)">
     <line x1="-380" y1="-12" x2="380" y2="-12" stroke="rgba(245,158,11,0.2)" stroke-width="1"/>
-    <text text-anchor="middle" fill="rgba(245,158,11,0.65)" font-size="11" letter-spacing="3">ANCHORED IN</text>
+    <text text-anchor="middle" fill="rgba(245,158,11,0.65)" font-size="11" letter-spacing="3">${escapeXml(t('cert.anchoredIn'))}</text>
     <g transform="translate(0,22)">
     ${anchorLines}
     </g>
@@ -102,8 +106,8 @@ export class CertificateService {
   <!-- Footer -->
   <g transform="translate(600,860)">
     <line x1="-300" y1="-22" x2="300" y2="-22" stroke="rgba(245,158,11,0.25)" stroke-width="1"/>
-    <text text-anchor="middle" fill="rgba(255,255,255,0.55)" font-size="12">Issued ${escapeXml(issuedHuman)}</text>
-    <text text-anchor="middle" y="20" fill="rgba(255,255,255,0.35)" font-size="11">Verifiable via OpenSSL (RFC 3161) · OpenTimestamps · mayday.software</text>
+    <text text-anchor="middle" fill="rgba(255,255,255,0.55)" font-size="12">${escapeXml(t('cert.issued'))} ${escapeXml(issuedHuman)}</text>
+    <text text-anchor="middle" y="20" fill="rgba(255,255,255,0.35)" font-size="11">${escapeXml(t('cert.verifiableVia'))}</text>
   </g>
 </svg>
 `;
@@ -137,7 +141,7 @@ export class CertificateService {
         const win = window.open('', '_blank', 'width=1200,height=900');
         if (!win) return;
         win.document.open();
-        win.document.write(`<!doctype html><html><head><meta charset="utf-8"><title>Certificate</title>
+        win.document.write(`<!doctype html><html><head><meta charset="utf-8"><title>${escapeXml(this.translate.instant('cert.title'))}</title>
 <style>html,body{margin:0;padding:0;background:#0b0f1a;}svg{display:block;width:100vw;height:auto;max-height:100vh;}@media print{@page{size:landscape;margin:0;}body{background:#fff;}svg{width:100%;height:auto;}}</style>
 </head><body>${svg}<script>window.addEventListener('load',()=>setTimeout(()=>window.print(),200));<\/script></body></html>`);
         win.document.close();

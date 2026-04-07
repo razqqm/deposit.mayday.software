@@ -25,7 +25,7 @@ export class SigningService {
     async sign(manifestYaml: string, armoredPrivateKey: string, passphrase?: string): Promise<SigningResult> {
         let privateKey = await openpgp.readPrivateKey({ armoredKey: armoredPrivateKey });
         if (!privateKey.isDecrypted()) {
-            if (!passphrase) throw new Error('Key is encrypted — passphrase required');
+            if (!passphrase) throw new Error('GPG_PASSPHRASE_REQUIRED');
             privateKey = await openpgp.decryptKey({ privateKey, passphrase });
         }
 

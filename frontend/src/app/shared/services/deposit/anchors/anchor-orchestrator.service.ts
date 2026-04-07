@@ -2,6 +2,7 @@ import { Injectable, signal, Signal } from '@angular/core';
 import { Anchor, AnchorAttestation, AnchorRequest } from './anchor';
 import { Rfc3161Anchor } from './rfc3161.anchor';
 import { OpentimestampsAnchor } from './opentimestamps.anchor';
+import { EthereumAnchor } from './ethereum.anchor';
 
 /**
  * Runs all enabled anchors in parallel and exposes their statuses
@@ -19,7 +20,8 @@ export class AnchorOrchestratorService {
         new Rfc3161Anchor({ id: 'digicert', label: 'DigiCert' }),
         new Rfc3161Anchor({ id: 'sectigo', label: 'Sectigo' }),
         new OpentimestampsAnchor({ id: 'alice', label: 'alice.btc.calendar' }),
-        new OpentimestampsAnchor({ id: 'finney', label: 'finney.eternitywall' })
+        new OpentimestampsAnchor({ id: 'finney', label: 'finney.eternitywall' }),
+        new EthereumAnchor({ id: 'base', label: 'Base (Ethereum L2)', explorerUrl: 'https://basescan.org' })
     ];
 
     /**

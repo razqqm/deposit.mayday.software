@@ -43,7 +43,7 @@ interface CheckResult {
                     </span>
                     <span class="zone-text">
                         <span class="zone-label">{{ 'verify.dropSources' | translate }}</span>
-                        @if (sourceFiles().length) { <span class="zone-file">{{ sourceFiles().length }} files</span> }
+                        @if (sourceFiles().length) { <span class="zone-file">{{ 'drop.filesCount' | translate:{count: sourceFiles().length} }}</span> }
                     </span>
                 </label>
 
@@ -54,7 +54,7 @@ interface CheckResult {
                     </span>
                     <span class="zone-text">
                         <span class="zone-label">{{ 'verify.dropProofs' | translate }}</span>
-                        @if (proofFiles().length) { <span class="zone-file">{{ proofFiles().length }} files</span> }
+                        @if (proofFiles().length) { <span class="zone-file">{{ 'drop.filesCount' | translate:{count: proofFiles().length} }}</span> }
                     </span>
                 </label>
 
@@ -188,7 +188,7 @@ export class VerifyPage {
 
         } catch (err) {
             results.push({
-                label: 'Error',
+                label: this.t('verify.failed'),
                 status: 'failed',
                 details: err instanceof Error ? err.message : String(err)
             });
@@ -300,7 +300,7 @@ export class VerifyPage {
                 results.push({
                     label: `${this.t('verify.checkWhen')} · ${name}`,
                     status: 'skipped',
-                    details: `Unknown proof format: ${name}`
+                    details: this.translate.instant('verify.unknownFormat', { name })
                 });
             }
         }
@@ -314,7 +314,7 @@ export class VerifyPage {
         const label = `${this.t('verify.checkWhen')} · ${filename}`;
 
         if (bytes.length < OTS_MAGIC_LEN + 1 + 1 + 32) {
-            return { label, status: 'failed', details: 'File too short to be a valid .ots' };
+            return { label, status: 'failed', details: this.t('verify.otsTooShort') };
         }
 
         const version = bytes[OTS_MAGIC_LEN];
@@ -343,7 +343,7 @@ export class VerifyPage {
         // MVP: check that it's a valid DER structure
         // Full verification requires OpenSSL or pkijs chain validation
         if (bytes.length < 10 || bytes[0] !== 0x30) {
-            return { label, status: 'failed', details: 'Not a valid DER-encoded TimeStampResp' };
+            return { label, status: 'failed', details: this.t('verify.tsrInvalid') };
         }
 
         return {

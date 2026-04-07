@@ -9,9 +9,9 @@ import { ThemeService } from '@/app/shared/services/theme.service';
     standalone: true,
     imports: [RouterLink, TranslateModule],
     template: `
-        <nav class="topbar" aria-label="Main navigation">
+        <nav class="topbar" [attr.aria-label]="'a11y.mainNav' | translate">
             <div class="topbar-inner">
-                <a routerLink="/" class="logo-link" aria-label="mayday.software home">
+                <a routerLink="/" class="logo-link" [attr.aria-label]="'a11y.homeLink' | translate">
                     <svg class="logo-mark" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                         <circle cx="32" cy="32" r="28" fill="none" stroke="var(--brand)" stroke-width="3.5"/>
                         <path d="M22 28 L32 38 L42 28" fill="none" stroke="var(--brand)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -26,8 +26,8 @@ import { ThemeService } from '@/app/shared/services/theme.service';
 
                 <div class="controls">
                     <button (click)="cycleTheme()" class="ctrl-btn"
-                            [attr.aria-label]="'Theme: ' + theme.mode()"
-                            [title]="'Theme: ' + theme.mode()">
+                            [attr.aria-label]="('a11y.themeLabel' | translate:{mode: theme.mode()})"
+                            [title]="('a11y.themeLabel' | translate:{mode: theme.mode()})">
                         @if (theme.mode() === 'light') {
                             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                                 <circle cx="12" cy="12" r="4"/>
@@ -46,7 +46,7 @@ import { ThemeService } from '@/app/shared/services/theme.service';
                     </button>
                     <span class="separator"></span>
                     <button (click)="switchLanguage()" class="ctrl-btn ctrl-btn--text"
-                            [attr.aria-label]="lang.currentLang() === 'en' ? 'Switch to Russian' : 'Switch to English'">
+                            [attr.aria-label]="'a11y.switchLang' | translate">
                         {{ lang.currentLang() === 'en' ? 'RU' : 'EN' }}
                     </button>
                 </div>

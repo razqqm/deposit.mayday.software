@@ -10,5 +10,8 @@
     "devDependencies": {
         "@cloudflare/workers-types": "^4.20250101.0",
         "wrangler": "^3.99.0"
+    },
+    "dependencies": {
+        "viem": "^2.47.10"
     }
 }

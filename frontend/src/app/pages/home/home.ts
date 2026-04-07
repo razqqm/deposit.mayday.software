@@ -1,13 +1,17 @@
 import { ChangeDetectionStrategy, Component, ElementRef, computed, inject, signal, viewChild } from '@angular/core';
+import { SlicePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { HashedFile, HashingService } from '@/app/shared/services/deposit/hashing.service';
+import { GostHashingService, GostHashedFile } from '@/app/shared/services/deposit/gost-hashing.service';
 import { BuiltManifest, ManifestService } from '@/app/shared/services/deposit/manifest.service';
 import { CertificateService } from '@/app/shared/services/deposit/certificate.service';
 import { AnchorOrchestratorService } from '@/app/shared/services/deposit/anchors/anchor-orchestrator.service';
 import { AnchorAttestation } from '@/app/shared/services/deposit/anchors/anchor';
 import { SigningService, SigningResult } from '@/app/shared/services/deposit/signing.service';
 import { ReportService } from '@/app/shared/services/deposit/report.service';
+import { VersionHistoryService, DepositRecord } from '@/app/shared/services/deposit/version-history.service';
+import { GitService, GitMetadata } from '@/app/shared/services/deposit/git.service';
 import { RevealDirective } from '@/app/shared/directives/reveal.directive';
 
 interface FormState {
@@ -24,7 +28,7 @@ interface FormState {
 @Component({
     selector: 'app-home',
     standalone: true,
-    imports: [TranslateModule, FormsModule, RevealDirective],
+    imports: [TranslateModule, FormsModule, RevealDirective, SlicePipe],
     changeDetection: ChangeDetectionStrategy.OnPush,
     template: `
         <section class="hero">
@@ -83,6 +87,7 @@ interface FormState {
                             <li><span class="dot"></span>{{ 'hero.bento.freetsa' | translate }}</li>
                             <li><span class="dot"></span>{{ 'hero.bento.digicert' | translate }}</li>
                             <li><span class="dot"></span>{{ 'hero.bento.sectigo' | translate }}</li>
+                            <li><span class="dot dot-eth"></span>{{ 'hero.bento.ethereum' | translate }}</li>
                             <li><span class="dot dot-mute"></span>{{ 'hero.bento.eidas' | translate }}</li>
                         </ul>
                     </div>
@@ -155,7 +160,7 @@ interface FormState {
                             <path d="M20 32l8 8 16-16"/>
                         </svg>
                         <p class="drop-title">{{ 'drop.ready' | translate }}</p>
-                        <p class="drop-sub">{{ hashedFiles().length }} files · {{ totalSizeHuman() }}</p>
+                        <p class="drop-sub">{{ 'drop.filesReady' | translate:{count: hashedFiles().length, size: totalSizeHuman()} }}</p>
                         <button type="button" class="link-btn" (click)="clear($event)">{{ 'drop.clear' | translate }}</button>
                     </div>
                 }
@@ -308,6 +313,31 @@ interface FormState {
                         <summary>{{ 'result.manifest' | translate }}</summary>
                         <pre>{{ m.yaml }}</pre>
                     </details>
+
+                    @if (gitMeta(); as git) {
+                        <div class="git-meta">
+                            <h3>{{ 'git.title' | translate }}</h3>
+                            <div class="git-row"><span class="git-key">{{ 'git.branch' | translate }}</span><code>{{ git.branch }}</code></div>
+                            <div class="git-row"><span class="git-key">{{ 'git.commit' | translate }}</span><code>{{ git.headCommit.slice(0, 12) }}</code></div>
+                            @if (git.commitMessage) {
+                                <div class="git-row"><span class="git-key">{{ 'git.message' | translate }}</span><span>{{ git.commitMessage }}</span></div>
+                            }
+                            @if (git.remoteUrl) {
+                                <div class="git-row"><span class="git-key">{{ 'git.remote' | translate }}</span><code>{{ git.remoteUrl }}</code></div>
+                            }
+                            @if (git.commitCount) {
+                                <div class="git-row"><span class="git-key">{{ 'git.commits' | translate }}</span><span>{{ git.commitCount }}</span></div>
+                            }
+                        </div>
+                    }
+
+                    @if (gostDigest()) {
+                        <div class="gost-hash">
+                            <h3>{{ 'gost.title' | translate }}</h3>
+                            <code class="proof-hash">{{ gostDigest() }}</code>
+                            <p class="muted">{{ 'gost.note' | translate }}</p>
+                        </div>
+                    }
                 </div>
             }
         </section>
@@ -369,19 +399,118 @@ interface FormState {
                 </div>
             </div>
         </section>
+
+        <section class="trust" appReveal>
+            <header class="section-head">
+                <span class="eyebrow">{{ 'trust.eyebrow' | translate }}</span>
+                <h2 class="section-title">{{ 'trust.title' | translate }}</h2>
+                <p class="section-sub">{{ 'trust.subtitle' | translate }}</p>
+            </header>
+            <div class="trust-grid">
+                <div class="trust-card card">
+                    <div class="trust-icon">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--brand)" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+                    </div>
+                    <h3>{{ 'trust.wipo' | translate }}</h3>
+                    <p>{{ 'trust.wipoDesc' | translate }}</p>
+                </div>
+                <div class="trust-card card">
+                    <div class="trust-icon">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--brand)" stroke-width="2" stroke-linecap="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+                    </div>
+                    <h3>{{ 'trust.paris' | translate }}</h3>
+                    <p>{{ 'trust.parisDesc' | translate }}</p>
+                </div>
+                <div class="trust-card card">
+                    <div class="trust-icon">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--brand)" stroke-width="2" stroke-linecap="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                    </div>
+                    <h3>{{ 'trust.eidas' | translate }}</h3>
+                    <p>{{ 'trust.eidasDesc' | translate }}</p>
+                </div>
+                <div class="trust-card card">
+                    <div class="trust-icon">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--brand)" stroke-width="2" stroke-linecap="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+                    </div>
+                    <h3>{{ 'trust.privacy' | translate }}</h3>
+                    <p>{{ 'trust.privacyDesc' | translate }}</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="integrations" appReveal>
+            <header class="section-head">
+                <span class="eyebrow">{{ 'integrations.eyebrow' | translate }}</span>
+                <h2 class="section-title">{{ 'integrations.title' | translate }}</h2>
+                <p class="section-sub">{{ 'integrations.subtitle' | translate }}</p>
+            </header>
+            <div class="integrations-grid">
+                <div class="integration-card card">
+                    <h3>{{ 'integrations.api' | translate }}</h3>
+                    <p>{{ 'integrations.apiDesc' | translate }}</p>
+                    <code class="integration-code">POST /api/v1/anchor<br/>{{ '{' }}"digest":"&lt;sha256&gt;"{{ '}' }}</code>
+                </div>
+                <div class="integration-card card">
+                    <h3>{{ 'integrations.zapier' | translate }}</h3>
+                    <p>{{ 'integrations.zapierDesc' | translate }}</p>
+                    <code class="integration-code">POST /api/v1/anchor<br/>X-API-Key: your_key</code>
+                </div>
+                <div class="integration-card card">
+                    <h3>{{ 'integrations.cms' | translate }}</h3>
+                    <p>{{ 'integrations.cmsDesc' | translate }}</p>
+                    <code class="integration-code">&lt;div id="mayday-widget"&gt;&lt;/div&gt;<br/>&lt;script src="https://mayday.software<br/>/api/v1/embed.js"&gt;&lt;/script&gt;</code>
+                </div>
+                <div class="integration-card card">
+                    <h3>{{ 'integrations.whitelabel' | translate }}</h3>
+                    <p>{{ 'integrations.whitelabelDesc' | translate }}</p>
+                    <code class="integration-code">GET /api/v1/info<br/>X-API-Key: your_key</code>
+                </div>
+            </div>
+        </section>
+
+        @if (depositHistory().length > 0) {
+            <section class="history" appReveal>
+                <header class="section-head">
+                    <span class="eyebrow">{{ 'history.eyebrow' | translate }}</span>
+                    <h2 class="section-title">{{ 'history.title' | translate }}</h2>
+                    <p class="section-sub">{{ 'history.subtitle' | translate }}</p>
+                </header>
+                <div class="history-list">
+                    @for (rec of depositHistory(); track rec.digest) {
+                        <div class="history-item card">
+                            <div class="history-meta">
+                                <strong>{{ rec.title }}</strong>
+                                <span class="muted">v{{ rec.version }}</span>
+                                <span class="muted">{{ 'drop.filesCount' | translate:{count: rec.fileCount} }}</span>
+                            </div>
+                            <div class="history-details">
+                                <code class="history-digest">{{ rec.digest.slice(0, 16) }}…</code>
+                                <span class="history-date">{{ rec.timestamp | slice:0:10 }}</span>
+                                <span class="history-anchors">{{ 'anchors.title' | translate }} ({{ rec.anchors.length }})</span>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </section>
+        }
     `,
     styleUrl: './home.scss'
 })
 export class HomePage {
     private readonly hashingSvc = inject(HashingService);
+    private readonly gostSvc = inject(GostHashingService);
     private readonly manifestSvc = inject(ManifestService);
     private readonly certSvc = inject(CertificateService);
     private readonly orchestrator = inject(AnchorOrchestratorService);
     private readonly signingSvc = inject(SigningService);
     private readonly reportSvc = inject(ReportService);
+    private readonly historySvc = inject(VersionHistoryService);
+    private readonly gitSvc = inject(GitService);
+    private readonly translate = inject(TranslateService);
 
     readonly fileInput = viewChild.required<ElementRef<HTMLInputElement>>('fileInput');
     readonly anchors = this.orchestrator.anchors;
+    readonly depositHistory = this.historySvc.history;
 
     readonly dragOver = signal(false);
     readonly hashing = signal(false);
@@ -393,6 +522,9 @@ export class HomePage {
     readonly gpgSignature = signal<SigningResult | null>(null);
     readonly gpgSigning = signal(false);
     readonly gpgError = signal<string | null>(null);
+    readonly gitMeta = signal<GitMetadata | null>(null);
+    readonly gostDigest = signal<string | null>(null);
+    readonly droppedFilesList = signal<File[]>([]);
 
     form: FormState = {
         title: '',
@@ -411,6 +543,10 @@ export class HomePage {
         const m = this.manifest();
         return m ? new Date(m.issuedAt).toUTCString() : '';
     });
+
+    constructor() {
+        void this.historySvc.loadAll();
+    }
 
     openFileDialog(): void {
         this.fileInput().nativeElement.click();
@@ -470,6 +606,9 @@ export class HomePage {
         this.manifest.set(null);
         this.gpgSignature.set(null);
         this.gpgError.set(null);
+        this.gitMeta.set(null);
+        this.gostDigest.set(null);
+        this.droppedFilesList.set([]);
     }
 
     private async processFiles(files: File[]): Promise<void> {
@@ -477,6 +616,7 @@ export class HomePage {
         this.hashing.set(true);
         this.hashedCount.set(0);
         this.totalFiles.set(files.length);
+        this.droppedFilesList.set(files);
         const out: HashedFile[] = [];
         for (const f of files) {
             try {
@@ -490,6 +630,9 @@ export class HomePage {
         this.hashedFiles.set(out);
         this.hashing.set(false);
         this.manifest.set(null);
+
+        // Extract git metadata in background
+        this.gitSvc.extractMetadata(files).then(meta => this.gitMeta.set(meta)).catch(() => {});
     }
 
     async generate(): Promise<void> {
@@ -521,7 +664,8 @@ export class HomePage {
                     );
                     this.gpgSignature.set(result);
                 } catch (err) {
-                    this.gpgError.set(err instanceof Error ? err.message : String(err));
+                    const msg = err instanceof Error ? err.message : String(err);
+                    this.gpgError.set(msg === 'GPG_PASSPHRASE_REQUIRED' ? this.translate.instant('gpg.passphraseRequired') : msg);
                 } finally {
                     this.gpgSigning.set(false);
                     // Clear sensitive key material immediately
@@ -534,7 +678,27 @@ export class HomePage {
 
             // Submit fingerprint to all anchors in parallel — non-blocking.
             const digest = hexToBytes(m.sha256);
-            void this.orchestrator.submit({ manifestHashHex: m.sha256, manifestDigest: digest });
+            void this.orchestrator.submit({ manifestHashHex: m.sha256, manifestDigest: digest }).then(anchors => {
+                // Save to local version history
+                void this.historySvc.save({
+                    digest: m.sha256,
+                    title: this.form.title,
+                    version: this.form.version,
+                    authorName: `${this.form.authorGivenNames} ${this.form.authorFamilyNames}`.trim(),
+                    authorEmail: this.form.authorEmail,
+                    fileCount: this.hashedFiles().length,
+                    totalSize: this.hashedFiles().reduce((s, f) => s + f.size, 0),
+                    timestamp: m.issuedAt,
+                    anchors: anchors.map(a => ({ provider: a.provider, status: a.status, anchoredAt: a.anchoredAt })),
+                    gpgSigned: !!this.gpgSignature(),
+                    gpgKeyId: this.gpgSignature()?.keyId
+                });
+            });
+
+            // Compute GOST Stribog hash in background
+            this.gostSvc.hashString(m.yaml)
+                .then(h => this.gostDigest.set(h))
+                .catch(() => this.gostDigest.set(null));
         } finally {
             this.generating.set(false);
         }

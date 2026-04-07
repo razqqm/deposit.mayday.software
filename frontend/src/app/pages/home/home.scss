@@ -1146,3 +1146,270 @@ button.ghost:disabled {
     font-size: 0.84rem;
     line-height: 1.5;
 }
+
+/* ── Ethereum dot ───────────────────────────────────────── */
+
+.bento-list .dot-eth {
+    background: oklch(0.60 0.18 260);
+    box-shadow: 0 0 8px color-mix(in oklch, oklch(0.60 0.18 260) 60%, transparent);
+}
+
+/* ── Git metadata ───────────────────────────────────────── */
+
+.git-meta {
+    background: var(--bg-sunk);
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
+    padding: 1rem 1.1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+}
+
+.git-meta h3 {
+    margin: 0 0 0.35rem;
+    font-size: 0.74rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
+}
+
+.git-row {
+    display: flex;
+    align-items: baseline;
+    gap: 0.65rem;
+    font-size: 0.82rem;
+    line-height: 1.5;
+}
+
+.git-key {
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--text-mute);
+    min-width: 5.5em;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.git-row code {
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    color: var(--brand);
+    word-break: break-all;
+}
+
+/* ── GOST hash ──────────────────────────────────────────── */
+
+.gost-hash {
+    background: var(--bg-sunk);
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
+    padding: 1rem 1.1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+}
+
+.gost-hash h3 {
+    margin: 0;
+    font-size: 0.74rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
+}
+
+.gost-hash .proof-hash {
+    font-size: 0.72rem;
+}
+
+.gost-hash .muted {
+    font-size: 0.72rem;
+    margin: 0.15rem 0 0;
+}
+
+/* ── Trust section ──────────────────────────────────────── */
+
+.trust {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 2rem 1.25rem 4rem;
+}
+
+.trust-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1rem;
+}
+
+.trust-card {
+    padding: 1.5rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+    transition: transform var(--dur-base) var(--ease-out),
+                box-shadow var(--dur-base) var(--ease-out);
+}
+
+.trust-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.trust-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: var(--r-md);
+    background: var(--accent-soft);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.trust-card h3 {
+    margin: 0;
+    font-size: 0.96rem;
+    font-weight: 700;
+    color: var(--text);
+}
+
+.trust-card p {
+    margin: 0;
+    font-size: 0.84rem;
+    color: var(--text-mute);
+    line-height: 1.55;
+}
+
+/* ── Integrations section ───────────────────────────────── */
+
+.integrations {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 0 1.25rem 4rem;
+}
+
+.integrations-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1rem;
+}
+
+.integration-card {
+    padding: 1.5rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.55rem;
+    transition: transform var(--dur-base) var(--ease-out),
+                box-shadow var(--dur-base) var(--ease-out);
+}
+
+.integration-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.integration-card h3 {
+    margin: 0;
+    font-size: 0.96rem;
+    font-weight: 700;
+    color: var(--text);
+}
+
+.integration-card p {
+    margin: 0;
+    font-size: 0.84rem;
+    color: var(--text-mute);
+    line-height: 1.55;
+}
+
+.integration-code {
+    display: block;
+    margin-top: auto;
+    padding: 0.6rem 0.75rem;
+    background: var(--bg-sunk);
+    border: 1px solid var(--border);
+    border-radius: var(--r-sm);
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    color: var(--brand);
+    line-height: 1.55;
+    word-break: break-all;
+}
+
+/* ── Version history section ────────────────────────────── */
+
+.history {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 0 1.25rem 4rem;
+}
+
+.history-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+}
+
+.history-item {
+    padding: 1rem 1.3rem;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+    transition: border-color var(--dur-fast) var(--ease-out);
+}
+
+.history-item:hover {
+    border-color: var(--border-strong);
+}
+
+.history-meta {
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+    flex: 1;
+    min-width: 0;
+}
+
+.history-meta strong {
+    font-size: 0.92rem;
+    font-weight: 700;
+    color: var(--text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.history-meta .muted {
+    font-size: 0.72rem;
+    white-space: nowrap;
+}
+
+.history-details {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+    flex-shrink: 0;
+}
+
+.history-digest {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: var(--brand);
+}
+
+.history-date {
+    font-size: 0.72rem;
+    color: var(--text-mute);
+}
+
+.history-anchors {
+    font-size: 0.68rem;
+    font-weight: 600;
+    color: var(--success);
+    padding: 0.2rem 0.55rem;
+    border-radius: 999px;
+    background: var(--success-soft);
+    white-space: nowrap;
+}

@@ -56,9 +56,9 @@ export class ReportService {
         if (gpgSignature) {
             whoContent.push(
                 { text: '\n' + t('report.gpgSigned'), fontSize: 9, margin: [0, 6, 0, 2] },
-                { text: `Key ID: ${gpgSignature.keyId}`, fontSize: 8, font: 'Roboto' },
-                { text: `Fingerprint: ${gpgSignature.fingerprint}`, fontSize: 7, font: 'Roboto' },
-                { text: `User ID: ${gpgSignature.userId}`, fontSize: 8 },
+                { text: `${t('gpg.keyId')}: ${gpgSignature.keyId}`, fontSize: 8, font: 'Roboto' },
+                { text: `${t('gpg.fingerprint')}: ${gpgSignature.fingerprint}`, fontSize: 7, font: 'Roboto' },
+                { text: `${t('gpg.userId')}: ${gpgSignature.userId}`, fontSize: 8 },
             );
         } else {
             whoContent.push({ text: '\n' + t('report.gpgSelfDeclared'), fontSize: 9, color: '#888', italics: true, margin: [0, 6, 0, 0] });
@@ -126,7 +126,7 @@ export class ReportService {
                 // --- I. WHAT ---
                 { text: t('report.whatTitle'), fontSize: 14, bold: true, margin: [0, 10, 0, 8] },
                 { text: `${input.title || '—'} · v${input.version || '—'} · ${input.license || '—'}`, fontSize: 10, margin: [0, 0, 0, 4] },
-                { text: `${input.files.length} files · ${formatBytes(totalSize)}`, fontSize: 9, color: '#666', margin: [0, 0, 0, 8] },
+                { text: this.translate.instant('report.filesInfo', { count: input.files.length, size: formatBytes(totalSize) }), fontSize: 9, color: '#666', margin: [0, 0, 0, 8] },
                 {
                     table: {
                         headerRows: 1,

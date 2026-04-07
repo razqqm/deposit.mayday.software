@@ -12,17 +12,17 @@ export class LanguageService {
     readonly currentLang = signal('en');
     private readonly seoByLang: Record<string, { title: string; description: string; ogTitle: string; ogDescription: string; locale: string }> = {
         en: {
-            title: 'mayday.software — Cryptographic Copyright Deposit',
-            description: 'Sign your source code locally and anchor the proof in Bitcoin. Get a verifiable certificate of ownership without notaries.',
-            ogTitle: 'Prove your code is yours — without notaries',
-            ogDescription: 'Cryptographic copyright deposit for source code. Local signing + Bitcoin timestamping = a certificate that anyone can verify forever.',
+            title: 'mayday.software — Prove you created it first',
+            description: 'Hash your files locally. Anchor the proof in Bitcoin, Ethereum, and RFC 3161 timestamping authorities. Download a court-ready certificate. Free, no account, zero-knowledge.',
+            ogTitle: 'Prove you created it first — without notaries',
+            ogDescription: 'Cryptographic copyright deposit: local SHA-256 hashing + Bitcoin, Ethereum & RFC 3161 anchors = legal-grade proof that anyone can verify forever.',
             locale: 'en_US'
         },
         ru: {
-            title: 'mayday.software — Криптографическое депонирование авторских прав',
-            description: 'Подпиши исходный код локально и зафиксируй доказательство в Bitcoin. Сертификат владения без нотариусов.',
-            ogTitle: 'Докажи, что код твой — без нотариусов',
-            ogDescription: 'Криптографическое депонирование исходного кода: локальная подпись и Bitcoin-таймштамп.',
+            title: 'mayday.software — Докажи, что создал первым',
+            description: 'Хешируй файлы локально. Зафиксируй доказательство в Bitcoin, Ethereum и RFC 3161. Скачай сертификат для суда. Бесплатно, без регистрации, zero-knowledge.',
+            ogTitle: 'Докажи, что создал первым — без нотариусов',
+            ogDescription: 'Криптографическое депонирование: SHA-256 в браузере + якоря Bitcoin, Ethereum и RFC 3161 = доказательство судебного уровня.',
             locale: 'ru_RU'
         }
     };
@@ -74,6 +74,7 @@ export class LanguageService {
         this.setMeta('property', 'og:locale', cfg.locale);
         this.setMeta('name', 'twitter:title', cfg.ogTitle);
         this.setMeta('name', 'twitter:description', cfg.ogDescription);
+        this.setMeta('property', 'og:image:alt', cfg.ogTitle);
     }
 
     private setMeta(attr: 'name' | 'property', key: string, value: string): void {

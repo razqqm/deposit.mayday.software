@@ -2,12 +2,12 @@
 <html lang="en">
     <head>
         <meta charset="utf-8" />
-        <title>mayday.software — Cryptographic Copyright Deposit</title>
+        <title>mayday.software — Prove you created it first</title>
         <base href="/" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
         <!-- SEO -->
-        <meta name="description" content="Sign your source code locally and anchor the proof in the Bitcoin blockchain. Get a verifiable certificate of ownership without notaries." />
+        <meta name="description" content="Hash your files locally. Anchor the proof in Bitcoin, Ethereum, and RFC 3161 timestamping authorities. Download a court-ready certificate. Free, no account, zero-knowledge." />
         <meta name="robots" content="index, follow" />
         <link rel="canonical" href="https://mayday.software/" />
         <meta name="referrer" content="strict-origin-when-cross-origin" />
@@ -17,20 +17,20 @@
         <!-- Open Graph -->
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://mayday.software/" />
-        <meta property="og:title" content="Prove your code is yours — without notaries" />
-        <meta property="og:description" content="Cryptographic copyright deposit for source code. Local signing + Bitcoin timestamping = a certificate that anyone can verify forever." />
+        <meta property="og:title" content="Prove you created it first — without notaries" />
+        <meta property="og:description" content="Cryptographic copyright deposit: local SHA-256 hashing + Bitcoin, Ethereum &amp; RFC 3161 anchors = legal-grade proof that anyone can verify forever." />
         <meta property="og:site_name" content="mayday.software" />
         <meta property="og:locale" content="en_US" />
         <meta property="og:locale:alternate" content="ru_RU" />
         <meta property="og:image" content="https://mayday.software/images/og-image.png" />
         <meta property="og:image:width" content="1200" />
         <meta property="og:image:height" content="630" />
-        <meta property="og:image:alt" content="mayday.software — Cryptographic copyright deposit" />
+        <meta property="og:image:alt" content="mayday.software — Prove you created it first" />
 
         <!-- Twitter -->
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="Prove your code is yours — without notaries" />
-        <meta name="twitter:description" content="Cryptographic copyright deposit for source code. Local signing + Bitcoin timestamping." />
+        <meta name="twitter:title" content="Prove you created it first — without notaries" />
+        <meta name="twitter:description" content="Cryptographic copyright deposit: local SHA-256 hashing + Bitcoin, Ethereum &amp; RFC 3161 anchors = legal-grade proof." />
         <meta name="twitter:image" content="https://mayday.software/images/og-image.png" />
 
         <!-- Mobile -->
@@ -39,7 +39,7 @@
         <meta name="mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 
-        <!-- Structured data -->
+        <!-- Structured data (Schema.org) — expanded for SEO like WordProof -->
         <script type="application/ld+json">
             {
                 "@context": "https://schema.org",
@@ -47,14 +47,78 @@
                 "name": "mayday.software",
                 "url": "https://mayday.software/",
                 "applicationCategory": "SecurityApplication",
+                "applicationSubCategory": "Copyright Protection",
                 "operatingSystem": "Any",
+                "browserRequirements": "Requires WebCrypto API",
                 "inLanguage": ["en", "ru"],
-                "description": "Cryptographic copyright deposit for source code. Local signing and Bitcoin timestamping produce a verifiable ownership certificate without notaries.",
+                "description": "Prove you created it first — hash your files locally, anchor the proof in Bitcoin, Ethereum, and RFC 3161 timestamping authorities. Download a court-ready certificate. Free, no account, zero-knowledge.",
+                "featureList": [
+                    "SHA-256 file hashing via WebCrypto",
+                    "GOST R 34.11-2012 Stribog hashing (Russian standard)",
+                    "Bitcoin blockchain anchoring via OpenTimestamps",
+                    "Ethereum L2 (Base) on-chain anchoring",
+                    "RFC 3161 timestamps from multiple TSAs (FreeTSA, DigiCert, Sectigo)",
+                    "GPG/PGP digital signatures via openpgp.js",
+                    "CITATION.cff manifest generation",
+                    "PDF certificate and court report generation",
+                    "Independent verification page",
+                    "REST API for programmatic access",
+                    "CMS embeddable widget"
+                ],
                 "offers": {
                     "@type": "Offer",
                     "price": "0",
-                    "priceCurrency": "USD"
+                    "priceCurrency": "USD",
+                    "availability": "https://schema.org/InStock"
+                },
+                "creator": {
+                    "@type": "Organization",
+                    "name": "mayday.software",
+                    "url": "https://mayday.software/"
+                },
+                "citation": {
+                    "@type": "CreativeWork",
+                    "name": "WIPO Blockchain White Paper for IP Ecosystems",
+                    "url": "https://www.wipo.int/cws/en/blockchain-and-ip.html",
+                    "publisher": {
+                        "@type": "Organization",
+                        "name": "World Intellectual Property Organization (WIPO)"
+                    }
                 }
+            }
+        </script>
+        <script type="application/ld+json">
+            {
+                "@context": "https://schema.org",
+                "@type": "HowTo",
+                "name": "How to create a cryptographic copyright deposit",
+                "description": "Prove authorship and creation date of your source code using blockchain anchoring.",
+                "step": [
+                    {
+                        "@type": "HowToStep",
+                        "position": 1,
+                        "name": "Hash your files",
+                        "text": "Drop your source files into the browser. SHA-256 (and optionally GOST Stribog) hashes are computed locally via WebCrypto — files never leave your machine."
+                    },
+                    {
+                        "@type": "HowToStep",
+                        "position": 2,
+                        "name": "Sign the manifest",
+                        "text": "A CITATION.cff manifest is generated from the hashes. Optionally sign it with your GPG key for cryptographic authorship proof."
+                    },
+                    {
+                        "@type": "HowToStep",
+                        "position": 3,
+                        "name": "Anchor in Bitcoin and Ethereum",
+                        "text": "The manifest fingerprint is submitted to Bitcoin (OpenTimestamps), RFC 3161 TSAs, and Ethereum L2 (Base) — six independent timestamps in parallel."
+                    },
+                    {
+                        "@type": "HowToStep",
+                        "position": 4,
+                        "name": "Download your certificate",
+                        "text": "Get a printable PDF certificate plus raw proof files. Both can be independently verified by anyone with an internet connection."
+                    }
+                ]
             }
         </script>
 

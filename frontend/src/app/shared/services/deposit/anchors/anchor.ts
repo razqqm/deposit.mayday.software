@@ -7,7 +7,7 @@
  * never modify the manifest itself.
  */
 
-export type AnchorKind = 'opentimestamps' | 'rfc3161';
+export type AnchorKind = 'opentimestamps' | 'rfc3161' | 'ethereum';
 
 export type AnchorStatus = 'pending' | 'submitting' | 'confirmed' | 'failed';
 
