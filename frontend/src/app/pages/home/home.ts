@@ -493,6 +493,21 @@ interface FormState {
                 </div>
             </section>
         }
+
+        <section class="faq" appReveal>
+            <header class="section-head">
+                <span class="eyebrow">{{ 'faq.eyebrow' | translate }}</span>
+                <h2 class="section-title">{{ 'faq.title' | translate }}</h2>
+            </header>
+            <div class="faq-list">
+                @for (i of [1,2,3,4,5,6,7,8]; track i) {
+                    <details class="faq-item card">
+                        <summary class="faq-q">{{ 'faq.q' + i | translate }}</summary>
+                        <p class="faq-a">{{ 'faq.a' + i | translate }}</p>
+                    </details>
+                }
+            </div>
+        </section>
     `,
     styleUrl: './home.scss'
 })

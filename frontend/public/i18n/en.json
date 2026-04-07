@@ -261,5 +261,25 @@
             "bitcoin": "Bitcoin",
             "citation": "Citation File Format"
         }
+    },
+    "faq": {
+        "eyebrow": "FAQ",
+        "title": "Frequently asked questions",
+        "q1": "What is mayday.software?",
+        "a1": "A free, open-source tool that creates cryptographic proof of authorship and creation date. It hashes your files in the browser, anchors the fingerprint in Bitcoin, Ethereum, and RFC 3161 timestamping authorities, and gives you a court-ready certificate.",
+        "q2": "Is this legally valid?",
+        "a2": "Yes. Under the Berne Convention, copyright arises automatically — what matters in court is evidence. Bitcoin timestamps qualify as advanced electronic timestamps under eIDAS 910/2014, and the Paris Tribunal accepted them as evidence in March 2025. RFC 3161 timestamps from eIDAS-qualified TSAs carry a legal presumption of accuracy (Art. 41).",
+        "q3": "Do my files leave my computer?",
+        "a3": "No. SHA-256 hashing runs entirely in your browser via WebCrypto. Only the 32-byte fingerprint reaches our infrastructure. We never see, store, or transmit your files.",
+        "q4": "What if mayday.software goes offline?",
+        "a4": "Your proof still works. Bitcoin anchors are verified against any Bitcoin node. RFC 3161 timestamps are verified with OpenSSL against the TSA's public certificate. The proof files are self-contained and independent of this site.",
+        "q5": "How is this different from a notary?",
+        "a5": "A notary certifies a single snapshot in person. mayday.software lets you create unlimited timestamps instantly, for free, with mathematical proof that no one — not even you — can backdate. It complements (not replaces) notarial acts.",
+        "q6": "What file types can I protect?",
+        "a6": "Anything. Source code, designs, documents, images, music, video, datasets — if it's a file, it can be hashed. There are no format or size restrictions.",
+        "q7": "Is this really free?",
+        "a7": "Yes. No accounts, no limits, no hidden fees. The core deposit service is and will remain free. Future premium features (API, white-label, monitoring) will fund the project.",
+        "q8": "Can I use this as evidence in court?",
+        "a8": "The deposit produces multiple independent pieces of evidence: Bitcoin blockchain anchors, RFC 3161 timestamps from certified authorities, and optionally GPG signatures. Combined they form a strong evidentiary chain. Use it alongside other evidence — registered IP, signed commits, notarial acts — for the strongest case."
     }
 }

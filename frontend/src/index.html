@@ -126,6 +126,80 @@
         <link rel="icon" type="image/svg+xml" href="images/favicon.svg" />
         <link rel="apple-touch-icon" href="images/favicon.svg" />
 
+        <!-- FAQ structured data (Schema.org) — enables Google rich results -->
+        <script type="application/ld+json">
+            {
+                "@context": "https://schema.org",
+                "@type": "FAQPage",
+                "mainEntity": [
+                    {
+                        "@type": "Question",
+                        "name": "What is mayday.software?",
+                        "acceptedAnswer": {
+                            "@type": "Answer",
+                            "text": "A free, open-source tool that creates cryptographic proof of authorship and creation date. It hashes your files in the browser, anchors the fingerprint in Bitcoin, Ethereum, and RFC 3161 timestamping authorities, and gives you a court-ready certificate."
+                        }
+                    },
+                    {
+                        "@type": "Question",
+                        "name": "Is this legally valid?",
+                        "acceptedAnswer": {
+                            "@type": "Answer",
+                            "text": "Yes. Under the Berne Convention, copyright arises automatically — what matters in court is evidence. Bitcoin timestamps qualify as advanced electronic timestamps under eIDAS 910/2014, and the Paris Tribunal accepted them as evidence in March 2025. RFC 3161 timestamps from eIDAS-qualified TSAs carry a legal presumption of accuracy (Art. 41)."
+                        }
+                    },
+                    {
+                        "@type": "Question",
+                        "name": "Do my files leave my computer?",
+                        "acceptedAnswer": {
+                            "@type": "Answer",
+                            "text": "No. SHA-256 hashing runs entirely in your browser via WebCrypto. Only the 32-byte fingerprint reaches our infrastructure. We never see, store, or transmit your files."
+                        }
+                    },
+                    {
+                        "@type": "Question",
+                        "name": "What if mayday.software goes offline?",
+                        "acceptedAnswer": {
+                            "@type": "Answer",
+                            "text": "Your proof still works. Bitcoin anchors are verified against any Bitcoin node. RFC 3161 timestamps are verified with OpenSSL against the TSA's public certificate. The proof files are self-contained and independent of this site."
+                        }
+                    },
+                    {
+                        "@type": "Question",
+                        "name": "How is this different from a notary?",
+                        "acceptedAnswer": {
+                            "@type": "Answer",
+                            "text": "A notary certifies a single snapshot in person. mayday.software lets you create unlimited timestamps instantly, for free, with mathematical proof that no one — not even you — can backdate. It complements (not replaces) notarial acts."
+                        }
+                    },
+                    {
+                        "@type": "Question",
+                        "name": "What file types can I protect?",
+                        "acceptedAnswer": {
+                            "@type": "Answer",
+                            "text": "Anything. Source code, designs, documents, images, music, video, datasets — if it's a file, it can be hashed. There are no format or size restrictions."
+                        }
+                    },
+                    {
+                        "@type": "Question",
+                        "name": "Is this really free?",
+                        "acceptedAnswer": {
+                            "@type": "Answer",
+                            "text": "Yes. No accounts, no limits, no hidden fees. The core deposit service is and will remain free. Future premium features (API, white-label, monitoring) will fund the project."
+                        }
+                    },
+                    {
+                        "@type": "Question",
+                        "name": "Can I use this as evidence in court?",
+                        "acceptedAnswer": {
+                            "@type": "Answer",
+                            "text": "The deposit produces multiple independent pieces of evidence: Bitcoin blockchain anchors, RFC 3161 timestamps from certified authorities, and optionally GPG signatures. Combined they form a strong evidentiary chain. Use it alongside other evidence — registered IP, signed commits, notarial acts — for the strongest case."
+                        }
+                    }
+                ]
+            }
+        </script>
+
         <!-- Resolve theme before paint to avoid FOUC -->
         <script>
             (function () {

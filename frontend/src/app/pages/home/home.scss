@@ -1413,3 +1413,64 @@ button.ghost:disabled {
     background: var(--success-soft);
     white-space: nowrap;
 }
+
+/* ── FAQ ──────────────────────────────────────────────── */
+
+.faq {
+    padding: var(--section-py) var(--section-px);
+    max-width: var(--section-max);
+    margin: 0 auto;
+}
+
+.faq-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.faq-item {
+    padding: 0;
+    overflow: hidden;
+}
+
+.faq-q {
+    cursor: pointer;
+    padding: 1rem 1.25rem;
+    font-weight: 600;
+    font-size: 0.88rem;
+    list-style: none;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    transition: color var(--dur-fast) var(--ease-out);
+}
+
+.faq-q::after {
+    content: '+';
+    font-size: 1.2rem;
+    font-weight: 300;
+    color: var(--text-muted);
+    flex-shrink: 0;
+    transition: transform var(--dur-fast) var(--ease-out);
+}
+
+.faq-item[open] .faq-q::after {
+    content: '−';
+}
+
+.faq-q::-webkit-details-marker {
+    display: none;
+}
+
+.faq-q:hover {
+    color: var(--accent);
+}
+
+.faq-a {
+    padding: 0 1.25rem 1rem;
+    font-size: 0.82rem;
+    line-height: 1.65;
+    color: var(--text-muted);
+    margin: 0;
+}
