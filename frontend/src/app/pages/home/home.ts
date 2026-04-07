@@ -64,7 +64,7 @@ interface FormState {
                 </div>
 
                 <aside class="hero-demo" aria-hidden="true">
-                    <div class="demo-card">
+                    <div class="demo-card" (click)="showExampleCert()">
                         <div class="demo-pipeline">
                             <!-- Stage 1: File drops in -->
                             <div class="stage stage-file">
@@ -81,16 +81,7 @@ interface FormState {
                                 </div>
                             </div>
 
-                            <!-- Stage 2: Hashing -->
-                            <div class="stage stage-hash">
-                                <div class="hash-bar">
-                                    <span class="hash-label">SHA-256</span>
-                                    <div class="hash-progress"></div>
-                                </div>
-                                <code class="hash-output"></code>
-                            </div>
-
-                            <!-- Stage 3: Proof layers assemble -->
+                            <!-- Stage 2: Proof layers assemble -->
                             <div class="stage stage-proof">
                                 <div class="proof-chip proof-chip--what">
                                     <span class="pc-key">{{ 'hero.bento.what' | translate }}</span>
@@ -106,62 +97,148 @@ interface FormState {
                                 </div>
                             </div>
 
-                            <!-- Stage 4: Anchor broadcast -->
+                            <!-- Stage 3: Hashing -->
+                            <div class="stage stage-hash">
+                                <div class="hash-bar">
+                                    <span class="hash-label">SHA-256</span>
+                                    <div class="hash-progress"></div>
+                                </div>
+                                <code class="hash-output"></code>
+                            </div>
+
+                            <!-- Stage 4: Anchor broadcast — terminal style -->
                             <div class="stage stage-anchor">
-                                <div class="anch anch--btc">
-                                    <span class="anch-proto">OTS</span>
-                                    <div class="anch-body">
-                                        <span class="anch-name">Bitcoin</span>
-                                        <span class="anch-ep">opentimestamps.org</span>
+                                <div class="anch-term">
+                                    <div class="term-head">
+                                        <span class="term-dot"></span>
+                                        <span class="term-dot"></span>
+                                        <span class="term-dot"></span>
+                                        <span class="term-title">anchoring</span>
                                     </div>
-                                    <div class="anch-track"><div class="anch-bar"></div></div>
-                                    <span class="anch-ok">✓</span>
+                                    <div class="term-body">
+                                        <div class="term-line tl--btc">
+                                            <span class="tl-prompt">$</span>
+                                            <span class="tl-cmd">ots stamp</span>
+                                            <span class="tl-arg">digest.ots</span>
+                                            <div class="tl-resp tl-resp--ok">
+                                                <span class="tl-icon">✓</span> Submitted to Bitcoin calendar
+                                            </div>
+                                        </div>
+                                        <div class="term-line tl--tsa1">
+                                            <span class="tl-prompt">$</span>
+                                            <span class="tl-cmd">curl -X POST</span>
+                                            <span class="tl-arg">freetsa.org/tsr</span>
+                                            <div class="tl-resp tl-resp--ok">
+                                                <span class="tl-icon">✓</span> TSR token received · RFC 3161
+                                            </div>
+                                        </div>
+                                        <div class="term-line tl--tsa2">
+                                            <span class="tl-prompt">$</span>
+                                            <span class="tl-cmd">curl -X POST</span>
+                                            <span class="tl-arg">timestamp.digicert.com</span>
+                                            <div class="tl-resp tl-resp--ok">
+                                                <span class="tl-icon">✓</span> TSR token received · RFC 3161
+                                            </div>
+                                        </div>
+                                        <div class="term-line tl--tsa3">
+                                            <span class="tl-prompt">$</span>
+                                            <span class="tl-cmd">curl -X POST</span>
+                                            <span class="tl-arg">timestamp.sectigo.com</span>
+                                            <div class="tl-resp tl-resp--ok">
+                                                <span class="tl-icon">✓</span> TSR token received · RFC 3161
+                                            </div>
+                                        </div>
+                                        <div class="term-line tl--eth">
+                                            <span class="tl-prompt">$</span>
+                                            <span class="tl-cmd">cast send</span>
+                                            <span class="tl-arg">0x...Proof --rpc base-mainnet</span>
+                                            <div class="tl-resp tl-resp--ok">
+                                                <span class="tl-icon">✓</span> tx confirmed · block #28491037
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="anch anch--tsa1">
-                                    <span class="anch-proto">3161</span>
-                                    <div class="anch-body">
-                                        <span class="anch-name">FreeTSA</span>
-                                        <span class="anch-ep">freetsa.org/tsr</span>
+
+                                <!-- Blockchain chain visualization -->
+                                <div class="chain-vis">
+                                    <div class="chain-label">blockchain</div>
+                                    <div class="chain-blocks">
+                                        <div class="chain-block cb--old">
+                                            <span class="cb-hash">a3f1...08d2</span>
+                                            <span class="cb-n">#28491035</span>
+                                        </div>
+                                        <div class="chain-link"></div>
+                                        <div class="chain-block cb--old2">
+                                            <span class="cb-hash">0e7d...4b19</span>
+                                            <span class="cb-n">#28491036</span>
+                                        </div>
+                                        <div class="chain-link"></div>
+                                        <div class="chain-block cb--new">
+                                            <span class="cb-hash">9c07...4293</span>
+                                            <span class="cb-n">#28491037</span>
+                                            <span class="cb-you">← your hash</span>
+                                        </div>
                                     </div>
-                                    <div class="anch-track"><div class="anch-bar"></div></div>
-                                    <span class="anch-ok">✓</span>
-                                </div>
-                                <div class="anch anch--tsa2">
-                                    <span class="anch-proto">3161</span>
-                                    <div class="anch-body">
-                                        <span class="anch-name">DigiCert</span>
-                                        <span class="anch-ep">timestamp.digicert.com</span>
+                                    <!-- Merkle path -->
+                                    <div class="merkle-path">
+                                        <svg class="merkle-svg" viewBox="0 0 220 68" fill="none">
+                                            <!-- Root -->
+                                            <rect class="mk-node mk-root" x="85" y="2" width="50" height="16" rx="3" />
+                                            <text class="mk-text" x="110" y="13" text-anchor="middle">root</text>
+                                            <!-- Branch lines -->
+                                            <line class="mk-line mk-line--l" x1="95" y1="18" x2="50" y2="32" />
+                                            <line class="mk-line mk-line--r" x1="125" y1="18" x2="170" y2="32" />
+                                            <!-- Mid nodes -->
+                                            <rect class="mk-node mk-mid1" x="25" y="32" width="50" height="14" rx="3" />
+                                            <text class="mk-text" x="50" y="42" text-anchor="middle">h(a+b)</text>
+                                            <rect class="mk-node mk-mid2" x="145" y="32" width="50" height="14" rx="3" />
+                                            <text class="mk-text" x="170" y="42" text-anchor="middle">h(c+d)</text>
+                                            <!-- Leaf lines -->
+                                            <line class="mk-line mk-line--l2" x1="35" y1="46" x2="15" y2="56" />
+                                            <line class="mk-line mk-line--r2" x1="65" y1="46" x2="85" y2="56" />
+                                            <line class="mk-line mk-line--l3" x1="155" y1="46" x2="135" y2="56" />
+                                            <line class="mk-line mk-line--r3" x1="185" y1="46" x2="205" y2="56" />
+                                            <!-- Leaves -->
+                                            <rect class="mk-node mk-leaf" x="2" y="55" width="28" height="12" rx="2" />
+                                            <text class="mk-text mk-text--leaf" x="16" y="64" text-anchor="middle">a</text>
+                                            <rect class="mk-node mk-leaf" x="72" y="55" width="28" height="12" rx="2" />
+                                            <text class="mk-text mk-text--leaf" x="86" y="64" text-anchor="middle">b</text>
+                                            <rect class="mk-node mk-leaf" x="122" y="55" width="28" height="12" rx="2" />
+                                            <text class="mk-text mk-text--leaf" x="136" y="64" text-anchor="middle">c</text>
+                                            <rect class="mk-node mk-leaf mk-leaf--you" x="192" y="55" width="28" height="12" rx="2" />
+                                            <text class="mk-text mk-text--you" x="206" y="64" text-anchor="middle">9c07</text>
+                                        </svg>
                                     </div>
-                                    <div class="anch-track"><div class="anch-bar"></div></div>
-                                    <span class="anch-ok">✓</span>
-                                </div>
-                                <div class="anch anch--tsa3">
-                                    <span class="anch-proto">3161</span>
-                                    <div class="anch-body">
-                                        <span class="anch-name">Sectigo</span>
-                                        <span class="anch-ep">timestamp.sectigo.com</span>
-                                    </div>
-                                    <div class="anch-track"><div class="anch-bar"></div></div>
-                                    <span class="anch-ok">✓</span>
-                                </div>
-                                <div class="anch anch--eth">
-                                    <span class="anch-proto">EVM</span>
-                                    <div class="anch-body">
-                                        <span class="anch-name">Base L2</span>
-                                        <span class="anch-ep">base-mainnet</span>
-                                    </div>
-                                    <div class="anch-track"><div class="anch-bar"></div></div>
-                                    <span class="anch-ok">✓</span>
                                 </div>
                             </div>
 
-                            <!-- Stage 5: Certificate stamp -->
+                            <!-- Stage 5: Certificate ready -->
                             <div class="stage stage-seal">
-                                <svg class="seal-svg" viewBox="0 0 80 80">
-                                    <circle class="seal-outer" cx="40" cy="40" r="34" fill="none" stroke="var(--brand)" stroke-width="2"/>
-                                    <circle class="seal-inner" cx="40" cy="40" r="26" fill="none" stroke="var(--brand)" stroke-width="0.8" stroke-dasharray="3 3"/>
-                                    <path class="seal-check" d="M28 40l8 8 16-18" fill="none" stroke="var(--brand)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-                                </svg>
+                                <div class="cert-card">
+                                    <div class="cert-header">
+                                        <svg class="cert-icon" viewBox="0 0 24 24" fill="none" stroke="var(--brand)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><path d="M9 15l2 2 4-4"/></svg>
+                                        <span class="cert-title">{{ 'hero.bento.cert' | translate }}</span>
+                                        <span class="cert-badge">PDF</span>
+                                    </div>
+                                    <div class="cert-body">
+                                        <div class="cert-row">
+                                            <span class="cert-label">SHA-256</span>
+                                            <code class="cert-val">9c07646d...a6374293</code>
+                                        </div>
+                                        <div class="cert-row">
+                                            <span class="cert-label">Anchors</span>
+                                            <span class="cert-val cert-val--count">5 / 5</span>
+                                        </div>
+                                        <div class="cert-row">
+                                            <span class="cert-label">eIDAS</span>
+                                            <span class="cert-val cert-val--ok">Qualified</span>
+                                        </div>
+                                    </div>
+                                    <div class="cert-dl">
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                                        {{ 'deposit.download' | translate }}
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
