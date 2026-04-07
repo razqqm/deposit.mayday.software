@@ -192,48 +192,32 @@
 
 .title-line:nth-child(1) { animation-delay: 0.08s; }
 
-.title-line--struck {
-    position: relative;
-    padding: 0.15em 0.4em 0.2em;
-    margin-left: -0.4em;
+.title-line--accent {
     animation-delay: 0.22s;
     color: var(--brand);
 }
 
-.title-text {
+.strikethrough-wrap {
     position: relative;
-    z-index: 1;
+    display: inline;
 }
 
-.title-strike {
+.strikethrough-line {
     position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
-    z-index: 2;
-    overflow: visible;
+    left: -0.05em;
+    right: -0.05em;
+    top: 53%;
+    height: 3px;
+    background: var(--brand);
+    border-radius: 2px;
+    transform: scaleX(0);
+    transform-origin: left center;
+    animation: strike-in 0.6s var(--ease-out) 0.9s forwards;
+    opacity: 0.7;
 }
 
-.strike-stamp,
-.strike-stamp-inner {
-    stroke-dasharray: 220;
-    stroke-dashoffset: 220;
-    transform-origin: 300px 40px;
-    animation: stamp-draw 1.2s var(--ease-in-out) 0.9s forwards,
-               stamp-pulse 4s ease-in-out 2.4s infinite;
-}
-
-.strike-stamp-inner {
-    animation: stamp-draw 1.4s var(--ease-in-out) 1s forwards,
-               stamp-pulse 4s ease-in-out 2.4s infinite;
-}
-
-.strike-slash {
-    stroke-dasharray: 700;
-    stroke-dashoffset: 700;
-    filter: drop-shadow(0 0 8px var(--accent-glow));
-    animation: slash-draw 0.55s cubic-bezier(0.7, 0, 0.3, 1) 1.7s forwards;
+@keyframes strike-in {
+    to { transform: scaleX(1); }
 }
 
 .subtitle {
@@ -283,194 +267,445 @@
     animation: fade-up 0.7s var(--ease-out) 0.55s both;
 }
 
-/* ── Hero bento ─────────────────────────────────────────── */
+/* ── Hero Demo — Looping Pipeline ────────────────────────── */
 
-.hero-bento {
-    display: grid;
-    grid-template-columns: 1.1fr 1fr;
-    grid-template-rows: auto auto;
-    gap: 0.85rem;
+/* Full cycle = 8s. Each stage enter → hold → exit. */
+$cycle: 8s;
+
+.hero-demo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
     animation: fade-up 0.8s var(--ease-out) 0.5s both;
 }
 
-@media (max-width: 639px) {
-    .hero-bento {
-        display: flex;
-        gap: 0.85rem;
-        overflow-x: auto;
-        scroll-snap-type: x mandatory;
-        padding-bottom: 0.5rem;
-        margin: 0 -1.25rem;
-        padding-left: 1.25rem;
-        padding-right: 1.25rem;
-    }
-    .hero-bento .bento {
-        flex: 0 0 78%;
-        scroll-snap-align: start;
-    }
-}
-
-.bento {
+.demo-card {
+    width: 100%;
+    max-width: 380px;
     position: relative;
+    padding: 1.5rem 1.25rem;
     background: var(--bg-overlay);
-    backdrop-filter: blur(12px) saturate(160%);
-    -webkit-backdrop-filter: blur(12px) saturate(160%);
+    backdrop-filter: blur(16px) saturate(160%);
+    -webkit-backdrop-filter: blur(16px) saturate(160%);
     border: 1px solid var(--border);
-    border-radius: var(--r-lg);
-    padding: 1.1rem 1.25rem;
+    border-radius: var(--r-xl);
+    box-shadow: var(--shadow-lg);
     overflow: hidden;
-    transition: transform var(--dur-base) var(--ease-out),
-                border-color var(--dur-base) var(--ease-out),
-                box-shadow var(--dur-base) var(--ease-out);
 }
 
-.bento:hover {
-    transform: translateY(-2px);
-    border-color: var(--border-strong);
-    box-shadow: var(--shadow-md);
+/* Flowing light line through the card */
+.demo-flow-line {
+    position: absolute;
+    left: 50%;
+    top: 0;
+    width: 2px;
+    height: 100%;
+    transform: translateX(-50%);
+    background: linear-gradient(
+        180deg,
+        transparent 0%,
+        var(--brand) 15%,
+        var(--brand) 85%,
+        transparent 100%
+    );
+    opacity: 0;
+    animation: flow-pulse $cycle ease-in-out infinite;
+    pointer-events: none;
+    z-index: 0;
 }
 
-.bento-label {
-    display: block;
-    font-size: 0.62rem;
-    font-weight: 700;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--text-dim);
-    margin-bottom: 0.7rem;
+@keyframes flow-pulse {
+    0%, 5%   { opacity: 0; }
+    10%, 90% { opacity: 0.15; }
+    95%, 100% { opacity: 0; }
 }
 
-.bento-hash {
-    grid-column: 1 / 2;
-    grid-row: 1 / 2;
-}
-
-.bento-mono {
-    display: block;
-    font-family: var(--font-mono);
-    font-size: 0.78rem;
-    line-height: 1.55;
-    color: var(--brand);
-    letter-spacing: 0.01em;
-    word-break: break-all;
-}
-
-.bento-anchors {
-    grid-column: 2 / 3;
-    grid-row: 1 / 3;
-}
-
-.bento-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
+.demo-pipeline {
     display: flex;
     flex-direction: column;
-    gap: 0.55rem;
+    align-items: center;
+    gap: 0.6rem;
+    position: relative;
+    z-index: 1;
 }
 
-.bento-list li {
+/* ── Shared stage base ─────────────────────────────────── */
+.stage {
+    width: 100%;
+    opacity: 0;
+    transform: translateY(12px) scale(0.97);
+    animation: stage-cycle $cycle var(--ease-out) infinite both;
+}
+
+/* Each stage enters staggered, holds, then fades */
+@keyframes stage-cycle {
+    0%   { opacity: 0; transform: translateY(16px) scale(0.95); }
+    8%   { opacity: 1; transform: translateY(0) scale(1); }
+    78%  { opacity: 1; transform: translateY(0) scale(1); }
+    90%  { opacity: 0; transform: translateY(-8px) scale(0.97); }
+    100% { opacity: 0; transform: translateY(16px) scale(0.95); }
+}
+
+.stage-file   { animation-delay: 0.0s; }
+.stage-hash   { animation-delay: 0.3s; }
+.stage-proof  { animation-delay: 0.6s; }
+.stage-anchor { animation-delay: 0.9s; }
+.stage-seal   { animation-delay: 1.2s; }
+
+/* ── File stage ────────────────────────────────────────── */
+.stage-file {
     display: flex;
     align-items: center;
-    gap: 0.55rem;
-    font-size: 0.78rem;
-    color: var(--text);
-    font-weight: 500;
+    gap: 0.85rem;
+    padding: 0.8rem 1rem;
+    background: var(--bg-sunk);
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
 }
 
-.bento-list .dot {
-    width: 7px;
-    height: 7px;
-    border-radius: 50%;
-    background: var(--success);
-    box-shadow: 0 0 8px color-mix(in oklch, var(--success) 55%, transparent);
+.file-icon-wrap {
+    position: relative;
+    flex-shrink: 0;
+    width: 36px;
+    height: 44px;
+}
+
+.file-svg {
+    width: 100%;
+    height: 100%;
+}
+
+.file-glow {
+    position: absolute;
+    inset: -6px;
+    border-radius: var(--r-md);
+    background: var(--brand);
+    opacity: 0;
+    filter: blur(14px);
+    animation: glow-throb $cycle ease-in-out infinite;
+}
+
+@keyframes glow-throb {
+    0%, 8%   { opacity: 0; }
+    15%, 40% { opacity: 0.25; }
+    78%      { opacity: 0.15; }
+    90%, 100% { opacity: 0; }
+}
+
+.file-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+    min-width: 0;
+}
+
+.file-name {
+    font-size: 0.82rem;
+    font-weight: 600;
+    font-family: var(--font-mono);
+    color: var(--text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Typing animation for file name */
+.file-name::after {
+    content: 'design_v3.fig';
+    animation: type-files calc($cycle * 3) steps(1) infinite;
+}
+
+@keyframes type-files {
+    0%, 33.3%  { content: 'design_v3.fig'; }
+    33.4%, 66.6% { content: 'thesis_final.pdf'; }
+    66.7%, 100%  { content: 'track_08_master.wav'; }
+}
+
+.file-size {
+    font-size: 0.64rem;
+    color: var(--text-dim);
+}
+
+.file-size::after {
+    content: '4.2 MB';
+    animation: type-sizes calc($cycle * 3) steps(1) infinite;
+}
+
+@keyframes type-sizes {
+    0%, 33.3%  { content: '4.2 MB'; }
+    33.4%, 66.6% { content: '2.8 MB'; }
+    66.7%, 100%  { content: '48.6 MB'; }
+}
+
+/* ── Hash stage ────────────────────────────────────────── */
+.stage-hash {
+    padding: 0.7rem 1rem;
+    background: var(--bg-sunk);
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
+}
+
+.hash-bar {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-bottom: 0.45rem;
+}
+
+.hash-label {
+    font-size: 0.56rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--brand);
+    padding: 0.15rem 0.4rem;
+    background: var(--accent-soft);
+    border-radius: var(--r-sm);
     flex-shrink: 0;
 }
 
-.bento-list .dot-btc {
-    background: oklch(0.74 0.16 60);
-    box-shadow: 0 0 8px color-mix(in oklch, oklch(0.74 0.16 60) 60%, transparent);
+.hash-progress {
+    flex: 1;
+    height: 3px;
+    background: var(--border);
+    border-radius: 2px;
+    position: relative;
+    overflow: hidden;
 }
 
-.bento-list .dot-mute {
-    background: var(--border-strong);
-    box-shadow: none;
+.hash-progress::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--brand);
+    border-radius: 2px;
+    transform-origin: left;
+    animation: progress-fill $cycle var(--ease-out) infinite;
 }
 
-.bento-layers {
-    grid-column: 1 / 2;
-    grid-row: 2 / 3;
+@keyframes progress-fill {
+    0%, 8%   { transform: scaleX(0); }
+    25%      { transform: scaleX(1); }
+    78%, 100% { transform: scaleX(1); }
 }
 
-.layer-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 0.45rem;
+.hash-output {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    color: var(--brand);
+    line-height: 1.5;
+    letter-spacing: 0.015em;
+    word-break: break-all;
+    min-height: 1.3em;
+    overflow: hidden;
 }
 
-.layer {
+.hash-output::after {
+    content: '9c07646d781e43fe35c63773a6374293';
+    animation:
+        type-hash calc($cycle * 3) steps(1) infinite,
+        hash-reveal $cycle var(--ease-out) infinite;
+}
+
+@keyframes type-hash {
+    0%, 33.3%  { content: '9c07646d781e43fe35c63773a6374293'; }
+    33.4%, 66.6% { content: 'a7f2e1bc09d84a3f6519c0e7d2b8f14e'; }
+    66.7%, 100%  { content: '3d8b4f2a1c07e96580dfa3b7c4e21d09'; }
+}
+
+@keyframes hash-reveal {
+    0%, 8%   { max-height: 0; opacity: 0; }
+    25%      { max-height: 3em; opacity: 1; }
+    78%      { max-height: 3em; opacity: 1; }
+    90%, 100% { max-height: 0; opacity: 0; }
+}
+
+/* ── Proof chips stage ─────────────────────────────────── */
+.stage-proof {
+    display: flex;
+    gap: 0.4rem;
+}
+
+.proof-chip {
+    flex: 1;
     display: flex;
     flex-direction: column;
-    gap: 0.15rem;
-    padding: 0.55rem 0.5rem;
+    gap: 0.12rem;
+    padding: 0.5rem 0.45rem;
     background: var(--bg-sunk);
     border-radius: var(--r-sm);
     border: 1px solid var(--border);
+    transform: scale(0.85);
+    animation: chip-bounce $cycle var(--ease-out) infinite;
 }
 
-.layer-key {
-    font-size: 0.55rem;
+.proof-chip--what { animation-delay: 0.7s; }
+.proof-chip--who  { animation-delay: 0.85s; }
+.proof-chip--when { animation-delay: 1.0s; }
+
+@keyframes chip-bounce {
+    0%, 5%  { transform: scale(0.85); opacity: 0; }
+    15%     { transform: scale(1.08); opacity: 1; }
+    22%     { transform: scale(1); }
+    78%     { transform: scale(1); opacity: 1; }
+    90%, 100% { transform: scale(0.85); opacity: 0; }
+}
+
+.pc-key {
+    font-size: 0.48rem;
     font-weight: 700;
     letter-spacing: 0.08em;
     color: var(--accent);
+    text-transform: uppercase;
 }
 
-.layer-val {
-    font-size: 0.72rem;
+.pc-val {
+    font-size: 0.7rem;
     font-weight: 600;
     color: var(--text);
 }
 
-.bento-cert {
-    grid-column: 1 / 3;
-    grid-row: 3 / 4;
-    display: none;
-    cursor: pointer;
-
-    &:hover .bento-cert-svg {
-        transform: scale(1.03);
-    }
-
-    &:hover .bento-cert-hint {
-        color: var(--brand);
-    }
+/* ── Anchor ring stage ─────────────────────────────────── */
+.stage-anchor {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.35rem;
 }
 
-.bento-cert-hint {
-    position: absolute;
-    top: 1.1rem;
-    right: 1.25rem;
-    font-size: 0.62rem;
-    font-weight: 600;
+.anchor-ring {
+    display: flex;
+    gap: 0.7rem;
+    align-items: center;
+    justify-content: center;
+}
+
+.ar-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--success);
+    opacity: 0;
+    transform: scale(0);
+    animation: dot-burst $cycle var(--ease-out) infinite;
+    box-shadow: 0 0 8px color-mix(in oklch, var(--success) 50%, transparent);
+}
+
+.ar-dot--btc  {
+    background: oklch(0.74 0.16 60);
+    box-shadow: 0 0 8px color-mix(in oklch, oklch(0.74 0.16 60) 50%, transparent);
+    animation-delay: 1.0s;
+}
+.ar-dot--tsa1 { animation-delay: 1.15s; }
+.ar-dot--tsa2 { animation-delay: 1.3s; }
+.ar-dot--tsa3 { animation-delay: 1.45s; }
+.ar-dot--eth  {
+    background: oklch(0.55 0.18 260);
+    box-shadow: 0 0 8px color-mix(in oklch, oklch(0.55 0.18 260) 50%, transparent);
+    animation-delay: 1.6s;
+}
+
+@keyframes dot-burst {
+    0%, 10%  { opacity: 0; transform: scale(0); }
+    22%      { opacity: 1; transform: scale(1.4); }
+    28%      { transform: scale(1); }
+    78%      { opacity: 1; transform: scale(1); }
+    90%, 100% { opacity: 0; transform: scale(0); }
+}
+
+.anchor-labels {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.anchor-labels span {
+    font-size: 0.6rem;
+    font-weight: 500;
     color: var(--text-dim);
-    transition: color var(--dur-fast) var(--ease-out);
+    letter-spacing: 0.02em;
 }
 
-@media (min-width: 1100px) {
-    .hero-bento {
-        grid-template-rows: auto auto auto;
-    }
-    .bento-cert {
-        display: block;
-    }
+/* ── Seal stage ────────────────────────────────────────── */
+.stage-seal {
+    display: flex;
+    justify-content: center;
+    padding: 0.3rem;
 }
 
-.bento-cert-svg {
-    width: 100%;
-    height: auto;
-    display: block;
-    max-height: 110px;
-    transition: transform var(--dur-base) var(--ease-out);
+.seal-svg {
+    width: 64px;
+    height: 64px;
+}
+
+.seal-outer {
+    stroke-dasharray: 220;
+    stroke-dashoffset: 220;
+    animation: seal-draw $cycle var(--ease-in-out) infinite;
+}
+
+.seal-inner {
+    stroke-dasharray: 170;
+    stroke-dashoffset: 170;
+    animation: seal-draw $cycle var(--ease-in-out) 0.15s infinite;
+}
+
+@keyframes seal-draw {
+    0%, 15%  { stroke-dashoffset: 220; }
+    35%      { stroke-dashoffset: 0; }
+    78%      { stroke-dashoffset: 0; }
+    92%, 100% { stroke-dashoffset: 220; }
+}
+
+.seal-check {
+    stroke-dasharray: 50;
+    stroke-dashoffset: 50;
+    animation: check-draw $cycle var(--ease-out) infinite;
+}
+
+@keyframes check-draw {
+    0%, 32%  { stroke-dashoffset: 50; }
+    42%      { stroke-dashoffset: 0; }
+    78%      { stroke-dashoffset: 0; }
+    90%, 100% { stroke-dashoffset: 50; }
+}
+
+/* ── Ambient glow on card ──────────────────────────────── */
+.demo-card::before {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    border-radius: inherit;
+    background: conic-gradient(
+        from 0deg,
+        transparent 0deg,
+        var(--brand) 60deg,
+        transparent 120deg,
+        transparent 240deg,
+        var(--brand) 300deg,
+        transparent 360deg
+    );
+    opacity: 0;
+    z-index: -1;
+    animation: border-spin $cycle linear infinite;
+    filter: blur(6px);
+}
+
+@keyframes border-spin {
+    0%, 5%   { opacity: 0; transform: rotate(0deg); }
+    30%, 80% { opacity: 0.35; }
+    90%, 100% { opacity: 0; }
+    to       { transform: rotate(360deg); }
+}
+
+/* ── Mobile ────────────────────────────────────────────── */
+@media (max-width: 639px) {
+    .demo-card {
+        max-width: 100%;
+        padding: 1.1rem 0.9rem;
+    }
 }
 
 /* ── Deposit ────────────────────────────────────────────── */
@@ -1141,13 +1376,6 @@ button.ghost:disabled {
     color: var(--text-mute);
     font-size: 0.84rem;
     line-height: 1.5;
-}
-
-/* ── Ethereum dot ───────────────────────────────────────── */
-
-.bento-list .dot-eth {
-    background: oklch(0.60 0.18 260);
-    box-shadow: 0 0 8px color-mix(in oklch, oklch(0.60 0.18 260) 60%, transparent);
 }
 
 /* ── Git metadata ───────────────────────────────────────── */

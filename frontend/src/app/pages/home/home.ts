@@ -46,22 +46,11 @@ interface FormState {
                     </span>
                     <h1 class="title">
                         <span class="title-line">{{ 'hero.titleLine1' | translate }}</span>
-                        <span class="title-line title-line--struck">
-                            <span class="title-text">{{ 'hero.titleLine2' | translate }}</span>
-                            <svg class="title-strike" viewBox="0 0 600 80" preserveAspectRatio="none" aria-hidden="true">
-                                <defs>
-                                    <linearGradient id="strikeGold" x1="0" y1="0" x2="1" y2="0">
-                                        <stop offset="0" stop-color="#fbbf24" stop-opacity="0"/>
-                                        <stop offset="0.15" stop-color="#fbbf24"/>
-                                        <stop offset="0.5" stop-color="#f97316"/>
-                                        <stop offset="0.85" stop-color="#fbbf24"/>
-                                        <stop offset="1" stop-color="#fbbf24" stop-opacity="0"/>
-                                    </linearGradient>
-                                </defs>
-                                <circle class="strike-stamp" cx="300" cy="40" r="34" fill="none" stroke="url(#strikeGold)" stroke-width="2.5"/>
-                                <circle class="strike-stamp-inner" cx="300" cy="40" r="26" fill="none" stroke="url(#strikeGold)" stroke-width="1" stroke-dasharray="3 4"/>
-                                <path class="strike-slash" d="M 20 62 Q 200 8, 580 22" fill="none" stroke="url(#strikeGold)" stroke-width="5" stroke-linecap="round"/>
-                            </svg>
+                        <span class="title-line title-line--accent">
+                            <span class="strikethrough-wrap">
+                                {{ 'hero.titleLine2' | translate }}
+                                <span class="strikethrough-line" aria-hidden="true"></span>
+                            </span>
                         </span>
                     </h1>
                     <p class="subtitle">{{ 'hero.subtitle' | translate }}</p>
@@ -74,46 +63,79 @@ interface FormState {
                     <p class="cta-hint">{{ 'hero.ctaHint' | translate }}</p>
                 </div>
 
-                <aside class="hero-bento" aria-hidden="true">
-                    <div class="bento bento-hash">
-                        <span class="bento-label">{{ 'hero.bento.sha256' | translate }}</span>
-                        <code class="bento-mono">9c07646d781e43fe<br/>35c63773a6374293<br/>7aa9e79b1b09138e<br/>f3f0c2e4392856d2</code>
-                    </div>
+                <aside class="hero-demo" aria-hidden="true">
+                    <div class="demo-card">
+                        <div class="demo-pipeline">
+                            <!-- Stage 1: File drops in -->
+                            <div class="stage stage-file">
+                                <div class="file-icon-wrap">
+                                    <svg class="file-svg" viewBox="0 0 40 48" fill="none">
+                                        <path d="M4 6a4 4 0 0 1 4-4h16l12 12v28a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4V6z" fill="var(--bg-sunk)" stroke="var(--border-strong)" stroke-width="1.5"/>
+                                        <path d="M24 2v12h12" stroke="var(--border-strong)" stroke-width="1.5" fill="none"/>
+                                    </svg>
+                                    <div class="file-glow"></div>
+                                </div>
+                                <div class="file-info">
+                                    <span class="file-name"></span>
+                                    <span class="file-size"></span>
+                                </div>
+                            </div>
 
-                    <div class="bento bento-anchors">
-                        <span class="bento-label">{{ 'hero.bento.sources' | translate }}</span>
-                        <ul class="bento-list">
-                            <li><span class="dot dot-btc"></span>{{ 'hero.bento.bitcoin' | translate }}</li>
-                            <li><span class="dot"></span>{{ 'hero.bento.freetsa' | translate }}</li>
-                            <li><span class="dot"></span>{{ 'hero.bento.digicert' | translate }}</li>
-                            <li><span class="dot"></span>{{ 'hero.bento.sectigo' | translate }}</li>
-                            <li><span class="dot dot-eth"></span>{{ 'hero.bento.ethereum' | translate }}</li>
-                            <li><span class="dot dot-mute"></span>{{ 'hero.bento.eidas' | translate }}</li>
-                        </ul>
-                    </div>
+                            <!-- Stage 2: Hashing -->
+                            <div class="stage stage-hash">
+                                <div class="hash-bar">
+                                    <span class="hash-label">SHA-256</span>
+                                    <div class="hash-progress"></div>
+                                </div>
+                                <code class="hash-output"></code>
+                            </div>
 
-                    <div class="bento bento-layers">
-                        <span class="bento-label">{{ 'hero.bento.layers' | translate }}</span>
-                        <div class="layer-grid">
-                            <div class="layer"><span class="layer-key">{{ 'hero.bento.what' | translate }}</span><span class="layer-val">{{ 'hero.bento.whatVal' | translate }}</span></div>
-                            <div class="layer"><span class="layer-key">{{ 'hero.bento.who' | translate }}</span><span class="layer-val">{{ 'hero.bento.whoVal' | translate }}</span></div>
-                            <div class="layer"><span class="layer-key">{{ 'hero.bento.when' | translate }}</span><span class="layer-val">{{ 'hero.bento.whenVal' | translate }}</span></div>
+                            <!-- Stage 3: Proof layers assemble -->
+                            <div class="stage stage-proof">
+                                <div class="proof-chip proof-chip--what">
+                                    <span class="pc-key">{{ 'hero.bento.what' | translate }}</span>
+                                    <span class="pc-val">{{ 'hero.bento.whatVal' | translate }}</span>
+                                </div>
+                                <div class="proof-chip proof-chip--who">
+                                    <span class="pc-key">{{ 'hero.bento.who' | translate }}</span>
+                                    <span class="pc-val">{{ 'hero.bento.whoVal' | translate }}</span>
+                                </div>
+                                <div class="proof-chip proof-chip--when">
+                                    <span class="pc-key">{{ 'hero.bento.when' | translate }}</span>
+                                    <span class="pc-val">{{ 'hero.bento.whenVal' | translate }}</span>
+                                </div>
+                            </div>
+
+                            <!-- Stage 4: Anchor broadcast -->
+                            <div class="stage stage-anchor">
+                                <div class="anchor-ring">
+                                    <span class="ar-dot ar-dot--btc"></span>
+                                    <span class="ar-dot ar-dot--tsa1"></span>
+                                    <span class="ar-dot ar-dot--tsa2"></span>
+                                    <span class="ar-dot ar-dot--tsa3"></span>
+                                    <span class="ar-dot ar-dot--eth"></span>
+                                </div>
+                                <div class="anchor-labels">
+                                    <span>Bitcoin</span>
+                                    <span>FreeTSA</span>
+                                    <span>DigiCert</span>
+                                    <span>Sectigo</span>
+                                    <span>Base L2</span>
+                                </div>
+                            </div>
+
+                            <!-- Stage 5: Certificate stamp -->
+                            <div class="stage stage-seal">
+                                <svg class="seal-svg" viewBox="0 0 80 80">
+                                    <circle class="seal-outer" cx="40" cy="40" r="34" fill="none" stroke="var(--brand)" stroke-width="2"/>
+                                    <circle class="seal-inner" cx="40" cy="40" r="26" fill="none" stroke="var(--brand)" stroke-width="0.8" stroke-dasharray="3 3"/>
+                                    <path class="seal-check" d="M28 40l8 8 16-18" fill="none" stroke="var(--brand)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </div>
                         </div>
-                    </div>
 
-                    <div class="bento bento-cert" role="button" tabindex="0" (click)="showExampleCert()" (keydown.enter)="showExampleCert()">
-                        <span class="bento-label">{{ 'hero.bento.cert' | translate }}</span>
-                        <span class="bento-cert-hint">{{ 'hero.bento.certHint' | translate }}</span>
-                        <svg class="bento-cert-svg" viewBox="0 0 200 130" xmlns="http://www.w3.org/2000/svg">
-                            <rect x="6" y="6" width="188" height="118" rx="8" fill="none" stroke="var(--brand)" stroke-width="1.5"/>
-                            <rect x="14" y="14" width="172" height="102" rx="4" fill="none" stroke="var(--brand)" stroke-width="0.5" stroke-opacity="0.5"/>
-                            <line x1="40" y1="36" x2="160" y2="36" stroke="var(--text)" stroke-width="1.2" stroke-opacity="0.4"/>
-                            <line x1="60" y1="48" x2="140" y2="48" stroke="var(--text)" stroke-width="1.2" stroke-opacity="0.25"/>
-                            <circle cx="100" cy="76" r="14" fill="none" stroke="var(--brand)" stroke-width="1.2"/>
-                            <circle cx="100" cy="76" r="10" fill="none" stroke="var(--brand)" stroke-width="0.5" stroke-dasharray="2 2"/>
-                            <line x1="30" y1="104" x2="170" y2="104" stroke="var(--text)" stroke-width="0.6" stroke-opacity="0.3"/>
-                            <line x1="48" y1="111" x2="152" y2="111" stroke="var(--text)" stroke-width="0.6" stroke-opacity="0.2"/>
-                        </svg>
+                        <!-- Connector line that pulses through the pipeline -->
+                        <div class="demo-flow-line"></div>
                     </div>
                 </aside>
             </div>
