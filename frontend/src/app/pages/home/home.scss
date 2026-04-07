@@ -196,12 +196,8 @@
     position: relative;
     padding: 0.15em 0.4em 0.2em;
     margin-left: -0.4em;
-    color: var(--text);
     animation-delay: 0.22s;
-    background: linear-gradient(120deg, var(--text) 30%, var(--brand) 100%);
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
+    color: var(--brand);
 }
 
 .title-text {
