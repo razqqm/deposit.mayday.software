@@ -398,7 +398,7 @@ $cycle: 18s;
     100% { opacity: 0; transform: translateY(16px) scale(0.95); }
 }
 
-.stage-file   { animation-delay: 0.0s; }
+.stage-file   { animation-delay: 0s; }
 .stage-hash   { animation-delay: 0.5s; }
 .stage-sign   { animation-delay: 0.9s; }
 .stage-proof  { animation-delay: 1.2s; }
@@ -435,11 +435,11 @@ $cycle: 18s;
     animation: stage-cycle $cycle var(--ease-out) infinite both;
 }
 
-.sc-1  { animation-delay: 0.28s; }
-.sc-2  { animation-delay: 0.72s; }
-.sc-2b { animation-delay: 1.08s; }
-.sc-3  { animation-delay: 1.42s; }
-.sc-4  { animation-delay: 1.82s; }
+.sc-1  { animation-delay: 0.25s; }
+.sc-2  { animation-delay: 0.7s; }
+.sc-2b { animation-delay: 1.05s; }
+.sc-3  { animation-delay: 1.4s; }
+.sc-4  { animation-delay: 1.85s; }
 
 .stage-conn::after {
     content: '';
@@ -828,7 +828,7 @@ $full-loop: calc($cycle * $variants);
     animation:
         stage-cycle $cycle var(--ease-out) infinite both,
         stage-glow $cycle var(--ease-out) infinite;
-    animation-delay: 0.6s;
+    animation-delay: 0.5s;
 }
 
 .hash-bar {
@@ -1160,17 +1160,17 @@ $full-loop: calc($cycle * $variants);
 
 @keyframes sign-time-tick {
     0%, 10%  { content: '14:32:04'; }
-    14%      { content: '14:32:05'; }
-    18%      { content: '14:32:06'; }
-    24%      { content: '14:32:07'; }
-    26%, 78% { content: '14:32:07 ✓'; }
+    13%      { content: '14:32:05'; }
+    16%      { content: '14:32:06'; }
+    20%      { content: '14:32:07'; }
+    24%, 78% { content: '✓ 14:32:07'; }
     90%, 100% { content: '14:32:04'; }
 }
 
 @keyframes sign-time-vis {
     0%, 8%   { opacity: 0; color: var(--text-dim); }
     14%      { opacity: 1; color: var(--text-dim); }
-    28%      { color: oklch(0.72 0.17 150); }
+    24%      { color: oklch(0.72 0.17 150); }
     78%      { opacity: 1; color: oklch(0.72 0.17 150); }
     90%, 100% { opacity: 0; color: var(--text-dim); }
 }
@@ -1197,9 +1197,9 @@ $full-loop: calc($cycle * $variants);
     animation: chip-bounce $cycle var(--ease-out) infinite;
 }
 
-.proof-chip--what { animation-delay: 1.35s; }
-.proof-chip--who  { animation-delay: 1.55s; }
-.proof-chip--when { animation-delay: 1.75s; }
+.proof-chip--what { animation-delay: 1.3s; }
+.proof-chip--who  { animation-delay: 1.5s; }
+.proof-chip--when { animation-delay: 1.7s; }
 
 @keyframes chip-bounce {
     0%, 5%  { transform: scale(0.85); opacity: 0; }
@@ -1549,11 +1549,11 @@ $full-loop: calc($cycle * $variants);
     animation: ca-enter $cycle var(--ease-out) infinite;
 }
 
-.ca--btc  { animation-delay: 4.0s; }
-.ca--tsa1 { animation-delay: 4.15s; }
-.ca--tsa2 { animation-delay: 4.3s; }
-.ca--tsa3 { animation-delay: 4.45s; }
-.ca--eth  { animation-delay: 4.6s; }
+.ca--btc  { animation-delay: 3.3s; }
+.ca--tsa1 { animation-delay: 3.9s; }
+.ca--tsa2 { animation-delay: 4.5s; }
+.ca--tsa3 { animation-delay: 5.1s; }
+.ca--eth  { animation-delay: 5.7s; }
 
 @keyframes ca-enter {
     0%, 6%   { opacity: 0; transform: translateX(-6px); }
@@ -1618,18 +1618,20 @@ $full-loop: calc($cycle * $variants);
     cursor: pointer;
 }
 
-/* Verified seal — in cert header, centered */
+/* Verified seal — centered stamp on cert card */
 .cert-seal {
-    width: 22px;
-    height: 22px;
+    position: absolute;
+    inset: 0;
+    margin: auto;
+    width: 36px;
+    height: 36px;
     color: oklch(0.72 0.17 150);
     opacity: 0;
     transform: scale(0) rotate(-20deg);
     animation: seal-stamp $cycle var(--ease-out) infinite;
-    animation-delay: 5.0s;
-    filter: drop-shadow(0 0 4px oklch(0.72 0.17 150 / 0.5));
-    flex-shrink: 0;
-    margin-left: auto;
+    animation-delay: 6.0s;
+    z-index: 2;
+    filter: drop-shadow(0 0 8px oklch(0.72 0.17 150 / 0.6));
 }
 
 .cert-seal svg {
@@ -1639,8 +1641,8 @@ $full-loop: calc($cycle * $variants);
 
 @keyframes seal-stamp {
     0%, 8%   { opacity: 0; transform: scale(0) rotate(-20deg); }
-    18%      { opacity: 1; transform: scale(1.25) rotate(4deg); }
-    24%      { transform: scale(1) rotate(0deg); }
+    16%      { opacity: 1; transform: scale(1.4) rotate(5deg); }
+    22%      { transform: scale(1) rotate(0deg); }
     78%      { opacity: 1; }
     90%, 100% { opacity: 0; transform: scale(0.8); }
 }
@@ -1657,7 +1659,7 @@ $full-loop: calc($cycle * $variants);
     margin-top: 0.5rem;
     opacity: 0;
     animation: chain-enter $cycle var(--ease-out) infinite;
-    animation-delay: 5.0s;
+    animation-delay: 4.5s;
     overflow-x: auto;
 }
 
@@ -1729,7 +1731,7 @@ $full-loop: calc($cycle * $variants);
     white-space: nowrap;
     opacity: 0;
     animation: cb-you-pop $cycle var(--ease-out) infinite;
-    animation-delay: 5.6s;
+    animation-delay: 5.0s;
 }
 
 @keyframes cb-you-pop {
@@ -1751,13 +1753,13 @@ $full-loop: calc($cycle * $variants);
 .chain-link--after {
     opacity: 0;
     animation: future-link $cycle var(--ease-out) infinite;
-    animation-delay: 6.0s;
+    animation-delay: 5.5s;
 }
 
 .chain-link--after2 {
     opacity: 0;
     animation: future-link $cycle var(--ease-out) infinite;
-    animation-delay: 6.4s;
+    animation-delay: 5.9s;
 }
 
 .cb--future,
@@ -1767,8 +1769,8 @@ $full-loop: calc($cycle * $variants);
     animation: future-block $cycle var(--ease-out) infinite;
 }
 
-.cb--future  { animation-delay: 6.2s; }
-.cb--future2 { animation-delay: 6.6s; }
+.cb--future  { animation-delay: 5.7s; }
+.cb--future2 { animation-delay: 6.1s; }
 
 .cb--future .cb-hash,
 .cb--future2 .cb-hash {
