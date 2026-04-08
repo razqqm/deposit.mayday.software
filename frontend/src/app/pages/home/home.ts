@@ -67,10 +67,11 @@ interface FormState {
                     <div class="demo-card" (click)="showExampleCert()">
                         <div class="card-grid" aria-hidden="true"></div>
                         <div class="demo-pipeline">
-                            <!-- Stage 1: File drops in -->
+                            <!-- Stage 1: File detected -->
                             <div class="stage stage-file">
                                 <div class="file-icon-wrap">
-                                    <svg class="file-svg" viewBox="0 0 40 48" fill="none">
+                                    <!-- Generic file icon (visible initially) -->
+                                    <svg class="file-svg file-svg--generic" viewBox="0 0 40 48" fill="none">
                                         <path d="M4 6a4 4 0 0 1 4-4h16l12 12v28a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4V6z" fill="var(--bg-sunk)" stroke="var(--border-strong)" stroke-width="1.5"/>
                                         <path d="M24 2v12h12" stroke="var(--border-strong)" stroke-width="1.5" fill="none"/>
                                         <line class="fp-line fp-l1" x1="10" y1="22" x2="30" y2="22"/>
@@ -78,18 +79,26 @@ interface FormState {
                                         <line class="fp-line fp-l3" x1="10" y1="32" x2="28" y2="32"/>
                                         <line class="fp-line fp-l4" x1="10" y1="37" x2="22" y2="37"/>
                                     </svg>
+                                    <!-- Typed file icon (replaces generic after scan) -->
+                                    <span class="file-type-icon"></span>
                                     <div class="file-scan-line"></div>
                                     <div class="file-glow"></div>
                                 </div>
                                 <div class="file-info">
                                     <span class="file-name"></span>
-                                    <span class="file-meta">
-                                        <span class="file-type-badge"></span>
-                                        <span class="file-size"></span>
-                                        <span class="file-date"></span>
-                                    </span>
-                                    <span class="file-author"></span>
-                                    <div class="file-progress"></div>
+                                    <div class="file-detail-grid">
+                                        <span class="fd-label">Type</span>
+                                        <span class="fd-val file-type-badge"></span>
+                                        <span class="fd-label">Size</span>
+                                        <span class="fd-val file-size"></span>
+                                        <span class="fd-label">Author</span>
+                                        <span class="fd-val file-author"></span>
+                                        <span class="fd-label">Modified</span>
+                                        <span class="fd-val file-date"></span>
+                                    </div>
+                                    <div class="file-progress">
+                                        <span class="file-progress-label">analyzing</span>
+                                    </div>
                                 </div>
                             </div>
 
@@ -100,13 +109,39 @@ interface FormState {
                                 <div class="hash-bar">
                                     <span class="hash-label">SHA-256</span>
                                     <div class="hash-progress"></div>
+                                    <span class="hash-pct"></span>
                                 </div>
                                 <code class="hash-output"></code>
                             </div>
 
                             <div class="stage-conn sc-2" aria-hidden="true"></div>
 
-                            <!-- Stage 3: Proof layers assemble -->
+                            <!-- Stage 2.5: Digital signature -->
+                            <div class="stage stage-sign">
+                                <div class="sign-wrap">
+                                    <div class="sign-header">
+                                        <svg class="sign-key-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>
+                                        <span class="sign-label">GPG Signature</span>
+                                        <span class="sign-algo">RSA-4096</span>
+                                    </div>
+                                    <div class="sign-body">
+                                        <span class="sign-status-msg">Signing manifest…</span>
+                                        <span class="sign-time"></span>
+                                        <div class="sign-pgp-block">
+                                            <span class="sign-pgp-header">-----BEGIN PGP SIGNATURE-----</span>
+                                            <code class="sign-fingerprint"></code>
+                                            <span class="sign-pgp-footer">-----END PGP SIGNATURE-----</span>
+                                        </div>
+                                    </div>
+                                    <div class="sign-bar">
+                                        <span class="sign-bar-label">verified</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="stage-conn sc-2b" aria-hidden="true"></div>
+
+                            <!-- Stage 3: Proof manifest -->
                             <div class="stage stage-proof">
                                 <div class="proof-chip proof-chip--what">
                                     <span class="pc-key">{{ 'hero.bento.what' | translate }}</span>
@@ -119,6 +154,7 @@ interface FormState {
                                 <div class="proof-chip proof-chip--when">
                                     <span class="pc-key">{{ 'hero.bento.when' | translate }}</span>
                                     <span class="pc-val pc-val--when"></span>
+                                    <span class="pc-time pc-val--when-time"></span>
                                 </div>
                             </div>
 
@@ -131,48 +167,53 @@ interface FormState {
                                         <span class="term-dot"></span>
                                         <span class="term-dot"></span>
                                         <span class="term-dot"></span>
-                                        <span class="term-title">anchoring</span>
+                                        <span class="term-title">mayday anchor-broadcast</span>
                                     </div>
                                     <div class="term-body">
                                         <div class="term-line tl--btc">
-                                            <span class="tl-prompt">$</span>
-                                            <span class="tl-cmd">ots stamp</span>
-                                            <span class="tl-arg">digest.ots</span>
+                                            <span class="tl-prompt">&#9658;</span>
+                                            <span class="tl-cmd">opentimestamps</span>
+                                            <span class="tl-arg">--digest sha256 --calendar btc</span>
                                             <div class="tl-resp tl-resp--ok">
-                                                <span class="tl-icon">✓</span> Submitted to Bitcoin calendar
+                                                <span class="tl-icon">&#10003;</span> pending · Bitcoin merkle tree
                                             </div>
+                                            <div class="tl-detail">nonce 0x4a1f… · calendar.opentimestamps.org</div>
                                         </div>
                                         <div class="term-line tl--tsa1">
-                                            <span class="tl-prompt">$</span>
-                                            <span class="tl-cmd">curl -X POST</span>
-                                            <span class="tl-arg">freetsa.org/tsr</span>
+                                            <span class="tl-prompt">&#9658;</span>
+                                            <span class="tl-cmd">rfc3161-stamp</span>
+                                            <span class="tl-arg">--tsa freetsa.org --hash sha256</span>
                                             <div class="tl-resp tl-resp--ok">
-                                                <span class="tl-icon">✓</span> TSR token received · RFC 3161
+                                                <span class="tl-icon">&#10003;</span> TimeStampResp &#123;status: granted&#125;
                                             </div>
+                                            <div class="tl-detail">serial 8A3F10C9… · policy 1.2.3.4.1</div>
                                         </div>
                                         <div class="term-line tl--tsa2">
-                                            <span class="tl-prompt">$</span>
-                                            <span class="tl-cmd">curl -X POST</span>
-                                            <span class="tl-arg">timestamp.digicert.com</span>
+                                            <span class="tl-prompt">&#9658;</span>
+                                            <span class="tl-cmd">rfc3161-stamp</span>
+                                            <span class="tl-arg">--tsa timestamp.digicert.com</span>
                                             <div class="tl-resp tl-resp--ok">
-                                                <span class="tl-icon">✓</span> TSR token received · RFC 3161
+                                                <span class="tl-icon">&#10003;</span> TimeStampResp &#123;status: granted&#125;
                                             </div>
+                                            <div class="tl-detail">serial 0B72E4D1… · DigiCert SHA2 TSA</div>
                                         </div>
                                         <div class="term-line tl--tsa3">
-                                            <span class="tl-prompt">$</span>
-                                            <span class="tl-cmd">curl -X POST</span>
-                                            <span class="tl-arg">timestamp.sectigo.com</span>
+                                            <span class="tl-prompt">&#9658;</span>
+                                            <span class="tl-cmd">rfc3161-stamp</span>
+                                            <span class="tl-arg">--tsa timestamp.sectigo.com</span>
                                             <div class="tl-resp tl-resp--ok">
-                                                <span class="tl-icon">✓</span> TSR token received · RFC 3161
+                                                <span class="tl-icon">&#10003;</span> TimeStampResp &#123;status: granted&#125;
                                             </div>
+                                            <div class="tl-detail">serial 5D91A0FE… · Sectigo RSA TSA</div>
                                         </div>
                                         <div class="term-line tl--eth">
-                                            <span class="tl-prompt">$</span>
-                                            <span class="tl-cmd">cast send</span>
-                                            <span class="tl-arg">0x...Proof --rpc base-mainnet</span>
+                                            <span class="tl-prompt">&#9658;</span>
+                                            <span class="tl-cmd">eth-anchor</span>
+                                            <span class="tl-arg">--chain base --contract 0x7aE1…</span>
                                             <div class="tl-resp tl-resp--ok">
-                                                <span class="tl-icon">✓</span> tx confirmed · block #28491037
+                                                <span class="tl-icon">&#10003;</span> tx 0x9f4d…e1a2 · block #28491037
                                             </div>
+                                            <div class="tl-detail">gasUsed 47,293 · 12 confirmations</div>
                                         </div>
                                     </div>
                                 </div>
@@ -182,50 +223,30 @@ interface FormState {
                                     <div class="chain-label">blockchain</div>
                                     <div class="chain-blocks">
                                         <div class="chain-block cb--old">
-                                            <span class="cb-hash">a3f1...08d2</span>
+                                            <span class="cb-hash">a3f1…08d2</span>
                                             <span class="cb-n">#28491035</span>
                                         </div>
                                         <div class="chain-link"></div>
                                         <div class="chain-block cb--old2">
-                                            <span class="cb-hash">0e7d...4b19</span>
+                                            <span class="cb-hash">0e7d…4b19</span>
                                             <span class="cb-n">#28491036</span>
                                         </div>
                                         <div class="chain-link"></div>
                                         <div class="chain-block cb--new">
-                                            <span class="cb-hash">9c07...4293</span>
+                                            <span class="cb-hash">9c07…4293</span>
                                             <span class="cb-n">#28491037</span>
-                                            <span class="cb-you">← your hash</span>
+                                            <span class="cb-you">← your tx</span>
                                         </div>
-                                    </div>
-                                    <!-- Merkle path -->
-                                    <div class="merkle-path">
-                                        <svg class="merkle-svg" viewBox="0 0 220 68" fill="none">
-                                            <!-- Root -->
-                                            <rect class="mk-node mk-root" x="85" y="2" width="50" height="16" rx="3" />
-                                            <text class="mk-text" x="110" y="13" text-anchor="middle">root</text>
-                                            <!-- Branch lines -->
-                                            <line class="mk-line mk-line--l" x1="95" y1="18" x2="50" y2="32" />
-                                            <line class="mk-line mk-line--r" x1="125" y1="18" x2="170" y2="32" />
-                                            <!-- Mid nodes -->
-                                            <rect class="mk-node mk-mid1" x="25" y="32" width="50" height="14" rx="3" />
-                                            <text class="mk-text" x="50" y="42" text-anchor="middle">h(a+b)</text>
-                                            <rect class="mk-node mk-mid2" x="145" y="32" width="50" height="14" rx="3" />
-                                            <text class="mk-text" x="170" y="42" text-anchor="middle">h(c+d)</text>
-                                            <!-- Leaf lines -->
-                                            <line class="mk-line mk-line--l2" x1="35" y1="46" x2="15" y2="56" />
-                                            <line class="mk-line mk-line--r2" x1="65" y1="46" x2="85" y2="56" />
-                                            <line class="mk-line mk-line--l3" x1="155" y1="46" x2="135" y2="56" />
-                                            <line class="mk-line mk-line--r3" x1="185" y1="46" x2="205" y2="56" />
-                                            <!-- Leaves -->
-                                            <rect class="mk-node mk-leaf" x="2" y="55" width="28" height="12" rx="2" />
-                                            <text class="mk-text mk-text--leaf" x="16" y="64" text-anchor="middle">a</text>
-                                            <rect class="mk-node mk-leaf" x="72" y="55" width="28" height="12" rx="2" />
-                                            <text class="mk-text mk-text--leaf" x="86" y="64" text-anchor="middle">b</text>
-                                            <rect class="mk-node mk-leaf" x="122" y="55" width="28" height="12" rx="2" />
-                                            <text class="mk-text mk-text--leaf" x="136" y="64" text-anchor="middle">c</text>
-                                            <rect class="mk-node mk-leaf mk-leaf--you" x="192" y="55" width="28" height="12" rx="2" />
-                                            <text class="mk-text mk-text--you" x="206" y="64" text-anchor="middle">9c07</text>
-                                        </svg>
+                                        <div class="chain-link chain-link--after"></div>
+                                        <div class="chain-block cb--future">
+                                            <span class="cb-hash">d41a…72f1</span>
+                                            <span class="cb-n">#28491038</span>
+                                        </div>
+                                        <div class="chain-link chain-link--after2"></div>
+                                        <div class="chain-block cb--future2">
+                                            <span class="cb-hash">8b2e…c930</span>
+                                            <span class="cb-n">#28491039</span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -238,24 +259,59 @@ interface FormState {
                                     <div class="cert-header">
                                         <svg class="cert-icon" viewBox="0 0 24 24" fill="none" stroke="var(--brand)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><path d="M9 15l2 2 4-4"/></svg>
                                         <span class="cert-title">{{ 'hero.bento.cert' | translate }}</span>
+                                        <div class="cert-seal" aria-hidden="true">
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9 12l2 2 4-4"/></svg>
+                                        </div>
                                         <span class="cert-badge">PDF</span>
                                     </div>
                                     <div class="cert-body">
                                         <div class="cert-row">
-                                            <span class="cert-label">SHA-256</span>
-                                            <code class="cert-val">9c07646d...a6374293</code>
+                                            <span class="cert-label">Cert #</span>
+                                            <code class="cert-val cert-num"></code>
                                         </div>
                                         <div class="cert-row">
-                                            <span class="cert-label">Anchors</span>
-                                            <span class="cert-val cert-val--count">5 / 5</span>
+                                            <span class="cert-label">SHA-256</span>
+                                            <code class="cert-val">9c07646d…a6374293</code>
+                                        </div>
+                                        <div class="cert-anchors">
+                                            <div class="ca-row ca--btc">
+                                                <span class="ca-icon">&#x20BF;</span>
+                                                <span class="ca-name">Bitcoin OTS</span>
+                                                <span class="ca-status ca-ok">pending</span>
+                                            </div>
+                                            <div class="ca-row ca--tsa1">
+                                                <span class="ca-icon ca-icon--lock">&#x1F512;</span>
+                                                <span class="ca-name">FreeTSA</span>
+                                                <span class="ca-status ca-ok">granted</span>
+                                            </div>
+                                            <div class="ca-row ca--tsa2">
+                                                <span class="ca-icon ca-icon--lock">&#x1F512;</span>
+                                                <span class="ca-name">DigiCert</span>
+                                                <span class="ca-status ca-ok">granted</span>
+                                            </div>
+                                            <div class="ca-row ca--tsa3">
+                                                <span class="ca-icon ca-icon--lock">&#x1F512;</span>
+                                                <span class="ca-name">Sectigo</span>
+                                                <span class="ca-status ca-ok">granted</span>
+                                            </div>
+                                            <div class="ca-row ca--eth">
+                                                <span class="ca-icon">&#x039E;</span>
+                                                <span class="ca-name">Base L2</span>
+                                                <span class="ca-status ca-ok">confirmed</span>
+                                            </div>
+                                        </div>
+                                        <div class="cert-row">
+                                            <span class="cert-label">GPG</span>
+                                            <code class="cert-val cert-val--gpg">A1B2…F6A1</code>
+                                        </div>
+                                        <div class="cert-row">
+                                            <span class="cert-label">Issued</span>
+                                            <span class="cert-val">2026-04-08T14:32:07Z</span>
                                         </div>
                                         <div class="cert-row">
                                             <span class="cert-label">eIDAS</span>
                                             <span class="cert-val cert-val--ok">Qualified</span>
                                         </div>
-                                    </div>
-                                    <div class="cert-seal" aria-hidden="true">
-                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9 12l2 2 4-4"/></svg>
                                     </div>
                                     <div class="cert-dl">
                                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
@@ -948,34 +1004,36 @@ export class HomePage {
     showExampleCert(): void {
         const svg = this.certSvc.render({
             input: {
-                title: 'neural-style-transfer',
-                version: '2.4.0',
-                license: 'Apache-2.0',
-                authorGivenNames: 'Alice',
-                authorFamilyNames: 'Nakamoto',
-                authorEmail: 'alice@example.org',
+                title: 'Aurora Dashboard',
+                version: '4.0.0',
+                license: 'CC BY-NC-SA 4.0',
+                authorGivenNames: 'Mila',
+                authorFamilyNames: 'Sorokina',
+                authorEmail: 'mila@aurora-studio.design',
                 files: [
-                    { path: 'src/model.py', size: 42_310, sha256: 'a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2' },
-                    { path: 'src/train.py', size: 18_720, sha256: 'f6e5d4c3b2a1f6e5d4c3b2a1f6e5d4c3b2a1f6e5d4c3b2a1f6e5d4c3b2a1f6e5' },
-                    { path: 'weights/v2.4.bin', size: 3_145_728, sha256: '0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef' },
+                    { path: 'aurora_dashboard_v4.fig', size: 7_654_321, sha256: '9c07646d781e43fe35c63773a63742937aa9e79b1b09138ef3f0c2e4392856d2' },
+                    { path: 'components/nav-sidebar.fig', size: 1_245_678, sha256: 'e1a04bc2f97d530816e3a2fd7c914b08a2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5' },
+                    { path: 'tokens/design-tokens.json', size: 42_310, sha256: '3d8b4f2a1c07e96580dfa3b7c4e21d09a7f2e1bc09d84a3f6519c0e7d2b8f14e' },
                 ]
             },
             manifest: {
                 yaml: '',
                 sha256: '9c07646d781e43fe35c63773a63742937aa9e79b1b09138ef3f0c2e4392856d2',
-                issuedAt: '2025-03-20T14:32:00Z'
+                issuedAt: '2026-04-08T14:32:07Z'
             },
             anchors: [
-                { kind: 'opentimestamps', provider: 'opentimestamps-alice', providerLabel: 'Bitcoin · OpenTimestamps', proofExtension: 'ots', status: 'confirmed', anchoredAt: '2025-03-20T15:04:22Z', humanSummary: 'Bitcoin block #890241' },
-                { kind: 'rfc3161', provider: 'freetsa', providerLabel: 'FreeTSA · RFC 3161', proofExtension: 'tsr.freetsa', status: 'confirmed', anchoredAt: '2025-03-20T14:32:08Z' },
-                { kind: 'rfc3161', provider: 'digicert', providerLabel: 'DigiCert · RFC 3161', proofExtension: 'tsr.digicert', status: 'confirmed', anchoredAt: '2025-03-20T14:32:12Z' },
+                { kind: 'opentimestamps', provider: 'opentimestamps-mila', providerLabel: 'Bitcoin · OpenTimestamps', proofExtension: 'ots', status: 'confirmed', anchoredAt: '2026-04-08T15:04:22Z', humanSummary: 'Bitcoin block #890241' },
+                { kind: 'rfc3161', provider: 'freetsa', providerLabel: 'FreeTSA · RFC 3161', proofExtension: 'tsr.freetsa', status: 'confirmed', anchoredAt: '2026-04-08T14:32:08Z' },
+                { kind: 'rfc3161', provider: 'digicert', providerLabel: 'DigiCert · RFC 3161', proofExtension: 'tsr.digicert', status: 'confirmed', anchoredAt: '2026-04-08T14:32:12Z' },
+                { kind: 'rfc3161', provider: 'sectigo', providerLabel: 'Sectigo · RFC 3161', proofExtension: 'tsr.sectigo', status: 'confirmed', anchoredAt: '2026-04-08T14:32:15Z' },
+                { kind: 'ethereum', provider: 'base-l2', providerLabel: 'Base L2 · Ethereum', proofExtension: 'eth', status: 'confirmed', anchoredAt: '2026-04-08T14:33:01Z', humanSummary: 'tx 0x9f4d…e1a2 block #28491037' },
             ],
             gpgSignature: {
                 asciiArmor: '',
                 keyId: 'A1B2C3D4E5F6A1B2',
                 fingerprint: 'A1B2C3D4E5F6A1B2C3D4E5F6A1B2C3D4E5F6A1B2',
-                signedAt: new Date('2025-03-20T14:32:00Z'),
-                userId: 'Alice Nakamoto <alice@example.org>'
+                signedAt: new Date('2026-04-08T14:32:07Z'),
+                userId: 'Mila Sorokina <mila@aurora-studio.design>'
             }
         });
         this.certSvc.print(svg);

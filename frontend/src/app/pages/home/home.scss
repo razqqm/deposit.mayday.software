@@ -348,7 +348,7 @@ $cycle: 18s;
     background: var(--brand);
     left: 50%;
     transform: translateX(-50%);
-    box-shadow: 0 0 6px var(--brand), 0 0 14px color-mix(in oklch, var(--brand) 40%, transparent);
+    box-shadow: 0 0 6px var(--brand);
     animation: data-particle $cycle linear infinite;
 }
 
@@ -399,10 +399,29 @@ $cycle: 18s;
 }
 
 .stage-file   { animation-delay: 0.0s; }
-.stage-hash   { animation-delay: 0.6s; }
+.stage-hash   { animation-delay: 0.5s; }
+.stage-sign   { animation-delay: 0.9s; }
 .stage-proof  { animation-delay: 1.2s; }
-.stage-anchor { animation-delay: 1.8s; }
-.stage-seal   { animation-delay: 2.4s; }
+.stage-anchor { animation-delay: 1.6s; }
+.stage-seal   { animation-delay: 2.0s; }
+
+/* ── Stage labels ──────────────────────────────────────── */
+.stage::before {
+    display: block;
+    font-size: 0.38rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 0.25rem;
+}
+
+.stage-file::before   { content: 'DETECT'; }
+.stage-hash::before   { content: 'HASH'; }
+.stage-sign::before   { content: 'SIGN'; }
+.stage-proof::before  { content: 'PROVE'; }
+.stage-anchor::before { content: 'ANCHOR'; }
+.stage-seal::before   { content: 'SEAL'; }
 
 /* ── Stage connectors — flowing energy between stages ──── */
 .stage-conn {
@@ -416,21 +435,21 @@ $cycle: 18s;
     animation: stage-cycle $cycle var(--ease-out) infinite both;
 }
 
-.sc-1 { animation-delay: 0.35s; }
-.sc-2 { animation-delay: 0.95s; }
-.sc-3 { animation-delay: 1.55s; }
-.sc-4 { animation-delay: 2.15s; }
+.sc-1  { animation-delay: 0.28s; }
+.sc-2  { animation-delay: 0.72s; }
+.sc-2b { animation-delay: 1.08s; }
+.sc-3  { animation-delay: 1.42s; }
+.sc-4  { animation-delay: 1.82s; }
 
 .stage-conn::after {
     content: '';
     position: absolute;
-    width: 5px;
-    height: 5px;
+    width: 4px;
+    height: 4px;
     border-radius: 50%;
     background: var(--brand);
     left: 50%;
     transform: translateX(-50%);
-    box-shadow: 0 0 6px var(--brand);
     animation: sc-flow 1s linear infinite;
 }
 
@@ -442,14 +461,14 @@ $cycle: 18s;
 }
 
 /* ── File stage ────────────────────────────────────────── */
-$variants: 24;
+$variants: 12;
 $full-loop: calc($cycle * $variants);
 
 .stage-file {
     display: flex;
-    align-items: center;
-    gap: 0.85rem;
-    padding: 0.8rem 1rem;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 1rem 1.1rem;
     background: var(--bg-sunk);
     border: 1px solid var(--border);
     border-radius: var(--r-md);
@@ -462,13 +481,61 @@ $full-loop: calc($cycle * $variants);
 .file-icon-wrap {
     position: relative;
     flex-shrink: 0;
-    width: 36px;
-    height: 44px;
+    width: 44px;
+    height: 52px;
 }
 
 .file-svg {
     width: 100%;
     height: 100%;
+    animation: icon-swap-out $cycle var(--ease-out) infinite;
+}
+
+/* Type-specific icon — replaces generic after scan completes */
+.file-type-icon {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.8rem;
+    opacity: 0;
+    transform: scale(0.5);
+    animation: icon-swap-in $cycle var(--ease-out) infinite;
+}
+
+.file-type-icon::after {
+    content: '🎨';
+    animation: type-icons $full-loop steps(1) infinite;
+}
+
+@keyframes type-icons {
+    0.000%, 8.333%{ content: '🎨'; }
+   8.334%, 16.666%{ content: '🎵'; }
+   16.667%, 25.000%{ content: '💻'; }
+   25.001%, 33.333%{ content: '📷'; }
+   33.334%, 41.666%{ content: '📄'; }
+   41.667%, 50.000%{ content: '🎬'; }
+   50.001%, 58.333%{ content: '🧊'; }
+   58.334%, 66.666%{ content: '🔤'; }
+   66.667%, 75.000%{ content: '📊'; }
+   75.001%, 83.333%{ content: '💻'; }
+   83.334%, 91.666%{ content: '📦'; }
+   91.667%, 100.0% { content: '🎙️'; }
+}
+
+@keyframes icon-swap-out {
+    0%, 16%  { opacity: 1; transform: scale(1); }
+    22%      { opacity: 0; transform: scale(0.7); }
+    100%     { opacity: 0; }
+}
+
+@keyframes icon-swap-in {
+    0%, 18%  { opacity: 0; transform: scale(0.5) rotate(-10deg); }
+    24%      { opacity: 1; transform: scale(1.1) rotate(3deg); }
+    28%      { transform: scale(1) rotate(0deg); }
+    78%      { opacity: 1; }
+    90%, 100% { opacity: 0; transform: scale(0.8); }
 }
 
 /* Content preview lines inside the file icon */
@@ -489,12 +556,11 @@ $full-loop: calc($cycle * $variants);
 
 @keyframes fp-appear {
     0%, 3%    { opacity: 0; stroke-dashoffset: 30; }
-    15%       { opacity: 0.5; stroke-dashoffset: 0; }
-    70%       { opacity: 0.5; stroke-dashoffset: 0; }
+    12%       { opacity: 0.5; stroke-dashoffset: 0; }
+    70%       { opacity: 0.5; }
     85%, 100% { opacity: 0; }
 }
 
-/* Scan line — sweeps down the file icon, simulating reading */
 .file-scan-line {
     position: absolute;
     left: 3px;
@@ -502,7 +568,7 @@ $full-loop: calc($cycle * $variants);
     height: 2px;
     background: var(--brand);
     border-radius: 1px;
-    box-shadow: 0 0 8px var(--brand), 0 0 20px color-mix(in oklch, var(--brand) 35%, transparent);
+    box-shadow: 0 0 8px var(--brand);
     opacity: 0;
     pointer-events: none;
     animation: file-scan $cycle var(--ease-out) infinite;
@@ -548,6 +614,7 @@ $full-loop: calc($cycle * $variants);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    margin-bottom: 0.3rem;
 }
 
 .file-name::after {
@@ -555,49 +622,57 @@ $full-loop: calc($cycle * $variants);
     animation: type-files $full-loop steps(1) infinite;
 }
 
-/* 24 file variants — cycling through different categories */
-@keyframes type-files {
-    0.000%,  4.166% { content: 'aurora_dashboard_v4.fig'; }
-    4.167%,  8.333% { content: 'nocturne_op9_no2_master.wav'; }
-    8.334%, 12.500% { content: 'payment-gateway.rs'; }
-   12.501%, 16.666% { content: 'IMG_20260115_golden_gate.dng'; }
-   16.667%, 20.833% { content: 'quantum_computing_thesis.pdf'; }
-   20.834%, 25.000% { content: 'behind_the_scenes_ep7.mov'; }
-   25.001%, 29.166% { content: 'mech_arm_assembly_v8.blend'; }
-   29.167%, 33.333% { content: 'Satoshi-Sans-Bold.woff2'; }
-   33.334%, 37.500% { content: 'genome_sequences_2026.parquet'; }
-   37.501%, 41.666% { content: 'requiem_final_mix.flac'; }
-   41.667%, 45.833% { content: 'ERC721_Marketplace.sol'; }
-   45.834%, 50.000% { content: 'rebrand_styleguide.sketch'; }
-   50.001%, 54.166% { content: 'milky_way_16bit_HDR.cr3'; }
-   54.167%, 58.333% { content: 'PCT_WO2026_patent.docx'; }
-   58.334%, 62.500% { content: 'drone_survey_8k_raw.r3d'; }
-   62.501%, 66.666% { content: 'transformer_v2.ipynb'; }
-   66.667%, 70.833% { content: 'client_deliverables_Q1.tar.gz'; }
-   70.834%, 75.000% { content: 'true_crime_ep153.m4a'; }
-   75.001%, 79.166% { content: 'turbine_blade_CFD.stp'; }
-   79.167%, 83.333% { content: 'series_A_pitch.key'; }
-   83.334%, 87.500% { content: 'firmware_stm32_v3.2.elf'; }
-   87.501%, 91.666% { content: 'venice_sunrise_medium_format.iiq'; }
-   91.667%, 95.833% { content: 'employment_agreement_signed.pdf'; }
-   95.834%, 100.0%  { content: 'lofi_chill_beats_vol4.aiff'; }
+/* Structured detail grid — 2-column layout */
+.file-detail-grid {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 0.1rem 0.5rem;
+    align-items: baseline;
+    opacity: 0;
+    animation: detail-reveal $cycle var(--ease-out) infinite;
+    animation-delay: 0.2s;
 }
 
-.file-meta {
-    display: flex;
-    align-items: center;
-    gap: 0.4rem;
-    flex-wrap: wrap;
+@keyframes detail-reveal {
+    0%, 5%    { opacity: 0; transform: translateY(4px); }
+    14%       { opacity: 1; transform: translateY(0); }
+    78%       { opacity: 1; }
+    90%, 100% { opacity: 0; }
 }
 
-.file-type-badge {
-    font-size: 0.46rem;
-    font-weight: 700;
-    letter-spacing: 0.06em;
+.fd-label {
+    font-size: 0.5rem;
+    font-weight: 600;
+    color: var(--text-dim);
     text-transform: uppercase;
-    padding: 0.1rem 0.32rem;
-    border-radius: var(--r-sm);
-    white-space: nowrap;
+    letter-spacing: 0.06em;
+}
+
+.fd-val {
+    font-size: 0.6rem;
+    color: var(--text);
+    font-family: var(--font-mono);
+}
+
+/* 12 file variants — cycling through different categories */
+@keyframes type-files {
+    0.000%,  8.333% { content: 'aurora_dashboard_v4.fig'; }
+    8.334%, 16.666% { content: 'nocturne_op9_no2_master.wav'; }
+   16.667%, 25.000% { content: 'payment-gateway.rs'; }
+   25.001%, 33.333% { content: 'IMG_20260115_golden_gate.dng'; }
+   33.334%, 41.666% { content: 'quantum_computing_thesis.pdf'; }
+   41.667%, 50.000% { content: 'behind_the_scenes_ep7.mov'; }
+   50.001%, 58.333% { content: 'mech_arm_assembly_v8.blend'; }
+   58.334%, 66.666% { content: 'Satoshi-Sans-Bold.woff2'; }
+   66.667%, 75.000% { content: 'genome_sequences_2026.parquet'; }
+   75.001%, 83.333% { content: 'ERC721_Marketplace.sol'; }
+   83.334%, 91.666% { content: 'client_deliverables_Q1.tar.gz'; }
+   91.667%, 100.0%  { content: 'true_crime_ep153.m4a'; }
+}
+
+/* Remove old file-meta */
+.file-type-badge {
+    font-weight: 700;
 }
 
 .file-type-badge::after {
@@ -606,35 +681,22 @@ $full-loop: calc($cycle * $variants);
 }
 
 @keyframes type-badges {
-    0.000%,  4.166% { content: '🎨 Design'; }
-    4.167%,  8.333% { content: '🎵 Music'; }
-    8.334%, 12.500% { content: '💻 Code'; }
-   12.501%, 16.666% { content: '📷 Photo'; }
-   16.667%, 20.833% { content: '📄 Document'; }
-   20.834%, 25.000% { content: '🎬 Video'; }
-   25.001%, 29.166% { content: '🧊 3D Model'; }
-   29.167%, 33.333% { content: '🔤 Font'; }
-   33.334%, 37.500% { content: '📊 Data'; }
-   37.501%, 41.666% { content: '🎵 Music'; }
-   41.667%, 45.833% { content: '💻 Code'; }
-   45.834%, 50.000% { content: '🎨 Design'; }
-   50.001%, 54.166% { content: '📷 Photo'; }
-   54.167%, 58.333% { content: '📄 Document'; }
-   58.334%, 62.500% { content: '🎬 Video'; }
-   62.501%, 66.666% { content: '💻 Code'; }
-   66.667%, 70.833% { content: '📦 Archive'; }
-   70.834%, 75.000% { content: '🎙️ Audio'; }
-   75.001%, 79.166% { content: '⚙️ CAD'; }
-   79.167%, 83.333% { content: '📊 Presentation'; }
-   83.334%, 87.500% { content: '💻 Code'; }
-   87.501%, 91.666% { content: '📷 Photo'; }
-   91.667%, 95.833% { content: '📄 Document'; }
-   95.834%, 100.0%  { content: '🎵 Music'; }
+    0.000%, 8.333%{ content: '🎨 Design'; }
+   8.334%, 16.666%{ content: '🎵 Music'; }
+   16.667%, 25.000%{ content: '💻 Code'; }
+   25.001%, 33.333%{ content: '📷 Photo'; }
+   33.334%, 41.666%{ content: '📄 Document'; }
+   41.667%, 50.000%{ content: '🎬 Video'; }
+   50.001%, 58.333%{ content: '🧊 3D Model'; }
+   58.334%, 66.666%{ content: '🔤 Font'; }
+   66.667%, 75.000%{ content: '📊 Data'; }
+   75.001%, 83.333%{ content: '💻 Code'; }
+   83.334%, 91.666%{ content: '📦 Archive'; }
+   91.667%, 100.0% { content: '🎙️ Podcast'; }
 }
 
 .file-size {
-    font-size: 0.58rem;
-    color: var(--text-dim);
+    color: var(--text);
 }
 
 .file-size::after {
@@ -643,75 +705,47 @@ $full-loop: calc($cycle * $variants);
 }
 
 @keyframes type-sizes {
-    0.000%,  4.166% { content: '7.3 MB'; }
-    4.167%,  8.333% { content: '94.2 MB'; }
-    8.334%, 12.500% { content: '18.7 KB'; }
-   12.501%, 16.666% { content: '52.4 MB'; }
-   16.667%, 20.833% { content: '3.6 MB'; }
-   20.834%, 25.000% { content: '2.1 GB'; }
-   25.001%, 29.166% { content: '412 MB'; }
-   29.167%, 33.333% { content: '84 KB'; }
-   33.334%, 37.500% { content: '1.8 GB'; }
-   37.501%, 41.666% { content: '206 MB'; }
-   41.667%, 45.833% { content: '14.1 KB'; }
-   45.834%, 50.000% { content: '23.5 MB'; }
-   50.001%, 54.166% { content: '118 MB'; }
-   54.167%, 58.333% { content: '940 KB'; }
-   58.334%, 62.500% { content: '5.7 GB'; }
-   62.501%, 66.666% { content: '3.2 MB'; }
-   66.667%, 70.833% { content: '780 MB'; }
-   70.834%, 75.000% { content: '89 MB'; }
-   75.001%, 79.166% { content: '41.3 MB'; }
-   79.167%, 83.333% { content: '16.8 MB'; }
-   83.334%, 87.500% { content: '256 KB'; }
-   87.501%, 91.666% { content: '147 MB'; }
-   91.667%, 95.833% { content: '2.1 MB'; }
-   95.834%, 100.0%  { content: '73.4 MB'; }
+    0.000%, 8.333%{ content: '7.3 MB'; }
+   8.334%, 16.666%{ content: '94.2 MB'; }
+   16.667%, 25.000%{ content: '18.7 KB'; }
+   25.001%, 33.333%{ content: '52.4 MB'; }
+   33.334%, 41.666%{ content: '3.6 MB'; }
+   41.667%, 50.000%{ content: '2.1 GB'; }
+   50.001%, 58.333%{ content: '412 MB'; }
+   58.334%, 66.666%{ content: '84 KB'; }
+   66.667%, 75.000%{ content: '1.8 GB'; }
+   75.001%, 83.333%{ content: '14.1 KB'; }
+   83.334%, 91.666%{ content: '780 MB'; }
+   91.667%, 100.0% { content: '89 MB'; }
 }
 
 .file-date {
-    font-size: 0.52rem;
-    color: var(--text-dim);
-    opacity: 0.7;
+    color: var(--text);
 }
 
 .file-date::after {
-    content: '2026-04-08';
+    content: '2026-04-08 14:32';
     animation: type-dates $full-loop steps(1) infinite;
 }
 
 @keyframes type-dates {
-    0.000%,  4.166% { content: '2026-04-08'; }
-    4.167%,  8.333% { content: '2026-03-22'; }
-    8.334%, 12.500% { content: '2026-04-07'; }
-   12.501%, 16.666% { content: '2026-01-15'; }
-   16.667%, 20.833% { content: '2025-12-01'; }
-   20.834%, 25.000% { content: '2026-04-05'; }
-   25.001%, 29.166% { content: '2026-02-18'; }
-   29.167%, 33.333% { content: '2025-11-30'; }
-   33.334%, 37.500% { content: '2026-03-14'; }
-   37.501%, 41.666% { content: '2025-09-10'; }
-   41.667%, 45.833% { content: '2026-04-08'; }
-   45.834%, 50.000% { content: '2026-01-28'; }
-   50.001%, 54.166% { content: '2026-03-03'; }
-   54.167%, 58.333% { content: '2026-04-01'; }
-   58.334%, 62.500% { content: '2026-02-14'; }
-   62.501%, 66.666% { content: '2026-04-06'; }
-   66.667%, 70.833% { content: '2026-03-30'; }
-   70.834%, 75.000% { content: '2026-04-02'; }
-   75.001%, 79.166% { content: '2025-10-22'; }
-   79.167%, 83.333% { content: '2026-04-07'; }
-   83.334%, 87.500% { content: '2026-03-19'; }
-   87.501%, 91.666% { content: '2026-02-08'; }
-   91.667%, 95.833% { content: '2025-08-15'; }
-   95.834%, 100.0%  { content: '2026-04-03'; }
+    0.000%, 8.333%{ content: '2026-04-08 14:32'; }
+   8.334%, 16.666%{ content: '2026-03-22 09:15'; }
+   16.667%, 25.000%{ content: '2026-04-07 23:41'; }
+   25.001%, 33.333%{ content: '2026-01-15 07:58'; }
+   33.334%, 41.666%{ content: '2025-12-01 16:20'; }
+   41.667%, 50.000%{ content: '2026-04-05 11:07'; }
+   50.001%, 58.333%{ content: '2026-02-18 19:33'; }
+   58.334%, 66.666%{ content: '2025-11-30 03:44'; }
+   66.667%, 75.000%{ content: '2026-03-14 21:12'; }
+   75.001%, 83.333%{ content: '2026-04-08 14:32'; }
+   83.334%, 91.666%{ content: '2026-03-30 08:55'; }
+   91.667%, 100.0% { content: '2026-04-02 17:28'; }
 }
 
 .file-author {
-    font-size: 0.54rem;
-    color: var(--text-dim);
+    color: var(--text);
     font-style: italic;
-    opacity: 0.8;
 }
 
 .file-author::after {
@@ -722,11 +756,33 @@ $full-loop: calc($cycle * $variants);
 /* File analysis progress bar */
 .file-progress {
     width: 100%;
-    height: 2px;
+    height: 3px;
     background: var(--border);
-    border-radius: 1px;
-    margin-top: 0.2rem;
+    border-radius: 2px;
+    margin-top: 0.4rem;
     overflow: hidden;
+    position: relative;
+}
+
+.file-progress-label {
+    position: absolute;
+    top: -0.85rem;
+    right: 0;
+    font-size: 0.44rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--brand);
+    opacity: 0;
+    animation: progress-label $cycle var(--ease-out) infinite;
+}
+
+@keyframes progress-label {
+    0%, 4%    { opacity: 0; }
+    10%       { opacity: 1; }
+    24%       { opacity: 1; }
+    28%       { opacity: 0; }
+    100%      { opacity: 0; }
 }
 
 .file-progress::after {
@@ -735,7 +791,7 @@ $full-loop: calc($cycle * $variants);
     width: 100%;
     height: 100%;
     background: linear-gradient(90deg, var(--brand), oklch(0.82 0.14 80));
-    border-radius: 1px;
+    border-radius: 2px;
     transform-origin: left;
     animation: fp-fill $cycle var(--ease-out) infinite;
 }
@@ -748,30 +804,18 @@ $full-loop: calc($cycle * $variants);
 }
 
 @keyframes type-authors {
-    0.000%,  4.166% { content: '👤 Mila Sorokina'; }
-    4.167%,  8.333% { content: '👤 Takeshi Yamamoto'; }
-    8.334%, 12.500% { content: '👤 Daniela Ferreira'; }
-   12.501%, 16.666% { content: '👤 Chen Weijun'; }
-   16.667%, 20.833% { content: '👤 Andrei Kolesnikov'; }
-   20.834%, 25.000% { content: '👤 Priya Nandakumar'; }
-   25.001%, 29.166% { content: '👤 Lars Björkman'; }
-   29.167%, 33.333% { content: '👤 Sofia Carvalho'; }
-   33.334%, 37.500% { content: '👤 Dr. Amira Hassan'; }
-   37.501%, 41.666% { content: '👤 Nikolai Orlov'; }
-   41.667%, 45.833% { content: '👤 Émile Beaumont'; }
-   45.834%, 50.000% { content: '👤 Yuna Park'; }
-   50.001%, 54.166% { content: '👤 Marco Bellini'; }
-   54.167%, 58.333% { content: '👤 Katharina Wolff'; }
-   58.334%, 62.500% { content: '👤 Rodrigo Mendes'; }
-   62.501%, 66.666% { content: '👤 Aisha Mbeki'; }
-   66.667%, 70.833% { content: '👤 Viktor Szabo'; }
-   70.834%, 75.000% { content: '👤 Camille Dubois'; }
-   75.001%, 79.166% { content: '👤 Hiroshi Tanaka'; }
-   79.167%, 83.333% { content: '👤 Nadia Kravchenko'; }
-   83.334%, 87.500% { content: '👤 Oscar Lindgren'; }
-   87.501%, 91.666% { content: '👤 Isabella Rossi'; }
-   91.667%, 95.833% { content: '👤 Pavel Morozov'; }
-   95.834%, 100.0%  { content: '👤 Léa Fontaine'; }
+    0.000%, 8.333%{ content: '👤 Mila Sorokina'; }
+   8.334%, 16.666%{ content: '👤 Takeshi Yamamoto'; }
+   16.667%, 25.000%{ content: '👤 Daniela Ferreira'; }
+   25.001%, 33.333%{ content: '👤 Chen Weijun'; }
+   33.334%, 41.666%{ content: '👤 Andrei Kolesnikov'; }
+   41.667%, 50.000%{ content: '👤 Priya Nandakumar'; }
+   50.001%, 58.333%{ content: '👤 Lars Björkman'; }
+   58.334%, 66.666%{ content: '👤 Sofia Carvalho'; }
+   66.667%, 75.000%{ content: '👤 Dr. Amira Hassan'; }
+   75.001%, 83.333%{ content: '👤 Nikolai Orlov'; }
+   83.334%, 91.666%{ content: '👤 Émile Beaumont'; }
+   91.667%, 100.0% { content: '👤 Hiroshi Tanaka'; }
 }
 
 /* ── Hash stage ────────────────────────────────────────── */
@@ -867,30 +911,18 @@ $full-loop: calc($cycle * $variants);
 }
 
 @keyframes type-hash {
-    0.000%,  4.166% { content: '9c07646d781e43fe35c63773a6374293'; }
-    4.167%,  8.333% { content: 'e1a04bc2f97d530816e3a2fd7c914b08'; }
-    8.334%, 12.500% { content: '3d8b4f2a1c07e96580dfa3b7c4e21d09'; }
-   12.501%, 16.666% { content: 'a7f2e1bc09d84a3f6519c0e7d2b8f14e'; }
-   16.667%, 20.833% { content: 'f4c89e16d3a72b5490fe01c87d5f6a23'; }
-   20.834%, 25.000% { content: '71d2c0a4b8e3f169250d7c4f98a16b53'; }
-   25.001%, 29.166% { content: '0b9e7d3c5a1f84260cde93b7a4f802d1'; }
-   29.167%, 33.333% { content: '6e41a90f2c8b73d5104fea6d3927c5b8'; }
-   33.334%, 37.500% { content: 'c5f328a1d074e69b83a4f71260de9c5b'; }
-   37.501%, 41.666% { content: '2a8d1b5c7e39f04682c1a6d093b7e4f5'; }
-   41.667%, 45.833% { content: '8f03b2d6a7c4e15930fd82a1b4e9c673'; }
-   45.834%, 50.000% { content: 'd29c4f1a83b7e602d5a18c3069f4b72e'; }
-   50.001%, 54.166% { content: '14e7c2d8a03f9b56728d3e1c4a60f5b9'; }
-   54.167%, 58.333% { content: 'b6a9d37c2e810f4593c7f2a15b8de604'; }
-   58.334%, 62.500% { content: '5c2e8f1d93a4b07621df3c7a069e84b5'; }
-   62.501%, 66.666% { content: 'a3d09b72e4c1f685310a7e2dc8f4b961'; }
-   66.667%, 70.833% { content: '97c4e2d1b3a0f86542de7c19f8a35b60'; }
-   70.834%, 75.000% { content: '4b1e83d7c2f09a56380fc1d4a7e2b695'; }
-   75.001%, 79.166% { content: 'e8d2c1f4a7039b65841de3c7b0a6f529'; }
-   79.167%, 83.333% { content: '1f9a3c7d2e4b08563d0ce7a1b8f42d96'; }
-   83.334%, 87.500% { content: '7c0d4e2a1b3f986540ae81d3c9f27b65'; }
-   87.501%, 91.666% { content: 'db13e7c4a2f09856301dc8a7b5e4f629'; }
-   91.667%, 95.833% { content: '63a1d9c7e4b2f085420de3c1b8a7f596'; }
-   95.834%, 100.0%  { content: '2e7b4c1d8a3f096542f0e1d3c9a75b68'; }
+    0.000%, 8.333%{ content: '9c07646d781e43fe35c63773a6374293'; }
+   8.334%, 16.666%{ content: 'e1a04bc2f97d530816e3a2fd7c914b08'; }
+   16.667%, 25.000%{ content: '3d8b4f2a1c07e96580dfa3b7c4e21d09'; }
+   25.001%, 33.333%{ content: 'a7f2e1bc09d84a3f6519c0e7d2b8f14e'; }
+   33.334%, 41.666%{ content: 'f4c89e16d3a72b5490fe01c87d5f6a23'; }
+   41.667%, 50.000%{ content: '71d2c0a4b8e3f169250d7c4f98a16b53'; }
+   50.001%, 58.333%{ content: '0b9e7d3c5a1f84260cde93b7a4f802d1'; }
+   58.334%, 66.666%{ content: '6e41a90f2c8b73d5104fea6d3927c5b8'; }
+   66.667%, 75.000%{ content: 'c5f328a1d074e69b83a4f71260de9c5b'; }
+   75.001%, 83.333%{ content: '8f03b2d6a7c4e15930fd82a1b4e9c673'; }
+   83.334%, 91.666%{ content: '97c4e2d1b3a0f86542de7c19f8a35b60'; }
+   91.667%, 100.0% { content: '4b1e83d7c2f09a56380fc1d4a7e2b695'; }
 }
 
 @keyframes hash-reveal {
@@ -900,21 +932,256 @@ $full-loop: calc($cycle * $variants);
     90%, 100% { max-height: 0; opacity: 0; }
 }
 
-/* ── Proof chips stage ─────────────────────────────────── */
+/* Hash percentage */
+.hash-pct {
+    font-family: var(--font-mono);
+    font-size: 0.52rem;
+    font-weight: 700;
+    color: var(--brand);
+    min-width: 2.5em;
+    text-align: right;
+    opacity: 0;
+    animation: hash-pct-show $cycle var(--ease-out) infinite;
+    animation-delay: 0.5s;
+}
+
+.hash-pct::after {
+    content: '100%';
+    animation: hash-pct-count $cycle steps(1) infinite;
+    animation-delay: 0.5s;
+}
+
+@keyframes hash-pct-count {
+    0%, 8%   { content: '0%'; }
+    10%      { content: '12%'; }
+    12%      { content: '34%'; }
+    14%      { content: '57%'; }
+    16%      { content: '78%'; }
+    18%      { content: '91%'; }
+    20%, 78% { content: '100%'; }
+    90%, 100% { content: '0%'; }
+}
+
+@keyframes hash-pct-show {
+    0%, 6%   { opacity: 0; }
+    12%      { opacity: 1; }
+    78%      { opacity: 1; }
+    90%, 100% { opacity: 0; }
+}
+
+/* Signing stage */
+.stage-sign {
+    padding: 0;
+    animation: stage-cycle $cycle var(--ease-out) infinite both;
+    animation-delay: 0.9s;
+}
+
+.sign-wrap {
+    background: var(--bg-sunk);
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
+    overflow: hidden;
+}
+
+.sign-header {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.5rem 0.7rem;
+    border-bottom: 1px solid var(--border);
+}
+
+.sign-key-icon {
+    width: 16px;
+    height: 16px;
+    color: var(--brand);
+    flex-shrink: 0;
+    animation: key-rotate $cycle var(--ease-out) infinite 0.9s;
+}
+
+@keyframes key-rotate {
+    0%, 8%   { transform: rotate(0deg); color: var(--text-dim); }
+    14%      { transform: rotate(180deg); color: var(--brand); }
+    20%      { transform: rotate(360deg); color: oklch(0.72 0.17 150); }
+    78%      { color: oklch(0.72 0.17 150); }
+    90%, 100% { transform: rotate(0deg); color: var(--text-dim); }
+}
+
+.sign-label {
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    color: var(--text);
+}
+
+.sign-algo {
+    margin-left: auto;
+    font-size: 0.44rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--brand);
+    background: var(--accent-soft);
+    padding: 0.1rem 0.35rem;
+    border-radius: var(--r-sm);
+}
+
+.sign-body {
+    padding: 0.45rem 0.7rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+}
+
+.sign-status-msg {
+    font-size: 0.52rem;
+    color: var(--text-dim);
+    font-style: italic;
+    opacity: 0;
+    animation: sign-msg $cycle var(--ease-out) infinite 0.9s;
+}
+
+@keyframes sign-msg {
+    0%, 8%   { opacity: 0; }
+    14%      { opacity: 1; }
+    26%      { opacity: 0.3; }
+    100%     { opacity: 0; }
+}
+
+.sign-fingerprint {
+    font-family: var(--font-mono);
+    font-size: 0.58rem;
+    color: var(--brand);
+    letter-spacing: 0.02em;
+}
+
+.sign-pgp-block {
+    display: flex;
+    flex-direction: column;
+    gap: 0.08rem;
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    animation: sign-reveal $cycle var(--ease-out) infinite;
+    animation-delay: 0.9s;
+}
+
+.sign-pgp-header,
+.sign-pgp-footer {
+    font: 0.4rem var(--font-mono);
+    color: var(--text-dim);
+}
+
+.sign-fingerprint::after {
+    content: 'A1B2 C3D4 E5F6 A1B2 C3D4';
+    animation: type-fingerprints $full-loop steps(1) infinite;
+}
+
+@keyframes type-fingerprints {
+    0.000%,  8.333% { content: 'A1B2 C3D4 E5F6 A1B2 C3D4'; }
+    8.334%, 16.666% { content: '7F8E 9D0C B1A2 3456 78EF'; }
+   16.667%, 25.000% { content: 'D4C3 B2A1 F6E5 0987 6543'; }
+   25.001%, 33.333% { content: '2468 ACE0 1357 9BDF 2468'; }
+   33.334%, 41.666% { content: 'BEEF CAFE D00D FACE 1234'; }
+   41.667%, 50.000% { content: '9876 5432 1FED CBA0 9876'; }
+   50.001%, 58.333% { content: 'F1E2 D3C4 B5A6 0798 F1E2'; }
+   58.334%, 66.666% { content: '3691 2CF4 8BE7 5A0D 3691'; }
+   66.667%, 75.000% { content: 'C0DE BEEF 1A2B 3C4D 5E6F'; }
+   75.001%, 83.333% { content: '4B1D 7E2A 9F3C 0D5E 8A6B'; }
+   83.334%, 91.666% { content: '8ACE 1357 BDF0 2468 9ACE'; }
+   91.667%, 100.0%  { content: 'E1D2 C3B4 A596 8770 E1D2'; }
+}
+
+@keyframes sign-reveal {
+    0%, 14%  { max-height: 0; opacity: 0; }
+    24%      { max-height: 4em; opacity: 1; }
+    78%      { max-height: 4em; opacity: 1; }
+    90%, 100% { max-height: 0; opacity: 0; }
+}
+
+.sign-bar {
+    height: 2px;
+    background: var(--border);
+    position: relative;
+    overflow: hidden;
+}
+
+.sign-bar::after {
+    content: '';
+    display: block;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, var(--brand), oklch(0.72 0.17 150));
+    transform-origin: left;
+    animation: sign-fill $cycle var(--ease-out) infinite;
+    animation-delay: 0.9s;
+}
+
+@keyframes sign-fill {
+    0%, 10%  { transform: scaleX(0); }
+    28%      { transform: scaleX(1); }
+    78%      { transform: scaleX(1); }
+    90%, 100% { transform: scaleX(0); }
+}
+
+.sign-bar-label {
+    position: absolute;
+    top: -0.8rem;
+    right: 0;
+    font: 700 0.42rem/1 var(--font-display);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: oklch(0.72 0.17 150);
+    opacity: 0;
+    animation: sign-verified $cycle var(--ease-out) infinite;
+    animation-delay: 0.9s;
+}
+
+@keyframes sign-verified {
+    0%, 24%  { opacity: 0; }
+    30%      { opacity: 1; }
+    78%      { opacity: 1; }
+    90%, 100% { opacity: 0; }
+}
+/* Signing timestamp */
+.sign-time {
+    font: 600 0.5rem var(--font-mono);
+    color: var(--text-dim);
+    opacity: 0;
+    animation: sign-time-vis $cycle var(--ease-out) infinite;
+    animation-delay: 0.9s;
+}
+
+.sign-time::after {
+    content: '14:32:04';
+    animation: sign-time-tick $cycle steps(1) infinite;
+    animation-delay: 0.9s;
+}
+
+@keyframes sign-time-tick {
+    0%, 10%  { content: '14:32:04'; }
+    14%      { content: '14:32:05'; }
+    18%      { content: '14:32:06'; }
+    24%      { content: '14:32:07'; }
+    26%, 78% { content: '14:32:07 ✓'; }
+    90%, 100% { content: '14:32:04'; }
+}
+
+@keyframes sign-time-vis {
+    0%, 8%   { opacity: 0; color: var(--text-dim); }
+    14%      { opacity: 1; color: var(--text-dim); }
+    28%      { color: oklch(0.72 0.17 150); }
+    78%      { opacity: 1; color: oklch(0.72 0.17 150); }
+    90%, 100% { opacity: 0; color: var(--text-dim); }
+}
+
+
+/* Proof chips */
 .stage-proof {
     display: flex;
     gap: 0.4rem;
-    animation:
-        stage-cycle $cycle var(--ease-out) infinite both,
-        stage-glow-subtle $cycle var(--ease-out) infinite;
+    animation: stage-cycle $cycle var(--ease-out) infinite both;
     animation-delay: 1.2s;
-}
-
-@keyframes stage-glow-subtle {
-    0%, 8%   { filter: brightness(1); }
-    16%      { filter: brightness(1.15); }
-    30%      { filter: brightness(1); }
-    100%     { filter: brightness(1); }
 }
 
 .proof-chip {
@@ -930,9 +1197,9 @@ $full-loop: calc($cycle * $variants);
     animation: chip-bounce $cycle var(--ease-out) infinite;
 }
 
-.proof-chip--what { animation-delay: 1.4s; }
-.proof-chip--who  { animation-delay: 1.7s; }
-.proof-chip--when { animation-delay: 2.0s; }
+.proof-chip--what { animation-delay: 1.35s; }
+.proof-chip--who  { animation-delay: 1.55s; }
+.proof-chip--when { animation-delay: 1.75s; }
 
 @keyframes chip-bounce {
     0%, 5%  { transform: scale(0.85); opacity: 0; }
@@ -956,37 +1223,25 @@ $full-loop: calc($cycle * $variants);
     color: var(--text);
 }
 
-/* WHAT — file title derived from filename (matches real CITATION.cff title) */
+/* WHAT — content type detected by engine */
 .pc-val--what::after {
-    content: 'Aurora Dashboard v4';
+    content: 'UI/UX design';
     animation: proof-what $full-loop steps(1) infinite;
 }
 
 @keyframes proof-what {
-    0.000%,  4.166% { content: 'Aurora Dashboard v4'; }
-    4.167%,  8.333% { content: 'Nocturne Op.9 No.2'; }
-    8.334%, 12.500% { content: 'Payment Gateway'; }
-   12.501%, 16.666% { content: 'Golden Gate Bridge'; }
-   16.667%, 20.833% { content: 'Quantum Computing Thesis'; }
-   20.834%, 25.000% { content: 'Behind the Scenes Ep.7'; }
-   25.001%, 29.166% { content: 'Mech Arm Assembly v8'; }
-   29.167%, 33.333% { content: 'Satoshi Sans Bold'; }
-   33.334%, 37.500% { content: 'Genome Sequences 2026'; }
-   37.501%, 41.666% { content: 'Requiem Final Mix'; }
-   41.667%, 45.833% { content: 'ERC-721 Marketplace'; }
-   45.834%, 50.000% { content: 'Rebrand Style Guide'; }
-   50.001%, 54.166% { content: 'Milky Way 16-bit HDR'; }
-   54.167%, 58.333% { content: 'PCT/WO2026 Patent'; }
-   58.334%, 62.500% { content: 'Drone Survey 8K'; }
-   62.501%, 66.666% { content: 'Transformer v2'; }
-   66.667%, 70.833% { content: 'Client Deliverables Q1'; }
-   70.834%, 75.000% { content: 'True Crime Ep.153'; }
-   75.001%, 79.166% { content: 'Turbine Blade CFD'; }
-   79.167%, 83.333% { content: 'Series A Pitch'; }
-   83.334%, 87.500% { content: 'Firmware STM32 v3.2'; }
-   87.501%, 91.666% { content: 'Venice Sunrise'; }
-   91.667%, 95.833% { content: 'Employment Agreement'; }
-   95.834%, 100.0%  { content: 'Lo-Fi Chill Beats Vol.4'; }
+    0.000%, 8.333%{ content: 'UI/UX design'; }
+   8.334%, 16.666%{ content: 'Audio master'; }
+   16.667%, 25.000%{ content: 'Source code'; }
+   25.001%, 33.333%{ content: 'RAW photograph'; }
+   33.334%, 41.666%{ content: 'Research paper'; }
+   41.667%, 50.000%{ content: 'Video footage'; }
+   50.001%, 58.333%{ content: '3D model'; }
+   58.334%, 66.666%{ content: 'Font binary'; }
+   66.667%, 75.000%{ content: 'Dataset'; }
+   75.001%, 83.333%{ content: 'Smart contract'; }
+   83.334%, 91.666%{ content: 'Deliverables'; }
+   91.667%, 100.0% { content: 'Podcast episode'; }
 }
 
 /* WHO — author (matches file-author cycling) */
@@ -996,30 +1251,18 @@ $full-loop: calc($cycle * $variants);
 }
 
 @keyframes proof-who {
-    0.000%,  4.166% { content: 'M. Sorokina'; }
-    4.167%,  8.333% { content: 'T. Yamamoto'; }
-    8.334%, 12.500% { content: 'D. Ferreira'; }
-   12.501%, 16.666% { content: 'C. Weijun'; }
-   16.667%, 20.833% { content: 'A. Kolesnikov'; }
-   20.834%, 25.000% { content: 'P. Nandakumar'; }
-   25.001%, 29.166% { content: 'L. Björkman'; }
-   29.167%, 33.333% { content: 'S. Carvalho'; }
-   33.334%, 37.500% { content: 'A. Hassan'; }
-   37.501%, 41.666% { content: 'N. Orlov'; }
-   41.667%, 45.833% { content: 'É. Beaumont'; }
-   45.834%, 50.000% { content: 'Y. Park'; }
-   50.001%, 54.166% { content: 'M. Bellini'; }
-   54.167%, 58.333% { content: 'K. Wolff'; }
-   58.334%, 62.500% { content: 'R. Mendes'; }
-   62.501%, 66.666% { content: 'A. Mbeki'; }
-   66.667%, 70.833% { content: 'V. Szabo'; }
-   70.834%, 75.000% { content: 'C. Dubois'; }
-   75.001%, 79.166% { content: 'H. Tanaka'; }
-   79.167%, 83.333% { content: 'N. Kravchenko'; }
-   83.334%, 87.500% { content: 'O. Lindgren'; }
-   87.501%, 91.666% { content: 'I. Rossi'; }
-   91.667%, 95.833% { content: 'P. Morozov'; }
-   95.834%, 100.0%  { content: 'L. Fontaine'; }
+    0.000%, 8.333%{ content: 'M. Sorokina'; }
+   8.334%, 16.666%{ content: 'T. Yamamoto'; }
+   16.667%, 25.000%{ content: 'D. Ferreira'; }
+   25.001%, 33.333%{ content: 'C. Weijun'; }
+   33.334%, 41.666%{ content: 'A. Kolesnikov'; }
+   41.667%, 50.000%{ content: 'P. Nandakumar'; }
+   50.001%, 58.333%{ content: 'L. Björkman'; }
+   58.334%, 66.666%{ content: 'S. Carvalho'; }
+   66.667%, 75.000%{ content: 'A. Hassan'; }
+   75.001%, 83.333%{ content: 'N. Orlov'; }
+   83.334%, 91.666%{ content: 'É. Beaumont'; }
+   91.667%, 100.0% { content: 'H. Tanaka'; }
 }
 
 /* WHEN — date anchored (matches file-date cycling) */
@@ -1029,33 +1272,49 @@ $full-loop: calc($cycle * $variants);
 }
 
 @keyframes proof-when {
-    0.000%,  4.166% { content: '2026-04-08'; }
-    4.167%,  8.333% { content: '2026-03-22'; }
-    8.334%, 12.500% { content: '2026-04-07'; }
-   12.501%, 16.666% { content: '2026-01-15'; }
-   16.667%, 20.833% { content: '2025-12-01'; }
-   20.834%, 25.000% { content: '2026-04-05'; }
-   25.001%, 29.166% { content: '2026-02-18'; }
-   29.167%, 33.333% { content: '2025-11-30'; }
-   33.334%, 37.500% { content: '2026-03-14'; }
-   37.501%, 41.666% { content: '2025-09-10'; }
-   41.667%, 45.833% { content: '2026-04-08'; }
-   45.834%, 50.000% { content: '2026-01-28'; }
-   50.001%, 54.166% { content: '2026-03-03'; }
-   54.167%, 58.333% { content: '2026-04-01'; }
-   58.334%, 62.500% { content: '2026-02-14'; }
-   62.501%, 66.666% { content: '2026-04-06'; }
-   66.667%, 70.833% { content: '2026-03-30'; }
-   70.834%, 75.000% { content: '2026-04-02'; }
-   75.001%, 79.166% { content: '2025-10-22'; }
-   79.167%, 83.333% { content: '2026-04-07'; }
-   83.334%, 87.500% { content: '2026-03-19'; }
-   87.501%, 91.666% { content: '2026-02-08'; }
-   91.667%, 95.833% { content: '2025-08-15'; }
-   95.834%, 100.0%  { content: '2026-04-03'; }
+    0.000%, 8.333%{ content: '2026-04-08'; }
+   8.334%, 16.666%{ content: '2026-03-22'; }
+   16.667%, 25.000%{ content: '2026-04-07'; }
+   25.001%, 33.333%{ content: '2026-01-15'; }
+   33.334%, 41.666%{ content: '2025-12-01'; }
+   41.667%, 50.000%{ content: '2026-04-05'; }
+   50.001%, 58.333%{ content: '2026-02-18'; }
+   58.334%, 66.666%{ content: '2025-11-30'; }
+   66.667%, 75.000%{ content: '2026-03-14'; }
+   75.001%, 83.333%{ content: '2026-04-08'; }
+   83.334%, 91.666%{ content: '2026-03-30'; }
+   91.667%, 100.0% { content: '2026-04-02'; }
 }
 
-/* ── Anchor terminal stage ──────────────────────────────── */
+/* WHEN time with ms — animated counter */
+.pc-time {
+    font-size: 0.52rem;
+    font-family: var(--font-mono);
+    color: var(--text-dim);
+    letter-spacing: 0.02em;
+}
+
+.pc-val--when-time::after {
+    content: '14:32:07.841';
+    animation: proof-time 3s steps(1) infinite;
+}
+
+@keyframes proof-time {
+    0%   { content: '14:32:07.841'; }
+    8%   { content: '14:32:07.842'; }
+    16%  { content: '14:32:07.843'; }
+    24%  { content: '14:32:07.844'; }
+    32%  { content: '14:32:07.845'; }
+    40%  { content: '14:32:07.846'; }
+    48%  { content: '14:32:07.847'; }
+    56%  { content: '14:32:07.848'; }
+    64%  { content: '14:32:07.849'; }
+    72%  { content: '14:32:07.850'; }
+    80%  { content: '14:32:07.851'; }
+    88%  { content: '14:32:07.852'; }
+}
+
+/* Anchor terminal */
 .stage-anchor {
     padding: 0;
 }
@@ -1109,11 +1368,11 @@ $full-loop: calc($cycle * $variants);
     animation-delay: var(--tld, 0s);
 }
 
-.tl--btc  { --tld: 2.2s; --tlc: oklch(0.74 0.16 60); }
-.tl--tsa1 { --tld: 2.9s; --tlc: oklch(0.65 0.19 145); }
-.tl--tsa2 { --tld: 3.6s; --tlc: oklch(0.58 0.16 250); }
-.tl--tsa3 { --tld: 4.3s; --tlc: oklch(0.62 0.16 300); }
-.tl--eth  { --tld: 5.0s; --tlc: oklch(0.55 0.18 260); }
+.tl--btc  { --tld: 1.9s; --tlc: oklch(0.74 0.16 60); }
+.tl--tsa1 { --tld: 2.5s; --tlc: oklch(0.65 0.19 145); }
+.tl--tsa2 { --tld: 3.1s; --tlc: oklch(0.58 0.16 250); }
+.tl--tsa3 { --tld: 3.7s; --tlc: oklch(0.62 0.16 300); }
+.tl--eth  { --tld: 4.3s; --tlc: oklch(0.55 0.18 260); }
 
 @keyframes tl-enter {
     0%, 8%   { opacity: 0; transform: translateY(6px); }
@@ -1168,6 +1427,14 @@ $full-loop: calc($cycle * $variants);
 
 .tl-icon {
     font-weight: 700;
+}
+
+.tl-detail {
+    font-family: var(--font-mono);
+    font-size: 0.46rem;
+    color: var(--text-dim);
+    opacity: 0.5;
+    padding-left: 0.9rem;
 }
 
 /* Terminal blinking cursor — on last command line */
@@ -1264,16 +1531,78 @@ $full-loop: calc($cycle * $variants);
     color: var(--text);
 }
 
-.cert-val--count {
-    font-family: inherit;
-    font-weight: 700;
-    color: var(--brand);
+/* Cert anchors */
+.cert-anchors {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    padding: 0.25rem 0;
+}
+
+.ca-row {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.52rem;
+    opacity: 0;
+    transform: translateX(-6px);
+    animation: ca-enter $cycle var(--ease-out) infinite;
+}
+
+.ca--btc  { animation-delay: 4.0s; }
+.ca--tsa1 { animation-delay: 4.15s; }
+.ca--tsa2 { animation-delay: 4.3s; }
+.ca--tsa3 { animation-delay: 4.45s; }
+.ca--eth  { animation-delay: 4.6s; }
+
+@keyframes ca-enter {
+    0%, 6%   { opacity: 0; transform: translateX(-6px); }
+    14%      { opacity: 1; transform: translateX(0); }
+    78%      { opacity: 1; }
+    90%, 100% { opacity: 0; }
+}
+
+.ca-icon {
+    font-size: 0.62rem;
+    width: 1rem;
+    text-align: center;
+    flex-shrink: 0;
+}
+
+.ca-icon--lock {
+    font-size: 0.52rem;
+}
+
+.ca-name {
+    font-weight: 600;
+    color: var(--text);
+    flex: 1;
+}
+
+.ca-status {
+    font-family: var(--font-mono);
+    font-size: 0.48rem;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+}
+
+.ca-ok {
+    color: oklch(0.72 0.17 150);
 }
 
 .cert-val--ok {
     font-family: inherit;
     font-weight: 700;
     color: oklch(0.72 0.17 150);
+}
+
+.cert-val--gpg {
+    letter-spacing: 0.04em;
+    color: var(--brand);
+}
+
+.cert-num::after {
+    content: 'MDS-2026-0408-001';
 }
 
 .cert-dl {
@@ -1289,20 +1618,18 @@ $full-loop: calc($cycle * $variants);
     cursor: pointer;
 }
 
-/* Verified seal — stamps onto the certificate */
+/* Verified seal — in cert header, centered */
 .cert-seal {
-    position: absolute;
-    top: 0.4rem;
-    right: 0.4rem;
-    width: 28px;
-    height: 28px;
+    width: 22px;
+    height: 22px;
     color: oklch(0.72 0.17 150);
     opacity: 0;
     transform: scale(0) rotate(-20deg);
     animation: seal-stamp $cycle var(--ease-out) infinite;
-    animation-delay: 3.0s;
-    z-index: 2;
+    animation-delay: 5.0s;
     filter: drop-shadow(0 0 4px oklch(0.72 0.17 150 / 0.5));
+    flex-shrink: 0;
+    margin-left: auto;
 }
 
 .cert-seal svg {
@@ -1318,20 +1645,20 @@ $full-loop: calc($cycle * $variants);
     90%, 100% { opacity: 0; transform: scale(0.8); }
 }
 
-/* Stage activation glow — brief border glow when stage appears */
+/* Stage glow */
 @keyframes stage-glow {
     0%, 5%   { box-shadow: 0 0 0 transparent; }
-    12%      { box-shadow: 0 0 16px color-mix(in oklch, var(--brand) 30%, transparent); }
-    28%      { box-shadow: 0 0 0 transparent; }
-    100%     { box-shadow: 0 0 0 transparent; }
+    12%      { box-shadow: 0 0 12px color-mix(in oklch, var(--brand) 25%, transparent); }
+    28%, 100% { box-shadow: 0 0 0 transparent; }
 }
 
-/* ── Blockchain chain visualization ────────────────────── */
+/* Blockchain */
 .chain-vis {
     margin-top: 0.5rem;
     opacity: 0;
     animation: chain-enter $cycle var(--ease-out) infinite;
-    animation-delay: 5.6s;
+    animation-delay: 5.0s;
+    overflow-x: auto;
 }
 
 @keyframes chain-enter {
@@ -1402,7 +1729,7 @@ $full-loop: calc($cycle * $variants);
     white-space: nowrap;
     opacity: 0;
     animation: cb-you-pop $cycle var(--ease-out) infinite;
-    animation-delay: 6.2s;
+    animation-delay: 5.6s;
 }
 
 @keyframes cb-you-pop {
@@ -1420,82 +1747,46 @@ $full-loop: calc($cycle * $variants);
     flex-shrink: 0;
 }
 
-/* ── Merkle tree path ──────────────────────────────────── */
-.merkle-path {
-    margin-top: 0.45rem;
+/* Future blocks — appear after "your" block */
+.chain-link--after {
     opacity: 0;
-    animation: merkle-enter $cycle var(--ease-out) infinite;
-    animation-delay: 6.6s;
+    animation: future-link $cycle var(--ease-out) infinite;
+    animation-delay: 6.0s;
 }
 
-@keyframes merkle-enter {
-    0%, 4%   { opacity: 0; transform: translateY(6px); }
-    10%      { opacity: 1; transform: translateY(0); }
-    72%      { opacity: 1; }
+.chain-link--after2 {
+    opacity: 0;
+    animation: future-link $cycle var(--ease-out) infinite;
+    animation-delay: 6.4s;
+}
+
+.cb--future,
+.cb--future2 {
+    opacity: 0;
+    border-style: dashed;
+    animation: future-block $cycle var(--ease-out) infinite;
+}
+
+.cb--future  { animation-delay: 6.2s; }
+.cb--future2 { animation-delay: 6.6s; }
+
+.cb--future .cb-hash,
+.cb--future2 .cb-hash {
+    opacity: 0.5;
+}
+
+@keyframes future-block {
+    0%, 4%   { opacity: 0; transform: translateX(-8px); }
+    10%      { opacity: 0.6; transform: translateX(0); }
+    72%      { opacity: 0.6; }
     84%, 100% { opacity: 0; }
 }
 
-.merkle-svg {
-    width: 100%;
-    max-width: 260px;
-    height: auto;
-    display: block;
-    margin: 0 auto;
-}
-
-.mk-node {
-    fill: oklch(0.17 0.005 260);
-    stroke: var(--border);
-    stroke-width: 0.8;
-}
-
-.mk-root {
-    fill: oklch(0.2 0.01 260);
-    stroke: var(--brand);
-    stroke-width: 1;
-}
-
-.mk-leaf--you {
-    stroke: var(--brand);
-    stroke-width: 1.2;
-    fill: color-mix(in oklch, var(--brand) 12%, oklch(0.17 0.005 260));
-}
-
-.mk-line {
-    stroke: var(--border);
-    stroke-width: 0.6;
-    stroke-dasharray: 60;
-    stroke-dashoffset: 60;
-    animation: mk-draw $cycle var(--ease-out) infinite;
-}
-
-.mk-line--l  { animation-delay: 6.9s; }
-.mk-line--r  { animation-delay: 7.0s; }
-.mk-line--l2 { animation-delay: 7.2s; }
-.mk-line--r2 { animation-delay: 7.3s; }
-.mk-line--l3 { animation-delay: 7.4s; }
-.mk-line--r3 { animation-delay: 7.5s; }
-
-@keyframes mk-draw {
-    0%, 4%   { stroke-dashoffset: 60; }
-    12%      { stroke-dashoffset: 0; }
-    72%      { stroke-dashoffset: 0; }
-    84%, 100% { stroke-dashoffset: 60; }
-}
-
-.mk-text {
-    font-family: var(--font-mono);
-    font-size: 5.5px;
-    fill: var(--text-dim);
-}
-
-.mk-text--you {
-    fill: var(--brand);
-    font-weight: 700;
-}
-
-.mk-text--leaf {
-    font-size: 5px;
+@keyframes future-link {
+    0%, 4%   { opacity: 0; }
+    10%      { opacity: 0.5; }
+    72%      { opacity: 0.5; }
+    84%, 100% { opacity: 0; }
 }
 
 /* ── Ambient glow on card ──────────────────────────────── */
@@ -1558,15 +1849,15 @@ $full-loop: calc($cycle * $variants);
         padding: 1.25rem 1rem;
     }
 
-    .file-date {
-        display: none;
-    }
-
-    .file-author {
-        display: none;
+    .file-detail-grid {
+        gap: 0.05rem 0.35rem;
     }
 
     .tl-arg {
+        display: none;
+    }
+
+    .tl-detail {
         display: none;
     }
 
@@ -1586,16 +1877,43 @@ $full-loop: calc($cycle * $variants);
         display: none;
     }
 
-    .merkle-svg {
-        max-width: 200px;
+    .cb--future2,
+    .chain-link--after2 {
+        display: none;
     }
 
     .stage-conn {
         height: 10px;
     }
 
-    .file-progress {
+    .pc-time {
         display: none;
+    }
+
+    .ca-icon {
+        display: none;
+    }
+
+    .sign-algo {
+        display: none;
+    }
+
+    .sign-fingerprint {
+        font-size: 0.48rem;
+    }
+
+    .hash-pct {
+        display: none;
+    }
+
+    .sign-pgp-header,
+    .sign-pgp-footer {
+        display: none;
+    }
+
+    .stage::before {
+        font-size: 0.32rem;
+        margin-bottom: 0.15rem;
     }
 }
 
