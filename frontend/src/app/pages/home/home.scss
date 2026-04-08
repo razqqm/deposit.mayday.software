@@ -297,7 +297,23 @@ $cycle: 18s;
 
 .demo-card:hover {
     border-color: color-mix(in oklch, var(--brand) 50%, transparent);
-    box-shadow: var(--shadow-lg), 0 0 20px color-mix(in oklch, var(--brand) 15%, transparent);
+    box-shadow: var(--shadow-lg), 0 0 24px color-mix(in oklch, var(--brand) 20%, transparent);
+}
+
+/* Subtle grid overlay — Vercel-inspired */
+.card-grid {
+    position: absolute;
+    inset: 0;
+    background-image:
+        linear-gradient(var(--border) 1px, transparent 1px),
+        linear-gradient(90deg, var(--border) 1px, transparent 1px);
+    background-size: 28px 28px;
+    opacity: 0.18;
+    mask-image: radial-gradient(ellipse at 50% 30%, #000 5%, transparent 55%);
+    -webkit-mask-image: radial-gradient(ellipse at 50% 30%, #000 5%, transparent 55%);
+    pointer-events: none;
+    z-index: 0;
+    border-radius: inherit;
 }
 
 /* Flowing light line through the card */
@@ -321,9 +337,37 @@ $cycle: 18s;
     z-index: 0;
 }
 
+/* Data particles flowing down the line */
+.demo-flow-line::before,
+.demo-flow-line::after {
+    content: '';
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: var(--brand);
+    left: 50%;
+    transform: translateX(-50%);
+    box-shadow: 0 0 6px var(--brand), 0 0 14px color-mix(in oklch, var(--brand) 40%, transparent);
+    animation: data-particle $cycle linear infinite;
+}
+
+.demo-flow-line::after {
+    width: 3px;
+    height: 3px;
+    animation-delay: calc($cycle * 0.18);
+}
+
+@keyframes data-particle {
+    0%, 6%   { top: -4px; opacity: 0; }
+    10%      { opacity: 0.9; }
+    70%      { top: 100%; opacity: 0.6; }
+    75%, 100% { opacity: 0; top: 100%; }
+}
+
 @keyframes flow-pulse {
     0%, 5%   { opacity: 0; }
-    10%, 90% { opacity: 0.15; }
+    10%, 90% { opacity: 0.18; }
     95%, 100% { opacity: 0; }
 }
 
@@ -354,12 +398,15 @@ $cycle: 18s;
 }
 
 .stage-file   { animation-delay: 0.0s; }
-.stage-proof  { animation-delay: 0.6s; }
-.stage-hash   { animation-delay: 1.2s; }
+.stage-hash   { animation-delay: 0.6s; }
+.stage-proof  { animation-delay: 1.2s; }
 .stage-anchor { animation-delay: 1.8s; }
 .stage-seal   { animation-delay: 2.4s; }
 
 /* ── File stage ────────────────────────────────────────── */
+$variants: 24;
+$full-loop: calc($cycle * $variants);
+
 .stage-file {
     display: flex;
     align-items: center;
@@ -402,8 +449,9 @@ $cycle: 18s;
 .file-info {
     display: flex;
     flex-direction: column;
-    gap: 0.1rem;
+    gap: 0.15rem;
     min-width: 0;
+    flex: 1;
 }
 
 .file-name {
@@ -416,32 +464,200 @@ $cycle: 18s;
     text-overflow: ellipsis;
 }
 
-/* Typing animation for file name */
 .file-name::after {
     content: 'design_v3.fig';
-    animation: type-files calc($cycle * 3) steps(1) infinite;
+    animation: type-files $full-loop steps(1) infinite;
 }
 
+/* 24 file variants — cycling through different categories */
 @keyframes type-files {
-    0%, 33.3%  { content: 'design_v3.fig'; }
-    33.4%, 66.6% { content: 'thesis_final.pdf'; }
-    66.7%, 100%  { content: 'track_08_master.wav'; }
+    0.000%,  4.166% { content: 'aurora_dashboard_v4.fig'; }
+    4.167%,  8.333% { content: 'nocturne_op9_no2_master.wav'; }
+    8.334%, 12.500% { content: 'payment-gateway.rs'; }
+   12.501%, 16.666% { content: 'IMG_20260115_golden_gate.dng'; }
+   16.667%, 20.833% { content: 'quantum_computing_thesis.pdf'; }
+   20.834%, 25.000% { content: 'behind_the_scenes_ep7.mov'; }
+   25.001%, 29.166% { content: 'mech_arm_assembly_v8.blend'; }
+   29.167%, 33.333% { content: 'Satoshi-Sans-Bold.woff2'; }
+   33.334%, 37.500% { content: 'genome_sequences_2026.parquet'; }
+   37.501%, 41.666% { content: 'requiem_final_mix.flac'; }
+   41.667%, 45.833% { content: 'ERC721_Marketplace.sol'; }
+   45.834%, 50.000% { content: 'rebrand_styleguide.sketch'; }
+   50.001%, 54.166% { content: 'milky_way_16bit_HDR.cr3'; }
+   54.167%, 58.333% { content: 'PCT_WO2026_patent.docx'; }
+   58.334%, 62.500% { content: 'drone_survey_8k_raw.r3d'; }
+   62.501%, 66.666% { content: 'transformer_v2.ipynb'; }
+   66.667%, 70.833% { content: 'client_deliverables_Q1.tar.gz'; }
+   70.834%, 75.000% { content: 'true_crime_ep153.m4a'; }
+   75.001%, 79.166% { content: 'turbine_blade_CFD.stp'; }
+   79.167%, 83.333% { content: 'series_A_pitch.key'; }
+   83.334%, 87.500% { content: 'firmware_stm32_v3.2.elf'; }
+   87.501%, 91.666% { content: 'venice_sunrise_medium_format.iiq'; }
+   91.667%, 95.833% { content: 'employment_agreement_signed.pdf'; }
+   95.834%, 100.0%  { content: 'lofi_chill_beats_vol4.aiff'; }
+}
+
+.file-meta {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    flex-wrap: wrap;
+}
+
+.file-type-badge {
+    font-size: 0.46rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 0.1rem 0.32rem;
+    border-radius: var(--r-sm);
+    white-space: nowrap;
+}
+
+.file-type-badge::after {
+    content: '🎨 Design';
+    animation: type-badges $full-loop steps(1) infinite;
+}
+
+@keyframes type-badges {
+    0.000%,  4.166% { content: '🎨 Design'; }
+    4.167%,  8.333% { content: '🎵 Music'; }
+    8.334%, 12.500% { content: '💻 Code'; }
+   12.501%, 16.666% { content: '📷 Photo'; }
+   16.667%, 20.833% { content: '📄 Document'; }
+   20.834%, 25.000% { content: '🎬 Video'; }
+   25.001%, 29.166% { content: '🧊 3D Model'; }
+   29.167%, 33.333% { content: '🔤 Font'; }
+   33.334%, 37.500% { content: '📊 Data'; }
+   37.501%, 41.666% { content: '🎵 Music'; }
+   41.667%, 45.833% { content: '💻 Code'; }
+   45.834%, 50.000% { content: '🎨 Design'; }
+   50.001%, 54.166% { content: '📷 Photo'; }
+   54.167%, 58.333% { content: '📄 Document'; }
+   58.334%, 62.500% { content: '🎬 Video'; }
+   62.501%, 66.666% { content: '💻 Code'; }
+   66.667%, 70.833% { content: '📦 Archive'; }
+   70.834%, 75.000% { content: '🎙️ Audio'; }
+   75.001%, 79.166% { content: '⚙️ CAD'; }
+   79.167%, 83.333% { content: '📊 Presentation'; }
+   83.334%, 87.500% { content: '💻 Code'; }
+   87.501%, 91.666% { content: '📷 Photo'; }
+   91.667%, 95.833% { content: '📄 Document'; }
+   95.834%, 100.0%  { content: '🎵 Music'; }
 }
 
 .file-size {
-    font-size: 0.64rem;
+    font-size: 0.58rem;
     color: var(--text-dim);
 }
 
 .file-size::after {
     content: '4.2 MB';
-    animation: type-sizes calc($cycle * 3) steps(1) infinite;
+    animation: type-sizes $full-loop steps(1) infinite;
 }
 
 @keyframes type-sizes {
-    0%, 33.3%  { content: '4.2 MB'; }
-    33.4%, 66.6% { content: '2.8 MB'; }
-    66.7%, 100%  { content: '48.6 MB'; }
+    0.000%,  4.166% { content: '7.3 MB'; }
+    4.167%,  8.333% { content: '94.2 MB'; }
+    8.334%, 12.500% { content: '18.7 KB'; }
+   12.501%, 16.666% { content: '52.4 MB'; }
+   16.667%, 20.833% { content: '3.6 MB'; }
+   20.834%, 25.000% { content: '2.1 GB'; }
+   25.001%, 29.166% { content: '412 MB'; }
+   29.167%, 33.333% { content: '84 KB'; }
+   33.334%, 37.500% { content: '1.8 GB'; }
+   37.501%, 41.666% { content: '206 MB'; }
+   41.667%, 45.833% { content: '14.1 KB'; }
+   45.834%, 50.000% { content: '23.5 MB'; }
+   50.001%, 54.166% { content: '118 MB'; }
+   54.167%, 58.333% { content: '940 KB'; }
+   58.334%, 62.500% { content: '5.7 GB'; }
+   62.501%, 66.666% { content: '3.2 MB'; }
+   66.667%, 70.833% { content: '780 MB'; }
+   70.834%, 75.000% { content: '89 MB'; }
+   75.001%, 79.166% { content: '41.3 MB'; }
+   79.167%, 83.333% { content: '16.8 MB'; }
+   83.334%, 87.500% { content: '256 KB'; }
+   87.501%, 91.666% { content: '147 MB'; }
+   91.667%, 95.833% { content: '2.1 MB'; }
+   95.834%, 100.0%  { content: '73.4 MB'; }
+}
+
+.file-date {
+    font-size: 0.52rem;
+    color: var(--text-dim);
+    opacity: 0.7;
+}
+
+.file-date::after {
+    content: '2026-04-08';
+    animation: type-dates $full-loop steps(1) infinite;
+}
+
+@keyframes type-dates {
+    0.000%,  4.166% { content: '2026-04-08'; }
+    4.167%,  8.333% { content: '2026-03-22'; }
+    8.334%, 12.500% { content: '2026-04-07'; }
+   12.501%, 16.666% { content: '2026-01-15'; }
+   16.667%, 20.833% { content: '2025-12-01'; }
+   20.834%, 25.000% { content: '2026-04-05'; }
+   25.001%, 29.166% { content: '2026-02-18'; }
+   29.167%, 33.333% { content: '2025-11-30'; }
+   33.334%, 37.500% { content: '2026-03-14'; }
+   37.501%, 41.666% { content: '2025-09-10'; }
+   41.667%, 45.833% { content: '2026-04-08'; }
+   45.834%, 50.000% { content: '2026-01-28'; }
+   50.001%, 54.166% { content: '2026-03-03'; }
+   54.167%, 58.333% { content: '2026-04-01'; }
+   58.334%, 62.500% { content: '2026-02-14'; }
+   62.501%, 66.666% { content: '2026-04-06'; }
+   66.667%, 70.833% { content: '2026-03-30'; }
+   70.834%, 75.000% { content: '2026-04-02'; }
+   75.001%, 79.166% { content: '2025-10-22'; }
+   79.167%, 83.333% { content: '2026-04-07'; }
+   83.334%, 87.500% { content: '2026-03-19'; }
+   87.501%, 91.666% { content: '2026-02-08'; }
+   91.667%, 95.833% { content: '2025-08-15'; }
+   95.834%, 100.0%  { content: '2026-04-03'; }
+}
+
+.file-author {
+    font-size: 0.54rem;
+    color: var(--text-dim);
+    font-style: italic;
+    opacity: 0.8;
+}
+
+.file-author::after {
+    content: 'Elena Petrova';
+    animation: type-authors $full-loop steps(1) infinite;
+}
+
+@keyframes type-authors {
+    0.000%,  4.166% { content: '👤 Mila Sorokina'; }
+    4.167%,  8.333% { content: '👤 Takeshi Yamamoto'; }
+    8.334%, 12.500% { content: '👤 Daniela Ferreira'; }
+   12.501%, 16.666% { content: '👤 Chen Weijun'; }
+   16.667%, 20.833% { content: '👤 Andrei Kolesnikov'; }
+   20.834%, 25.000% { content: '👤 Priya Nandakumar'; }
+   25.001%, 29.166% { content: '👤 Lars Björkman'; }
+   29.167%, 33.333% { content: '👤 Sofia Carvalho'; }
+   33.334%, 37.500% { content: '👤 Dr. Amira Hassan'; }
+   37.501%, 41.666% { content: '👤 Nikolai Orlov'; }
+   41.667%, 45.833% { content: '👤 Émile Beaumont'; }
+   45.834%, 50.000% { content: '👤 Yuna Park'; }
+   50.001%, 54.166% { content: '👤 Marco Bellini'; }
+   54.167%, 58.333% { content: '👤 Katharina Wolff'; }
+   58.334%, 62.500% { content: '👤 Rodrigo Mendes'; }
+   62.501%, 66.666% { content: '👤 Aisha Mbeki'; }
+   66.667%, 70.833% { content: '👤 Viktor Szabo'; }
+   70.834%, 75.000% { content: '👤 Camille Dubois'; }
+   75.001%, 79.166% { content: '👤 Hiroshi Tanaka'; }
+   79.167%, 83.333% { content: '👤 Nadia Kravchenko'; }
+   83.334%, 87.500% { content: '👤 Oscar Lindgren'; }
+   87.501%, 91.666% { content: '👤 Isabella Rossi'; }
+   91.667%, 95.833% { content: '👤 Pavel Morozov'; }
+   95.834%, 100.0%  { content: '👤 Léa Fontaine'; }
 }
 
 /* ── Hash stage ────────────────────────────────────────── */
@@ -510,15 +726,52 @@ $cycle: 18s;
 
 .hash-output::after {
     content: '9c07646d781e43fe35c63773a6374293';
+    background: linear-gradient(
+        90deg,
+        var(--brand) 30%,
+        oklch(0.92 0.08 80) 50%,
+        var(--brand) 70%
+    );
+    background-size: 200% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
     animation:
-        type-hash calc($cycle * 3) steps(1) infinite,
-        hash-reveal $cycle var(--ease-out) infinite;
+        type-hash $full-loop steps(1) infinite,
+        hash-reveal $cycle var(--ease-out) infinite,
+        hash-shimmer 2.5s linear infinite;
+}
+
+@keyframes hash-shimmer {
+    0%   { background-position: 100% 0; }
+    100% { background-position: -100% 0; }
 }
 
 @keyframes type-hash {
-    0%, 33.3%  { content: '9c07646d781e43fe35c63773a6374293'; }
-    33.4%, 66.6% { content: 'a7f2e1bc09d84a3f6519c0e7d2b8f14e'; }
-    66.7%, 100%  { content: '3d8b4f2a1c07e96580dfa3b7c4e21d09'; }
+    0.000%,  4.166% { content: '9c07646d781e43fe35c63773a6374293'; }
+    4.167%,  8.333% { content: 'e1a04bc2f97d530816e3a2fd7c914b08'; }
+    8.334%, 12.500% { content: '3d8b4f2a1c07e96580dfa3b7c4e21d09'; }
+   12.501%, 16.666% { content: 'a7f2e1bc09d84a3f6519c0e7d2b8f14e'; }
+   16.667%, 20.833% { content: 'f4c89e16d3a72b5490fe01c87d5f6a23'; }
+   20.834%, 25.000% { content: '71d2c0a4b8e3f169250d7c4f98a16b53'; }
+   25.001%, 29.166% { content: '0b9e7d3c5a1f84260cde93b7a4f802d1'; }
+   29.167%, 33.333% { content: '6e41a90f2c8b73d5104fea6d3927c5b8'; }
+   33.334%, 37.500% { content: 'c5f328a1d074e69b83a4f71260de9c5b'; }
+   37.501%, 41.666% { content: '2a8d1b5c7e39f04682c1a6d093b7e4f5'; }
+   41.667%, 45.833% { content: '8f03b2d6a7c4e15930fd82a1b4e9c673'; }
+   45.834%, 50.000% { content: 'd29c4f1a83b7e602d5a18c3069f4b72e'; }
+   50.001%, 54.166% { content: '14e7c2d8a03f9b56728d3e1c4a60f5b9'; }
+   54.167%, 58.333% { content: 'b6a9d37c2e810f4593c7f2a15b8de604'; }
+   58.334%, 62.500% { content: '5c2e8f1d93a4b07621df3c7a069e84b5'; }
+   62.501%, 66.666% { content: 'a3d09b72e4c1f685310a7e2dc8f4b961'; }
+   66.667%, 70.833% { content: '97c4e2d1b3a0f86542de7c19f8a35b60'; }
+   70.834%, 75.000% { content: '4b1e83d7c2f09a56380fc1d4a7e2b695'; }
+   75.001%, 79.166% { content: 'e8d2c1f4a7039b65841de3c7b0a6f529'; }
+   79.167%, 83.333% { content: '1f9a3c7d2e4b08563d0ce7a1b8f42d96'; }
+   83.334%, 87.500% { content: '7c0d4e2a1b3f986540ae81d3c9f27b65'; }
+   87.501%, 91.666% { content: 'db13e7c4a2f09856301dc8a7b5e4f629'; }
+   91.667%, 95.833% { content: '63a1d9c7e4b2f085420de3c1b8a7f596'; }
+   95.834%, 100.0%  { content: '2e7b4c1d8a3f096542f0e1d3c9a75b68'; }
 }
 
 @keyframes hash-reveal {
@@ -547,9 +800,9 @@ $cycle: 18s;
     animation: chip-bounce $cycle var(--ease-out) infinite;
 }
 
-.proof-chip--what { animation-delay: 0.8s; }
-.proof-chip--who  { animation-delay: 1.1s; }
-.proof-chip--when { animation-delay: 1.4s; }
+.proof-chip--what { animation-delay: 1.4s; }
+.proof-chip--who  { animation-delay: 1.7s; }
+.proof-chip--when { animation-delay: 2.0s; }
 
 @keyframes chip-bounce {
     0%, 5%  { transform: scale(0.85); opacity: 0; }
@@ -571,6 +824,105 @@ $cycle: 18s;
     font-size: 0.7rem;
     font-weight: 600;
     color: var(--text);
+}
+
+/* WHAT — file title derived from filename (matches real CITATION.cff title) */
+.pc-val--what::after {
+    content: 'Aurora Dashboard v4';
+    animation: proof-what $full-loop steps(1) infinite;
+}
+
+@keyframes proof-what {
+    0.000%,  4.166% { content: 'Aurora Dashboard v4'; }
+    4.167%,  8.333% { content: 'Nocturne Op.9 No.2'; }
+    8.334%, 12.500% { content: 'Payment Gateway'; }
+   12.501%, 16.666% { content: 'Golden Gate Bridge'; }
+   16.667%, 20.833% { content: 'Quantum Computing Thesis'; }
+   20.834%, 25.000% { content: 'Behind the Scenes Ep.7'; }
+   25.001%, 29.166% { content: 'Mech Arm Assembly v8'; }
+   29.167%, 33.333% { content: 'Satoshi Sans Bold'; }
+   33.334%, 37.500% { content: 'Genome Sequences 2026'; }
+   37.501%, 41.666% { content: 'Requiem Final Mix'; }
+   41.667%, 45.833% { content: 'ERC-721 Marketplace'; }
+   45.834%, 50.000% { content: 'Rebrand Style Guide'; }
+   50.001%, 54.166% { content: 'Milky Way 16-bit HDR'; }
+   54.167%, 58.333% { content: 'PCT/WO2026 Patent'; }
+   58.334%, 62.500% { content: 'Drone Survey 8K'; }
+   62.501%, 66.666% { content: 'Transformer v2'; }
+   66.667%, 70.833% { content: 'Client Deliverables Q1'; }
+   70.834%, 75.000% { content: 'True Crime Ep.153'; }
+   75.001%, 79.166% { content: 'Turbine Blade CFD'; }
+   79.167%, 83.333% { content: 'Series A Pitch'; }
+   83.334%, 87.500% { content: 'Firmware STM32 v3.2'; }
+   87.501%, 91.666% { content: 'Venice Sunrise'; }
+   91.667%, 95.833% { content: 'Employment Agreement'; }
+   95.834%, 100.0%  { content: 'Lo-Fi Chill Beats Vol.4'; }
+}
+
+/* WHO — author (matches file-author cycling) */
+.pc-val--who::after {
+    content: 'M. Sorokina';
+    animation: proof-who $full-loop steps(1) infinite;
+}
+
+@keyframes proof-who {
+    0.000%,  4.166% { content: 'M. Sorokina'; }
+    4.167%,  8.333% { content: 'T. Yamamoto'; }
+    8.334%, 12.500% { content: 'D. Ferreira'; }
+   12.501%, 16.666% { content: 'C. Weijun'; }
+   16.667%, 20.833% { content: 'A. Kolesnikov'; }
+   20.834%, 25.000% { content: 'P. Nandakumar'; }
+   25.001%, 29.166% { content: 'L. Björkman'; }
+   29.167%, 33.333% { content: 'S. Carvalho'; }
+   33.334%, 37.500% { content: 'A. Hassan'; }
+   37.501%, 41.666% { content: 'N. Orlov'; }
+   41.667%, 45.833% { content: 'É. Beaumont'; }
+   45.834%, 50.000% { content: 'Y. Park'; }
+   50.001%, 54.166% { content: 'M. Bellini'; }
+   54.167%, 58.333% { content: 'K. Wolff'; }
+   58.334%, 62.500% { content: 'R. Mendes'; }
+   62.501%, 66.666% { content: 'A. Mbeki'; }
+   66.667%, 70.833% { content: 'V. Szabo'; }
+   70.834%, 75.000% { content: 'C. Dubois'; }
+   75.001%, 79.166% { content: 'H. Tanaka'; }
+   79.167%, 83.333% { content: 'N. Kravchenko'; }
+   83.334%, 87.500% { content: 'O. Lindgren'; }
+   87.501%, 91.666% { content: 'I. Rossi'; }
+   91.667%, 95.833% { content: 'P. Morozov'; }
+   95.834%, 100.0%  { content: 'L. Fontaine'; }
+}
+
+/* WHEN — date anchored (matches file-date cycling) */
+.pc-val--when::after {
+    content: '2026-04-08';
+    animation: proof-when $full-loop steps(1) infinite;
+}
+
+@keyframes proof-when {
+    0.000%,  4.166% { content: '2026-04-08'; }
+    4.167%,  8.333% { content: '2026-03-22'; }
+    8.334%, 12.500% { content: '2026-04-07'; }
+   12.501%, 16.666% { content: '2026-01-15'; }
+   16.667%, 20.833% { content: '2025-12-01'; }
+   20.834%, 25.000% { content: '2026-04-05'; }
+   25.001%, 29.166% { content: '2026-02-18'; }
+   29.167%, 33.333% { content: '2025-11-30'; }
+   33.334%, 37.500% { content: '2026-03-14'; }
+   37.501%, 41.666% { content: '2025-09-10'; }
+   41.667%, 45.833% { content: '2026-04-08'; }
+   45.834%, 50.000% { content: '2026-01-28'; }
+   50.001%, 54.166% { content: '2026-03-03'; }
+   54.167%, 58.333% { content: '2026-04-01'; }
+   58.334%, 62.500% { content: '2026-02-14'; }
+   62.501%, 66.666% { content: '2026-04-06'; }
+   66.667%, 70.833% { content: '2026-03-30'; }
+   70.834%, 75.000% { content: '2026-04-02'; }
+   75.001%, 79.166% { content: '2025-10-22'; }
+   79.167%, 83.333% { content: '2026-04-07'; }
+   83.334%, 87.500% { content: '2026-03-19'; }
+   87.501%, 91.666% { content: '2026-02-08'; }
+   91.667%, 95.833% { content: '2025-08-15'; }
+   95.834%, 100.0%  { content: '2026-04-03'; }
 }
 
 /* ── Anchor terminal stage ──────────────────────────────── */
@@ -686,6 +1038,20 @@ $cycle: 18s;
 
 .tl-icon {
     font-weight: 700;
+}
+
+/* Terminal blinking cursor — on last command line */
+.tl--eth .tl-cmd::after {
+    content: '▌';
+    font-size: 0.55rem;
+    color: var(--tlc, var(--brand));
+    margin-left: 0.15rem;
+    animation: cursor-blink 0.6s steps(1) infinite;
+}
+
+@keyframes cursor-blink {
+    0%, 50% { opacity: 1; }
+    51%, 100% { opacity: 0; }
 }
 
 /* ── Certificate preview stage ─────────────────────────── */
@@ -968,27 +1334,52 @@ $cycle: 18s;
 .demo-card::before {
     content: '';
     position: absolute;
-    inset: -1px;
+    inset: -2px;
     border-radius: inherit;
     background: conic-gradient(
         from 0deg,
         transparent 0deg,
-        var(--brand) 60deg,
-        transparent 120deg,
-        transparent 240deg,
-        var(--brand) 300deg,
+        var(--brand) 40deg,
+        oklch(0.6 0.18 290) 80deg,
+        transparent 140deg,
+        transparent 220deg,
+        oklch(0.58 0.16 250) 270deg,
+        var(--brand) 320deg,
         transparent 360deg
     );
     opacity: 0;
     z-index: -1;
     animation: border-spin $cycle linear infinite;
-    filter: blur(6px);
+    filter: blur(8px);
+}
+
+/* Scan beam — sweeps down the card */
+.demo-card::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent 8%, var(--brand) 35%, var(--brand) 65%, transparent 92%);
+    box-shadow:
+        0 0 8px 2px color-mix(in oklch, var(--brand) 50%, transparent),
+        0 0 30px 4px color-mix(in oklch, var(--brand) 18%, transparent);
+    z-index: 3;
+    pointer-events: none;
+    animation: scan-sweep $cycle ease-in-out infinite;
+}
+
+@keyframes scan-sweep {
+    0%, 5%   { top: -2px; opacity: 0; }
+    8%       { opacity: 0.65; }
+    55%      { top: calc(100% + 2px); opacity: 0.45; }
+    60%, 100% { opacity: 0; top: calc(100% + 2px); }
 }
 
 @keyframes border-spin {
     0%, 5%   { opacity: 0; transform: rotate(0deg); }
-    30%, 80% { opacity: 0.35; }
-    90%, 100% { opacity: 0; }
+    20%, 85% { opacity: 0.5; }
+    95%, 100% { opacity: 0; }
     to       { transform: rotate(360deg); }
 }
 
@@ -997,6 +1388,14 @@ $cycle: 18s;
     .demo-card {
         max-width: 100%;
         padding: 1.25rem 1rem;
+    }
+
+    .file-date {
+        display: none;
+    }
+
+    .file-author {
+        display: none;
     }
 
     .tl-arg {

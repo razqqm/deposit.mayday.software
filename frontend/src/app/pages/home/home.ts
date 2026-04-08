@@ -65,6 +65,7 @@ interface FormState {
 
                 <aside class="hero-demo" aria-hidden="true">
                     <div class="demo-card" (click)="showExampleCert()">
+                        <div class="card-grid" aria-hidden="true"></div>
                         <div class="demo-pipeline">
                             <!-- Stage 1: File drops in -->
                             <div class="stage stage-file">
@@ -77,33 +78,38 @@ interface FormState {
                                 </div>
                                 <div class="file-info">
                                     <span class="file-name"></span>
-                                    <span class="file-size"></span>
+                                    <span class="file-meta">
+                                        <span class="file-type-badge"></span>
+                                        <span class="file-size"></span>
+                                        <span class="file-date"></span>
+                                    </span>
+                                    <span class="file-author"></span>
                                 </div>
                             </div>
 
-                            <!-- Stage 2: Proof layers assemble -->
-                            <div class="stage stage-proof">
-                                <div class="proof-chip proof-chip--what">
-                                    <span class="pc-key">{{ 'hero.bento.what' | translate }}</span>
-                                    <span class="pc-val">{{ 'hero.bento.whatVal' | translate }}</span>
-                                </div>
-                                <div class="proof-chip proof-chip--who">
-                                    <span class="pc-key">{{ 'hero.bento.who' | translate }}</span>
-                                    <span class="pc-val">{{ 'hero.bento.whoVal' | translate }}</span>
-                                </div>
-                                <div class="proof-chip proof-chip--when">
-                                    <span class="pc-key">{{ 'hero.bento.when' | translate }}</span>
-                                    <span class="pc-val">{{ 'hero.bento.whenVal' | translate }}</span>
-                                </div>
-                            </div>
-
-                            <!-- Stage 3: Hashing -->
+                            <!-- Stage 2: Hashing -->
                             <div class="stage stage-hash">
                                 <div class="hash-bar">
                                     <span class="hash-label">SHA-256</span>
                                     <div class="hash-progress"></div>
                                 </div>
                                 <code class="hash-output"></code>
+                            </div>
+
+                            <!-- Stage 3: Proof layers assemble -->
+                            <div class="stage stage-proof">
+                                <div class="proof-chip proof-chip--what">
+                                    <span class="pc-key">{{ 'hero.bento.what' | translate }}</span>
+                                    <span class="pc-val pc-val--what"></span>
+                                </div>
+                                <div class="proof-chip proof-chip--who">
+                                    <span class="pc-key">{{ 'hero.bento.who' | translate }}</span>
+                                    <span class="pc-val pc-val--who"></span>
+                                </div>
+                                <div class="proof-chip proof-chip--when">
+                                    <span class="pc-key">{{ 'hero.bento.when' | translate }}</span>
+                                    <span class="pc-val pc-val--when"></span>
+                                </div>
                             </div>
 
                             <!-- Stage 4: Anchor broadcast — terminal style -->
