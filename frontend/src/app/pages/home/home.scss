@@ -400,10 +400,10 @@ $cycle: 18s;
 
 .stage-file   { animation-delay: 0s; }
 .stage-hash   { animation-delay: 0.5s; }
-.stage-sign   { animation-delay: 0.9s; }
-.stage-proof  { animation-delay: 1.2s; }
-.stage-anchor { animation-delay: 1.6s; }
-.stage-seal   { animation-delay: 2.0s; }
+.stage-sign   { animation-delay: 1.0s; }
+.stage-proof  { animation-delay: 1.5s; }
+.stage-anchor { animation-delay: 2.0s; }
+.stage-seal   { animation-delay: 2.5s; }
 
 /* ── Stage labels ──────────────────────────────────────── */
 .stage::before {
@@ -436,10 +436,10 @@ $cycle: 18s;
 }
 
 .sc-1  { animation-delay: 0.25s; }
-.sc-2  { animation-delay: 0.7s; }
-.sc-2b { animation-delay: 1.05s; }
-.sc-3  { animation-delay: 1.4s; }
-.sc-4  { animation-delay: 1.85s; }
+.sc-2  { animation-delay: 0.75s; }
+.sc-2b { animation-delay: 1.25s; }
+.sc-3  { animation-delay: 1.75s; }
+.sc-4  { animation-delay: 2.25s; }
 
 .stage-conn::after {
     content: '';
@@ -973,7 +973,7 @@ $full-loop: calc($cycle * $variants);
 .stage-sign {
     padding: 0;
     animation: stage-cycle $cycle var(--ease-out) infinite both;
-    animation-delay: 0.9s;
+    animation-delay: 1.0s;
 }
 
 .sign-wrap {
@@ -996,7 +996,7 @@ $full-loop: calc($cycle * $variants);
     height: 16px;
     color: var(--brand);
     flex-shrink: 0;
-    animation: key-rotate $cycle var(--ease-out) infinite 0.9s;
+    animation: key-rotate $cycle var(--ease-out) infinite 1.0s;
 }
 
 @keyframes key-rotate {
@@ -1038,7 +1038,7 @@ $full-loop: calc($cycle * $variants);
     color: var(--text-dim);
     font-style: italic;
     opacity: 0;
-    animation: sign-msg $cycle var(--ease-out) infinite 0.9s;
+    animation: sign-msg $cycle var(--ease-out) infinite 1.0s;
 }
 
 @keyframes sign-msg {
@@ -1063,7 +1063,7 @@ $full-loop: calc($cycle * $variants);
     overflow: hidden;
     opacity: 0;
     animation: sign-reveal $cycle var(--ease-out) infinite;
-    animation-delay: 0.9s;
+    animation-delay: 1.0s;
 }
 
 .sign-pgp-header,
@@ -1114,7 +1114,7 @@ $full-loop: calc($cycle * $variants);
     background: linear-gradient(90deg, var(--brand), oklch(0.72 0.17 150));
     transform-origin: left;
     animation: sign-fill $cycle var(--ease-out) infinite;
-    animation-delay: 0.9s;
+    animation-delay: 1.0s;
 }
 
 @keyframes sign-fill {
@@ -1134,7 +1134,7 @@ $full-loop: calc($cycle * $variants);
     color: oklch(0.72 0.17 150);
     opacity: 0;
     animation: sign-verified $cycle var(--ease-out) infinite;
-    animation-delay: 0.9s;
+    animation-delay: 1.0s;
 }
 
 @keyframes sign-verified {
@@ -1149,13 +1149,13 @@ $full-loop: calc($cycle * $variants);
     color: var(--text-dim);
     opacity: 0;
     animation: sign-time-vis $cycle var(--ease-out) infinite;
-    animation-delay: 0.9s;
+    animation-delay: 1.0s;
 }
 
 .sign-time::after {
     content: '14:32:04';
     animation: sign-time-tick $cycle steps(1) infinite;
-    animation-delay: 0.9s;
+    animation-delay: 1.0s;
 }
 
 @keyframes sign-time-tick {
@@ -1181,7 +1181,7 @@ $full-loop: calc($cycle * $variants);
     display: flex;
     gap: 0.4rem;
     animation: stage-cycle $cycle var(--ease-out) infinite both;
-    animation-delay: 1.2s;
+    animation-delay: 1.5s;
 }
 
 .proof-chip {
@@ -1197,9 +1197,9 @@ $full-loop: calc($cycle * $variants);
     animation: chip-bounce $cycle var(--ease-out) infinite;
 }
 
-.proof-chip--what { animation-delay: 1.3s; }
-.proof-chip--who  { animation-delay: 1.5s; }
-.proof-chip--when { animation-delay: 1.7s; }
+.proof-chip--what { animation-delay: 1.7s; }
+.proof-chip--who  { animation-delay: 1.95s; }
+.proof-chip--when { animation-delay: 2.2s; }
 
 @keyframes chip-bounce {
     0%, 5%  { transform: scale(0.85); opacity: 0; }
@@ -1368,11 +1368,11 @@ $full-loop: calc($cycle * $variants);
     animation-delay: var(--tld, 0s);
 }
 
-.tl--btc  { --tld: 1.9s; --tlc: oklch(0.74 0.16 60); }
-.tl--tsa1 { --tld: 2.5s; --tlc: oklch(0.65 0.19 145); }
-.tl--tsa2 { --tld: 3.1s; --tlc: oklch(0.58 0.16 250); }
-.tl--tsa3 { --tld: 3.7s; --tlc: oklch(0.62 0.16 300); }
-.tl--eth  { --tld: 4.3s; --tlc: oklch(0.55 0.18 260); }
+.tl--btc  { --tld: 2.4s; --tlc: oklch(0.74 0.16 60); }
+.tl--tsa1 { --tld: 2.9s; --tlc: oklch(0.65 0.19 145); }
+.tl--tsa2 { --tld: 3.4s; --tlc: oklch(0.58 0.16 250); }
+.tl--tsa3 { --tld: 3.9s; --tlc: oklch(0.62 0.16 300); }
+.tl--eth  { --tld: 4.4s; --tlc: oklch(0.55 0.18 260); }
 
 @keyframes tl-enter {
     0%, 8%   { opacity: 0; transform: translateY(6px); }
@@ -1549,11 +1549,11 @@ $full-loop: calc($cycle * $variants);
     animation: ca-enter $cycle var(--ease-out) infinite;
 }
 
-.ca--btc  { animation-delay: 3.3s; }
-.ca--tsa1 { animation-delay: 3.9s; }
-.ca--tsa2 { animation-delay: 4.5s; }
-.ca--tsa3 { animation-delay: 5.1s; }
-.ca--eth  { animation-delay: 5.7s; }
+.ca--btc  { animation-delay: 4.0s; }
+.ca--tsa1 { animation-delay: 4.5s; }
+.ca--tsa2 { animation-delay: 5.0s; }
+.ca--tsa3 { animation-delay: 5.5s; }
+.ca--eth  { animation-delay: 6.0s; }
 
 @keyframes ca-enter {
     0%, 6%   { opacity: 0; transform: translateX(-6px); }
@@ -1629,7 +1629,7 @@ $full-loop: calc($cycle * $variants);
     opacity: 0;
     transform: scale(0) rotate(-20deg);
     animation: seal-stamp $cycle var(--ease-out) infinite;
-    animation-delay: 6.0s;
+    animation-delay: 6.2s;
     z-index: 2;
     filter: drop-shadow(0 0 8px oklch(0.72 0.17 150 / 0.6));
 }
@@ -1659,7 +1659,7 @@ $full-loop: calc($cycle * $variants);
     margin-top: 0.5rem;
     opacity: 0;
     animation: chain-enter $cycle var(--ease-out) infinite;
-    animation-delay: 4.5s;
+    animation-delay: 5.0s;
     overflow-x: auto;
 }
 
@@ -1731,7 +1731,7 @@ $full-loop: calc($cycle * $variants);
     white-space: nowrap;
     opacity: 0;
     animation: cb-you-pop $cycle var(--ease-out) infinite;
-    animation-delay: 5.0s;
+    animation-delay: 5.5s;
 }
 
 @keyframes cb-you-pop {
@@ -1753,13 +1753,13 @@ $full-loop: calc($cycle * $variants);
 .chain-link--after {
     opacity: 0;
     animation: future-link $cycle var(--ease-out) infinite;
-    animation-delay: 5.5s;
+    animation-delay: 6.0s;
 }
 
 .chain-link--after2 {
     opacity: 0;
     animation: future-link $cycle var(--ease-out) infinite;
-    animation-delay: 5.9s;
+    animation-delay: 6.4s;
 }
 
 .cb--future,
@@ -1769,8 +1769,8 @@ $full-loop: calc($cycle * $variants);
     animation: future-block $cycle var(--ease-out) infinite;
 }
 
-.cb--future  { animation-delay: 5.7s; }
-.cb--future2 { animation-delay: 6.1s; }
+.cb--future  { animation-delay: 6.4s; }
+.cb--future2 { animation-delay: 6.8s; }
 
 .cb--future .cb-hash,
 .cb--future2 .cb-hash {
