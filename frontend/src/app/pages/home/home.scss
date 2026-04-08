@@ -1010,7 +1010,6 @@ $full-loop: calc($cycle * $variants);
 .sign-label {
     font-size: 0.62rem;
     font-weight: 700;
-    letter-spacing: 0.06em;
     color: var(--text);
 }
 
@@ -1180,6 +1179,7 @@ $full-loop: calc($cycle * $variants);
 .stage-proof {
     display: flex;
     gap: 0.4rem;
+    overflow: hidden;
     animation: stage-cycle $cycle var(--ease-out) infinite both;
     animation-delay: 1.5s;
 }
