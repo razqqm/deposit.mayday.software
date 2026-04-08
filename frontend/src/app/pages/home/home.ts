@@ -73,7 +73,12 @@ interface FormState {
                                     <svg class="file-svg" viewBox="0 0 40 48" fill="none">
                                         <path d="M4 6a4 4 0 0 1 4-4h16l12 12v28a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4V6z" fill="var(--bg-sunk)" stroke="var(--border-strong)" stroke-width="1.5"/>
                                         <path d="M24 2v12h12" stroke="var(--border-strong)" stroke-width="1.5" fill="none"/>
+                                        <line class="fp-line fp-l1" x1="10" y1="22" x2="30" y2="22"/>
+                                        <line class="fp-line fp-l2" x1="10" y1="27" x2="26" y2="27"/>
+                                        <line class="fp-line fp-l3" x1="10" y1="32" x2="28" y2="32"/>
+                                        <line class="fp-line fp-l4" x1="10" y1="37" x2="22" y2="37"/>
                                     </svg>
+                                    <div class="file-scan-line"></div>
                                     <div class="file-glow"></div>
                                 </div>
                                 <div class="file-info">
@@ -84,8 +89,11 @@ interface FormState {
                                         <span class="file-date"></span>
                                     </span>
                                     <span class="file-author"></span>
+                                    <div class="file-progress"></div>
                                 </div>
                             </div>
+
+                            <div class="stage-conn sc-1" aria-hidden="true"></div>
 
                             <!-- Stage 2: Hashing -->
                             <div class="stage stage-hash">
@@ -95,6 +103,8 @@ interface FormState {
                                 </div>
                                 <code class="hash-output"></code>
                             </div>
+
+                            <div class="stage-conn sc-2" aria-hidden="true"></div>
 
                             <!-- Stage 3: Proof layers assemble -->
                             <div class="stage stage-proof">
@@ -111,6 +121,8 @@ interface FormState {
                                     <span class="pc-val pc-val--when"></span>
                                 </div>
                             </div>
+
+                            <div class="stage-conn sc-3" aria-hidden="true"></div>
 
                             <!-- Stage 4: Anchor broadcast — terminal style -->
                             <div class="stage stage-anchor">
@@ -218,6 +230,8 @@ interface FormState {
                                 </div>
                             </div>
 
+                            <div class="stage-conn sc-4" aria-hidden="true"></div>
+
                             <!-- Stage 5: Certificate ready -->
                             <div class="stage stage-seal">
                                 <div class="cert-card">
@@ -239,6 +253,9 @@ interface FormState {
                                             <span class="cert-label">eIDAS</span>
                                             <span class="cert-val cert-val--ok">Qualified</span>
                                         </div>
+                                    </div>
+                                    <div class="cert-seal" aria-hidden="true">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9 12l2 2 4-4"/></svg>
                                     </div>
                                     <div class="cert-dl">
                                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>

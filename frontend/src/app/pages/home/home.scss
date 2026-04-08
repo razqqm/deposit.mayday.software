@@ -383,6 +383,7 @@ $cycle: 18s;
 /* ── Shared stage base ─────────────────────────────────── */
 .stage {
     width: 100%;
+    position: relative;
     opacity: 0;
     transform: translateY(12px) scale(0.97);
     animation: stage-cycle $cycle var(--ease-out) infinite both;
@@ -403,6 +404,43 @@ $cycle: 18s;
 .stage-anchor { animation-delay: 1.8s; }
 .stage-seal   { animation-delay: 2.4s; }
 
+/* ── Stage connectors — flowing energy between stages ──── */
+.stage-conn {
+    width: 2px;
+    height: 16px;
+    margin: -0.2rem auto;
+    background: var(--border);
+    border-radius: 1px;
+    position: relative;
+    opacity: 0;
+    animation: stage-cycle $cycle var(--ease-out) infinite both;
+}
+
+.sc-1 { animation-delay: 0.35s; }
+.sc-2 { animation-delay: 0.95s; }
+.sc-3 { animation-delay: 1.55s; }
+.sc-4 { animation-delay: 2.15s; }
+
+.stage-conn::after {
+    content: '';
+    position: absolute;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--brand);
+    left: 50%;
+    transform: translateX(-50%);
+    box-shadow: 0 0 6px var(--brand);
+    animation: sc-flow 1s linear infinite;
+}
+
+@keyframes sc-flow {
+    0%   { top: -2px; opacity: 0; }
+    15%  { opacity: 1; }
+    85%  { opacity: 1; }
+    100% { top: calc(100% - 3px); opacity: 0; }
+}
+
 /* ── File stage ────────────────────────────────────────── */
 $variants: 24;
 $full-loop: calc($cycle * $variants);
@@ -415,6 +453,10 @@ $full-loop: calc($cycle * $variants);
     background: var(--bg-sunk);
     border: 1px solid var(--border);
     border-radius: var(--r-md);
+    animation:
+        stage-cycle $cycle var(--ease-out) infinite both,
+        stage-glow $cycle var(--ease-out) infinite;
+    animation-delay: 0s;
 }
 
 .file-icon-wrap {
@@ -427,6 +469,50 @@ $full-loop: calc($cycle * $variants);
 .file-svg {
     width: 100%;
     height: 100%;
+}
+
+/* Content preview lines inside the file icon */
+.fp-line {
+    stroke: var(--border-strong);
+    stroke-width: 1.2;
+    stroke-linecap: round;
+    stroke-dasharray: 30;
+    stroke-dashoffset: 30;
+    opacity: 0;
+    animation: fp-appear $cycle var(--ease-out) infinite;
+}
+
+.fp-l1 { animation-delay: 0.15s; }
+.fp-l2 { animation-delay: 0.25s; }
+.fp-l3 { animation-delay: 0.35s; }
+.fp-l4 { animation-delay: 0.45s; }
+
+@keyframes fp-appear {
+    0%, 3%    { opacity: 0; stroke-dashoffset: 30; }
+    15%       { opacity: 0.5; stroke-dashoffset: 0; }
+    70%       { opacity: 0.5; stroke-dashoffset: 0; }
+    85%, 100% { opacity: 0; }
+}
+
+/* Scan line — sweeps down the file icon, simulating reading */
+.file-scan-line {
+    position: absolute;
+    left: 3px;
+    right: 3px;
+    height: 2px;
+    background: var(--brand);
+    border-radius: 1px;
+    box-shadow: 0 0 8px var(--brand), 0 0 20px color-mix(in oklch, var(--brand) 35%, transparent);
+    opacity: 0;
+    pointer-events: none;
+    animation: file-scan $cycle var(--ease-out) infinite;
+}
+
+@keyframes file-scan {
+    0%, 4%    { top: 16px; opacity: 0; }
+    6%        { opacity: 0.9; }
+    28%       { top: 40px; opacity: 0.5; }
+    32%, 100% { opacity: 0; }
 }
 
 .file-glow {
@@ -633,6 +719,34 @@ $full-loop: calc($cycle * $variants);
     animation: type-authors $full-loop steps(1) infinite;
 }
 
+/* File analysis progress bar */
+.file-progress {
+    width: 100%;
+    height: 2px;
+    background: var(--border);
+    border-radius: 1px;
+    margin-top: 0.2rem;
+    overflow: hidden;
+}
+
+.file-progress::after {
+    content: '';
+    display: block;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, var(--brand), oklch(0.82 0.14 80));
+    border-radius: 1px;
+    transform-origin: left;
+    animation: fp-fill $cycle var(--ease-out) infinite;
+}
+
+@keyframes fp-fill {
+    0%, 4%    { transform: scaleX(0); }
+    25%       { transform: scaleX(1); }
+    70%       { transform: scaleX(1); }
+    85%, 100% { transform: scaleX(0); }
+}
+
 @keyframes type-authors {
     0.000%,  4.166% { content: '👤 Mila Sorokina'; }
     4.167%,  8.333% { content: '👤 Takeshi Yamamoto'; }
@@ -666,6 +780,11 @@ $full-loop: calc($cycle * $variants);
     background: var(--bg-sunk);
     border: 1px solid var(--border);
     border-radius: var(--r-md);
+    transition: box-shadow 0.4s;
+    animation:
+        stage-cycle $cycle var(--ease-out) infinite both,
+        stage-glow $cycle var(--ease-out) infinite;
+    animation-delay: 0.6s;
 }
 
 .hash-bar {
@@ -785,6 +904,17 @@ $full-loop: calc($cycle * $variants);
 .stage-proof {
     display: flex;
     gap: 0.4rem;
+    animation:
+        stage-cycle $cycle var(--ease-out) infinite both,
+        stage-glow-subtle $cycle var(--ease-out) infinite;
+    animation-delay: 1.2s;
+}
+
+@keyframes stage-glow-subtle {
+    0%, 8%   { filter: brightness(1); }
+    16%      { filter: brightness(1.15); }
+    30%      { filter: brightness(1); }
+    100%     { filter: brightness(1); }
 }
 
 .proof-chip {
@@ -1065,6 +1195,7 @@ $full-loop: calc($cycle * $variants);
     border-radius: var(--r-md);
     overflow: hidden;
     cursor: pointer;
+    position: relative;
     transition: border-color 0.2s, box-shadow 0.2s;
 }
 
@@ -1156,6 +1287,43 @@ $full-loop: calc($cycle * $variants);
     font-size: 0.72rem;
     font-weight: 700;
     cursor: pointer;
+}
+
+/* Verified seal — stamps onto the certificate */
+.cert-seal {
+    position: absolute;
+    top: 0.4rem;
+    right: 0.4rem;
+    width: 28px;
+    height: 28px;
+    color: oklch(0.72 0.17 150);
+    opacity: 0;
+    transform: scale(0) rotate(-20deg);
+    animation: seal-stamp $cycle var(--ease-out) infinite;
+    animation-delay: 3.0s;
+    z-index: 2;
+    filter: drop-shadow(0 0 4px oklch(0.72 0.17 150 / 0.5));
+}
+
+.cert-seal svg {
+    width: 100%;
+    height: 100%;
+}
+
+@keyframes seal-stamp {
+    0%, 8%   { opacity: 0; transform: scale(0) rotate(-20deg); }
+    18%      { opacity: 1; transform: scale(1.25) rotate(4deg); }
+    24%      { transform: scale(1) rotate(0deg); }
+    78%      { opacity: 1; }
+    90%, 100% { opacity: 0; transform: scale(0.8); }
+}
+
+/* Stage activation glow — brief border glow when stage appears */
+@keyframes stage-glow {
+    0%, 5%   { box-shadow: 0 0 0 transparent; }
+    12%      { box-shadow: 0 0 16px color-mix(in oklch, var(--brand) 30%, transparent); }
+    28%      { box-shadow: 0 0 0 transparent; }
+    100%     { box-shadow: 0 0 0 transparent; }
 }
 
 /* ── Blockchain chain visualization ────────────────────── */
@@ -1420,6 +1588,14 @@ $full-loop: calc($cycle * $variants);
 
     .merkle-svg {
         max-width: 200px;
+    }
+
+    .stage-conn {
+        height: 10px;
+    }
+
+    .file-progress {
+        display: none;
     }
 }
 
