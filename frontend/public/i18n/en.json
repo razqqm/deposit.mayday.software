@@ -386,6 +386,48 @@
         "title": "GOST R 34.11-2012 (Stribog)",
         "note": "Russian federal cryptographic standard — accepted by courts in Russia and CIS countries."
     },
+    "privacy": {
+        "eyebrow": "Privacy",
+        "title": "Privacy policy",
+        "subtitle": "Last updated 14 April 2026. We've engineered this service to need almost no information about you. Here's exactly what that means.",
+        "boilerplate": "Boilerplate notice — this document was generated as a starting template based on our zero-knowledge architecture. It must be reviewed by qualified legal counsel before being relied upon.",
+        "h1": "1. What we do not collect",
+        "p1": "Your files. SHA-256 hashing, GPG signing and OpenPGP key handling all run inside your browser via WebCrypto and openpgp.js. The 32-byte fingerprint is the only data that ever touches our infrastructure. Original file contents are never uploaded, transmitted or stored.",
+        "h2": "2. What Cloudflare sees",
+        "p2": "Calls to /api/* (timestamping authority and OpenTimestamps relay endpoints) reach a Cloudflare Worker. Cloudflare retains standard connection metadata (IP address, request timestamp, user agent) for security and abuse prevention per their published policy. We do not store, query or analyse this metadata. We do not run analytics, fingerprinting or behavioural tracking of any kind.",
+        "h3": "3. Cookies and local storage",
+        "p3": "We set no cookies. Theme preference (light/dark) and the optional version-history feature use the browser's IndexedDB and localStorage — these never leave your device. You can clear them at any time via the in-app Clear all button or your browser's site-data settings.",
+        "h4": "4. Third-party services we proxy to",
+        "p4": "When you generate a deposit, the Worker forwards your 32-byte fingerprint (and only that) to the providers you select: FreeTSA, DigiCert, Sectigo (RFC 3161 timestamping authorities), the OpenTimestamps Bitcoin calendar servers (alice / bob / finney / catallaxy), and optionally Base L2 Ethereum RPC. Each of these providers operates under their own privacy policy.",
+        "h5": "5. Children",
+        "p5": "This service is not directed at children under 16 and we do not knowingly collect any data that could identify a minor.",
+        "h6": "6. Changes to this policy",
+        "p6": "Substantive changes are tracked in Git history at github.com/iarestov/mayday.software. The Last updated field at the top of this page reflects the most recent revision.",
+        "h7": "7. Contact",
+        "p7": "For privacy questions, open an issue at github.com/iarestov/mayday.software/issues — we respond in the open."
+    },
+    "terms": {
+        "eyebrow": "Terms",
+        "title": "Terms of service",
+        "subtitle": "Last updated 14 April 2026. By using deposit you agree to the following — they're short on purpose.",
+        "boilerplate": "Boilerplate notice — this document was generated as a starting template. It must be reviewed by qualified legal counsel before being relied upon as a contract.",
+        "h1": "1. What this service is",
+        "p1": "deposit is a free, open-source tool that creates cryptographic timestamps and signatures for digital files. It anchors a SHA-256 fingerprint of your work in Bitcoin and several RFC 3161 timestamping authorities, producing portable proof files you keep on your own machine.",
+        "h2": "2. No warranty",
+        "p2": "The service is provided strictly \"as is\" and \"as available\", without warranty of any kind, express or implied — including merchantability, fitness for a particular purpose, accuracy or non-infringement.",
+        "h3": "3. Not legal advice",
+        "p3": "Cryptographic deposits are evidence, not a legal verdict. The weight a court gives them depends on jurisdiction, the surrounding context and the quality of accompanying evidence. Nothing in this service or its outputs constitutes legal advice. Consult a qualified IP attorney before relying on a deposit in litigation.",
+        "h4": "4. Acceptable use",
+        "p4": "You agree not to: (a) flood the /api/* endpoints to disrupt the service for others; (b) use the timestamping proxies to anchor command-and-control payloads or other malicious content; (c) misrepresent the service or its proofs as something they are not (for example, claiming a deposit constitutes registration with Rospatent or eIDAS-qualified TSA when it does not).",
+        "h5": "5. Intellectual property",
+        "p5": "The deposit codebase is released under the MIT License (see LICENSE in the repository). Files you submit through the service remain entirely yours; we claim no rights of any kind over them.",
+        "h6": "6. Limitation of liability",
+        "p6": "To the maximum extent permitted by applicable law, in no event shall the authors or copyright holders be liable for any claim, damages or other liability — including direct, indirect, incidental, consequential, punitive or exemplary damages — arising from your use of the service.",
+        "h7": "7. Governing law",
+        "p7": "Governing law and jurisdiction are to be determined by counsel before public launch. Until then, treat this as a non-binding informational service.",
+        "h8": "8. Changes",
+        "p8": "We may update these terms; the Last updated date at the top reflects the latest revision. Continued use after a change constitutes acceptance."
+    },
     "footer": {
         "tagline": "Open source · Files stay in your browser · Forever verifiable",
         "disclaimer": "All hashing and signing runs locally in your browser. We do not store or transmit your files. Open-source.",
@@ -395,7 +437,7 @@
             "twitter": "Follow on X (coming soon)",
             "telegram": "Join our Telegram (coming soon)",
             "linkedin": "LinkedIn page (coming soon)",
-            "email": "Email us"
+            "email": "Email (coming soon)"
         },
         "badge": {
             "angular": "Angular 21",

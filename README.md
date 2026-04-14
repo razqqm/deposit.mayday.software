@@ -1,7 +1,11 @@
-# mayday.software
+# mayday.software · deposit
 
-MVP-сервис для подписи исходного кода и депонирования авторских прав
+Сервис для подписи исходного кода и депонирования авторских прав
 с использованием криптографических доказательств вместо бумажных нотариусов.
+
+Открытый код, MIT-лицензия (см. [LICENSE](LICENSE)). Бесплатно навсегда
+для базового депонирования и проверки. Продакшн-домен:
+**[deposit.mayday.software](https://deposit.mayday.software/)**.
 
 ## Идея
 
@@ -179,7 +183,7 @@ ots verify manifest.cff.ots
   Cloudflare Workers Builds (не GitHub Actions) — CF сам подключается
   к GitHub-репозиторию и пересобирает Worker на каждый push в `main`.
 
-## Roadmap MVP
+## Roadmap
 
 - [x] Landing + объяснение принципа (one-pager, EN/RU).
 - [x] Client-side flow: drag-n-drop файлов/папок → SHA-256 → CFF-манифест → скачать.

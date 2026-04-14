@@ -1,10 +1,11 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
     selector: 'app-public-footer',
     standalone: true,
-    imports: [TranslateModule],
+    imports: [TranslateModule, RouterLink],
     changeDetection: ChangeDetectionStrategy.OnPush,
     template: `
         <footer class="footer">
@@ -62,6 +63,8 @@ import { TranslateModule } from '@ngx-translate/core';
                         </a>
                         <a class="social-link"
                            href="mailto:hi@mayday.software"
+                           data-placeholder="email"
+                           aria-disabled="true" tabindex="-1"
                            [attr.aria-label]="'footer.social.email' | translate"
                            [title]="'footer.social.email' | translate">
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>
@@ -91,6 +94,8 @@ import { TranslateModule } from '@ngx-translate/core';
                 <div class="col">
                     <h4 class="col-title">Legal</h4>
                     <ul class="links">
+                        <li><a routerLink="/privacy">{{ 'privacy.title' | translate }}</a></li>
+                        <li><a routerLink="/terms">{{ 'terms.title' | translate }}</a></li>
                         <li><a href="https://www.wipo.int/treaties/en/ip/berne/" target="_blank" rel="noopener noreferrer">Berne Convention</a></li>
                         <li><a href="https://eur-lex.europa.eu/eli/reg/2014/910/oj" target="_blank" rel="noopener noreferrer">eIDAS 910/2014</a></li>
                     </ul>

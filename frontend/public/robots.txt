@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://mayday.software/sitemap.xml
+Sitemap: https://deposit.mayday.software/sitemap.xml

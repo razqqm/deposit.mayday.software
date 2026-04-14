@@ -8,7 +8,9 @@ export const appRoutes: Routes = [
         children: [
             { path: '', loadComponent: () => import('@/app/pages/home/home').then((c) => c.HomePage) },
             { path: 'how', loadComponent: () => import('@/app/pages/how/how').then((c) => c.HowPage) },
-            { path: 'verify', loadComponent: () => import('@/app/pages/verify/verify').then((c) => c.VerifyPage) }
+            { path: 'verify', loadComponent: () => import('@/app/pages/verify/verify').then((c) => c.VerifyPage) },
+            { path: 'privacy', data: { kind: 'privacy' }, loadComponent: () => import('@/app/pages/legal/legal').then((c) => c.LegalPage) },
+            { path: 'terms', data: { kind: 'terms' }, loadComponent: () => import('@/app/pages/legal/legal').then((c) => c.LegalPage) }
         ]
     },
     { path: '**', redirectTo: '' }
