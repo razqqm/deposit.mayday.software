@@ -7,6 +7,9 @@
         "switchLang": "Переключить на русский",
         "mainContent": "Main content"
     },
+    "nav": {
+        "home": "Home"
+    },
     "hero": {
         "badge": "Cryptographic Copyright Deposit",
         "titleLine1": "Prove you created it first —",
@@ -111,6 +114,8 @@
     },
     "how": {
         "title": "From files to legal-grade proof — in minutes",
+        "subtitle": "Watch the full pipeline: file detection, SHA-256 hashing, GPG signing, manifest building, parallel anchoring in Bitcoin + RFC 3161 + Ethereum, and certificate issuance — all happening end-to-end, live.",
+        "seeFullPipeline": "See the full pipeline",
         "step1Title": "1. Hash",
         "step1Desc": "SHA-256 of every file is computed in your browser via WebCrypto. Files never leave your machine.",
         "step2Title": "2. Sign",
@@ -118,7 +123,28 @@
         "step3Title": "3. Anchor",
         "step3Desc": "The manifest hash is submitted to Bitcoin via OpenTimestamps, to RFC 3161 timestamping authorities, and to Ethereum L2. Nobody — not even you — can change the date afterwards.",
         "step4Title": "4. Certificate",
-        "step4Desc": "You get a printable PDF certificate plus the raw proof files. Anyone can independently verify every layer — without trusting us."
+        "step4Desc": "You get a printable PDF certificate plus the raw proof files. Anyone can independently verify every layer — without trusting us.",
+        "pipeline": {
+            "detect": "Detect",
+            "detectDesc": "The browser reads file headers and metadata — type, size, author, last-modified — without uploading anything. Local inspection only.",
+            "detectCode": "file.type / file.size / lastModified",
+            "hash": "Hash",
+            "hashDesc": "SHA-256 fingerprint of every byte, computed in-browser via WebCrypto. 32 bytes. Change one pixel, change the hash.",
+            "hashCode": "crypto.subtle.digest('SHA-256', buf)",
+            "sign": "Sign",
+            "signDesc": "Optional: detached PGP signature with your GPG key. Binds the manifest to your public identity so courts can verify authorship with just `gpg --verify`.",
+            "signCode": "gpg --armor --detach-sign CITATION.cff",
+            "manifest": "Manifest",
+            "manifestDesc": "All hashes + author metadata bundle into a CITATION.cff document — a portable YAML standard used in academic citation, fully human-readable.",
+            "manifestCode": "CITATION.cff 1.2.0",
+            "anchor": "Anchor",
+            "anchorDesc": "Fingerprint submitted in parallel to Bitcoin (OpenTimestamps) + 3 RFC 3161 TSAs + Ethereum L2. Five independent proofs of the exact moment of creation.",
+            "anchorCode": "ots stamp · openssl ts -query",
+            "certificate": "Certificate",
+            "certificateDesc": "Printable PDF with every proof, fingerprint, and verification instructions. Sharable by email, uploadable to court filings, valid forever — even if this site disappears.",
+            "certificateCode": "deposit-XXXXXXXX.pdf"
+        },
+        "tryNow": "Try it — drop your files"
     },
     "why": {
         "title": "Why Bitcoin?",
@@ -129,7 +155,7 @@
         "alt": "Bitcoin is not the only anchor. RFC 3161 Timestamping Authorities (including eIDAS-qualified TSAs) provide instant, legally binding timestamps in the EU. Ethereum L2 adds a third independent chain. Multiple independent stamps make the proof effectively unforgeable."
     },
     "legal": {
-        "title": "Is this legally valid?",
+        "title": "Accepted as legal evidence",
         "p1": "Under the Berne Convention (Art. 5), copyright arises automatically upon creation — registration is nowhere required. What matters in court is proof of authorship and the date a particular version existed.",
         "p2": "In the EU, Bitcoin-anchored timestamps qualify as advanced electronic timestamps under eIDAS 910/2014. The Paris Tribunal accepted them as evidence (March 2025). RFC 3161 timestamps from eIDAS-qualified TSAs go further — they carry a legal presumption of accuracy under Art. 41.",
         "p3": "Important — this is a complement, not a replacement. In Russia the Supreme Court (ruling № 305-ЭС17-4311, 2020) confirmed that deposit alone does not create a presumption of authorship. Only state registration at Rospatent under Art. 1262 of the Civil Code does. mayday.software doesn't replace it — it adds an independent cryptographic layer that costs nothing, takes minutes, and survives any single institution.",
@@ -224,7 +250,12 @@
         "eidas": "eIDAS-ready",
         "eidasDesc": "RFC 3161 timestamps from EU-qualified TSAs carry legal presumption of accuracy under eIDAS Art. 41 (Regulation 910/2014).",
         "privacy": "Zero-knowledge",
-        "privacyDesc": "Files never leave your browser. Only a 32-byte SHA-256 fingerprint reaches our infrastructure. No accounts. No tracking. No vendor lock-in."
+        "privacyDesc": "Files never leave your browser. Only a 32-byte SHA-256 fingerprint reaches our infrastructure. No accounts. No tracking. No vendor lock-in.",
+        "opensource": "Open source"
+    },
+    "cta": {
+        "finalTitle": "Ready to prove authorship?",
+        "finalSub": "Drop your files, generate a court-ready certificate, and download six independent proofs — all in under two minutes, without an account."
     },
     "integrations": {
         "eyebrow": "Integrations",
@@ -244,7 +275,33 @@
         "title": "Your deposit timeline",
         "subtitle": "All past deposits stored locally in your browser. Track versions, compare digests, rebuild the audit trail.",
         "files": "{{count}} files",
-        "anchors": "{{count}} anchors"
+        "anchors": "{{count}} anchors",
+        "emptyTitle": "No deposits yet",
+        "emptySub": "Your first deposit will appear here. Everything lives in your browser — no account, no upload.",
+        "statDeposits": "Deposits",
+        "statProjects": "Projects",
+        "statSince": "Since first",
+        "daysAgo": "{{count}} days",
+        "today": "today",
+        "search": "Search by title, author, or digest…",
+        "noResults": "No deposits match your query.",
+        "versionsCount": "{{count}} versions",
+        "latest": "latest",
+        "signed": "GPG signed",
+        "unsigned": "self-declared",
+        "identical": "identical content — re-anchor only",
+        "changed": "new content vs previous version",
+        "copyDigest": "Copy digest",
+        "copied": "copied",
+        "delete": "Delete",
+        "confirmDelete": "Delete this deposit from local history? Proof files on your disk are not affected.",
+        "confirmClearAll": "Delete the entire local history? Proof files on your disk are not affected.",
+        "anchorsPassing": "{{ok}}/{{total}} anchors",
+        "export": "Export JSON",
+        "import": "Import JSON",
+        "clearAll": "Clear all",
+        "importError": "Import failed: {{error}}",
+        "imported": "Imported {{count}} records"
     },
     "git": {
         "title": "Git metadata",
@@ -259,7 +316,7 @@
         "note": "Russian federal cryptographic standard — accepted by courts in Russia and CIS countries."
     },
     "footer": {
-        "tagline": "Cryptographic copyright deposit",
+        "tagline": "Open source · Files stay in your browser · Forever verifiable",
         "disclaimer": "All hashing and signing runs locally in your browser. We do not store or transmit your files. Open-source.",
         "badge": {
             "angular": "Angular 21",

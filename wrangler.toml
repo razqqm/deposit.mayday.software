@@ -11,3 +11,5 @@ binding = "ASSETS"
 
 # The Worker handles only the dynamic /api/* routes (TSA + OTS proxies).
 # Anything else falls through to ASSETS via env.ASSETS.fetch(request).
+# Custom-domain binding for deposit.mayday.software is managed in the
+# Cloudflare dashboard.

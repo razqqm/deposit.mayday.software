@@ -1,0 +1,23 @@
+{
+    "name": "deposit",
+    "short_name": "deposit",
+    "description": "Cryptographic copyright deposit: hash files locally, anchor the proof in Bitcoin, Ethereum, and RFC 3161 timestamping authorities. Download a court-ready certificate.",
+    "start_url": "/",
+    "scope": "/",
+    "display": "standalone",
+    "orientation": "any",
+    "background_color": "#fdfdfd",
+    "theme_color": "#f59e0b",
+    "lang": "en",
+    "categories": ["productivity", "utilities", "security"],
+    "icons": [
+        { "src": "/images/favicon.svg",          "type": "image/svg+xml", "sizes": "any",     "purpose": "any" },
+        { "src": "/images/favicon-16.png",       "type": "image/png",     "sizes": "16x16",   "purpose": "any" },
+        { "src": "/images/favicon-32.png",       "type": "image/png",     "sizes": "32x32",   "purpose": "any" },
+        { "src": "/images/favicon-48.png",       "type": "image/png",     "sizes": "48x48",   "purpose": "any" },
+        { "src": "/images/apple-touch-icon.png", "type": "image/png",     "sizes": "180x180", "purpose": "any" },
+        { "src": "/images/icon-192.png",         "type": "image/png",     "sizes": "192x192", "purpose": "any" },
+        { "src": "/images/icon-512.png",         "type": "image/png",     "sizes": "512x512", "purpose": "any" },
+        { "src": "/images/icon-maskable-512.png","type": "image/png",     "sizes": "512x512", "purpose": "maskable" }
+    ]
+}

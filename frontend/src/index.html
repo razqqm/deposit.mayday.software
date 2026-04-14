@@ -2,24 +2,25 @@
 <html lang="en">
     <head>
         <meta charset="utf-8" />
-        <title>mayday.software — Prove you created it first</title>
+        <title>deposit — Prove you created it first</title>
         <base href="/" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
         <!-- SEO -->
-        <meta name="description" content="Hash your files locally. Anchor the proof in Bitcoin, Ethereum, and RFC 3161 timestamping authorities. Download a court-ready certificate. Free, no account, zero-knowledge." />
+        <meta name="description" content="Hash your files locally. Anchor the proof in Bitcoin, Ethereum, and RFC 3161 timestamping authorities. Download a court-ready certificate. Free, no account, files never leave your browser." />
         <meta name="robots" content="index, follow" />
-        <link rel="canonical" href="https://mayday.software/" />
+        <link rel="canonical" href="https://deposit.mayday.software/" />
         <meta name="referrer" content="strict-origin-when-cross-origin" />
-        <meta name="application-name" content="mayday.software" />
+        <meta name="application-name" content="deposit" />
+        <meta name="apple-mobile-web-app-title" content="deposit" />
         <meta name="author" content="mayday.software" />
 
         <!-- Open Graph -->
         <meta property="og:type" content="website" />
-        <meta property="og:url" content="https://mayday.software/" />
-        <meta property="og:title" content="Prove you created it first — without notaries" />
+        <meta property="og:url" content="https://deposit.mayday.software/" />
+        <meta property="og:title" content="deposit — Prove you created it first, without notaries" />
         <meta property="og:description" content="Cryptographic copyright deposit: local SHA-256 hashing + Bitcoin, Ethereum &amp; RFC 3161 anchors = legal-grade proof that anyone can verify forever." />
-        <meta property="og:site_name" content="mayday.software" />
+        <meta property="og:site_name" content="deposit" />
         <meta property="og:locale" content="en_US" />
         <meta property="og:locale:alternate" content="ru_RU" />
         <meta property="og:image" content="https://mayday.software/images/og-image.png" />
@@ -29,14 +30,15 @@
 
         <!-- Twitter -->
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="Prove you created it first — without notaries" />
+        <meta name="twitter:title" content="deposit — Prove you created it first" />
         <meta name="twitter:description" content="Cryptographic copyright deposit: local SHA-256 hashing + Bitcoin, Ethereum &amp; RFC 3161 anchors = legal-grade proof." />
-        <meta name="twitter:image" content="https://mayday.software/images/og-image.png" />
+        <meta name="twitter:image" content="https://deposit.mayday.software/images/og-image.png" />
 
         <!-- Mobile -->
-        <meta name="theme-color" content="#0b0f1a" media="(prefers-color-scheme: dark)" />
-        <meta name="theme-color" content="#fafafa" media="(prefers-color-scheme: light)" />
+        <meta name="theme-color" content="#0a0a0b" media="(prefers-color-scheme: dark)" />
+        <meta name="theme-color" content="#fdfdfd" media="(prefers-color-scheme: light)" />
         <meta name="mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 
         <!-- Structured data (Schema.org) — expanded for SEO like WordProof -->
@@ -44,8 +46,9 @@
             {
                 "@context": "https://schema.org",
                 "@type": "WebApplication",
-                "name": "mayday.software",
-                "url": "https://mayday.software/",
+                "name": "deposit",
+                "alternateName": "mayday.software deposit",
+                "url": "https://deposit.mayday.software/",
                 "applicationCategory": "SecurityApplication",
                 "applicationSubCategory": "Copyright Protection",
                 "operatingSystem": "Any",
@@ -74,7 +77,8 @@
                 "creator": {
                     "@type": "Organization",
                     "name": "mayday.software",
-                    "url": "https://mayday.software/"
+                    "url": "https://mayday.software/",
+                    "logo": "https://deposit.mayday.software/images/icon-512.png"
                 },
                 "citation": {
                     "@type": "CreativeWork",
@@ -122,14 +126,21 @@
             }
         </script>
 
-        <!-- Favicon -->
-        <link rel="icon" type="image/svg+xml" href="images/favicon.svg" />
-        <link rel="apple-touch-icon" href="images/favicon.svg" />
+        <!-- Favicons — full standard set -->
+        <link rel="icon" type="image/svg+xml" href="/images/favicon.svg" />
+        <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16.png" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32.png" />
+        <link rel="icon" type="image/png" sizes="48x48" href="/images/favicon-48.png" />
+        <link rel="shortcut icon" href="/images/favicon.ico" />
+        <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png" />
+        <link rel="manifest" href="/site.webmanifest" />
+        <meta name="msapplication-TileColor" content="#f59e0b" />
+        <meta name="msapplication-TileImage" content="/images/icon-192.png" />
 
-        <!-- Fonts: Inter (display) + JetBrains Mono (technical details) -->
+        <!-- Fonts: Space Grotesk (brand) + Inter (display) + JetBrains Mono (tech) -->
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" />
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" />
 
         <!-- FAQ structured data (Schema.org) — enables Google rich results -->
         <script type="application/ld+json">
@@ -219,8 +230,8 @@
 
         <!-- Preloader (theme-aware via system preference) -->
         <style>
-            :root { --pre-bg: #fafafa; --pre-stroke: #f59e0b; }
-            html.app-dark { --pre-bg: #0b0f1a; }
+            :root { --pre-bg: #fdfdfd; --pre-stroke: #f59e0b; }
+            html.app-dark { --pre-bg: #0a0a0b; }
             .layout-preloader-container{width:100%;min-height:100vh;background-color:var(--pre-bg);position:absolute;inset:0}
             .layout-preloader-content{text-align:center;position:absolute;top:50%;left:50%;margin-left:-32px;margin-top:-32px}
             .layout-preloader{animation:rotator 1.4s linear infinite}

@@ -27,13 +27,14 @@
             <div class="artifact">
                 <div class="art-head">
                     <span class="art-dot"></span><span class="art-dot"></span><span class="art-dot"></span>
-                    <span class="art-label mono">CITATION-9c07646d.cff</span>
+                    <span class="art-label mono">CITATION-{{ demoSample().hash.slice(0, 8) }}.cff</span>
                 </div>
                 <div class="art-body">
-                    <div class="art-row"><span class="art-k mono">WHAT</span><code class="art-v mono">9c07…856d2</code></div>
-                    <div class="art-row"><span class="art-k mono">WHO</span><span class="art-v">Mila Sorokina</span></div>
-                    <div class="art-row"><span class="art-k mono">WHEN</span><span class="art-v mono">2026-04-08T14:32Z</span></div>
-                    <div class="art-row"><span class="art-k mono">BLOCK</span><code class="art-v mono">#890241</code></div>
+                    <div class="art-row"><span class="art-k mono">WHAT</span><code class="art-v mono">{{ demoSample().hash }}</code></div>
+                    <div class="art-row"><span class="art-k mono">WHO</span><span class="art-v">{{ demoSample().author }}</span></div>
+                    <div class="art-row"><span class="art-k mono">FILE</span><span class="art-v mono">{{ demoSample().file }}</span></div>
+                    <div class="art-row"><span class="art-k mono">WHEN</span><span class="art-v mono">{{ demoSample().date }}</span></div>
+                    <div class="art-row"><span class="art-k mono">BLOCK</span><code class="art-v mono">{{ demoSample().block }}</code></div>
                 </div>
                 <footer class="art-foot">
                     <ui-badge tone="success" [dot]="true">Bitcoin confirmed</ui-badge>
@@ -48,39 +49,32 @@
      TRUST BAR
      ═════════════════════════════════════════════════════════════ -->
 <div class="trust-bar container">
-    <span class="tb-item"><span class="tb-mark">①</span> {{ 'trust.wipo' | translate }}</span>
-    <span class="tb-item"><span class="tb-mark">②</span> {{ 'trust.eidas' | translate }}</span>
-    <span class="tb-item"><span class="tb-mark">③</span> {{ 'trust.paris' | translate }}</span>
-    <span class="tb-item"><span class="tb-mark">④</span> {{ 'trust.privacy' | translate }}</span>
+    <span class="tb-item">
+        <svg class="tb-ico" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>
+        {{ 'trust.eidas' | translate }}
+    </span>
+    <span class="tb-sep" aria-hidden="true"></span>
+    <span class="tb-item">
+        <svg class="tb-ico" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3h18v18H3z"/><path d="M3 9h18M9 21V9"/></svg>
+        {{ 'trust.paris' | translate }}
+    </span>
+    <span class="tb-sep" aria-hidden="true"></span>
+    <span class="tb-item">
+        <svg class="tb-ico" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        {{ 'trust.privacy' | translate }}
+    </span>
+    <span class="tb-sep" aria-hidden="true"></span>
+    <span class="tb-item">
+        <svg class="tb-ico" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1"/></svg>
+        {{ 'trust.opensource' | translate }}
+    </span>
 </div>
 
 <!-- ═════════════════════════════════════════════════════════════
-     HOW IT WORKS
-     ═════════════════════════════════════════════════════════════ -->
-<ui-section
-    id="how"
-    [eyebrow]="'info.howEyebrow' | translate"
-    [title]="'how.title' | translate"
-    appReveal>
-    <div class="how-grid">
-        <ui-card class="how-card" [eyebrow]="'01'" [title]="'how.step1Title' | translate" [subtitle]="'how.step1Desc' | translate">
-            <ui-code-block value="sha256(file) -> 64-char fingerprint" label="in your browser" />
-        </ui-card>
-        <ui-card class="how-card" [eyebrow]="'02'" [title]="'how.step2Title' | translate" [subtitle]="'how.step2Desc' | translate">
-            <ui-code-block value="gpg --armor --detach-sign CITATION.cff" label="cryptographic authorship" />
-        </ui-card>
-        <ui-card class="how-card" [eyebrow]="'03'" [title]="'how.step3Title' | translate" [subtitle]="'how.step3Desc' | translate">
-            <ui-code-block value="Bitcoin + 3× RFC 3161 + Ethereum L2" label="six parallel anchors" />
-        </ui-card>
-    </div>
-</ui-section>
-
-<!-- ═════════════════════════════════════════════════════════════
-     DEPOSIT — main workflow
+     DEPOSIT — main workflow (front-and-center; try before learn)
      ═════════════════════════════════════════════════════════════ -->
 <ui-section
     sectionId="deposit"
-    [eyebrow]="'deposit.eyebrow' | translate"
     [title]="'deposit.sectionTitle' | translate"
     [subtitle]="'deposit.sectionSub' | translate"
     appReveal>
@@ -125,7 +119,7 @@
                         <div class="form-row">
                             <label class="field">
                                 <span class="field-label">{{ 'form.author' | translate }}</span>
-                                <input type="text" [(ngModel)]="form.authorGivenNames" [placeholder]="'form.authorPh' | translate" class="field-input" />
+                                <input type="text" [(ngModel)]="form.authorGivenNames" [placeholder]="authorPlaceholder()" class="field-input" />
                             </label>
                             <label class="field">
                                 <span class="field-label">{{ 'form.email' | translate }}</span>
@@ -292,7 +286,50 @@
 </ui-section>
 
 <!-- ═════════════════════════════════════════════════════════════
-     WHY BITCOIN
+     HOW IT WORKS — teaser after the deposit experience
+     ═════════════════════════════════════════════════════════════ -->
+<ui-section
+    id="how"
+    [eyebrow]="'info.howEyebrow' | translate"
+    [title]="'how.title' | translate"
+    appReveal>
+    <div class="how-grid">
+        <ui-card class="how-card" [eyebrow]="'01'" [title]="'how.step1Title' | translate" [subtitle]="'how.step1Desc' | translate">
+            <ui-code-block value="sha256(file) -> 64-char fingerprint" label="in your browser" />
+        </ui-card>
+        <ui-card class="how-card" [eyebrow]="'02'" [title]="'how.step2Title' | translate" [subtitle]="'how.step2Desc' | translate">
+            <ui-code-block value="gpg --armor --detach-sign CITATION.cff" label="cryptographic authorship" />
+        </ui-card>
+        <ui-card class="how-card" [eyebrow]="'03'" [title]="'how.step3Title' | translate" [subtitle]="'how.step3Desc' | translate">
+            <ui-code-block value="Bitcoin + 3× RFC 3161 + Ethereum L2" label="five parallel anchors" />
+        </ui-card>
+    </div>
+    <div class="how-more">
+        <a ui-button variant="ghost" size="md" routerLink="/how">
+            {{ 'how.seeFullPipeline' | translate }}
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+        </a>
+    </div>
+</ui-section>
+
+<!-- ═════════════════════════════════════════════════════════════
+     LEGAL — primary objection handler, before the technical "why"
+     ═════════════════════════════════════════════════════════════ -->
+<ui-section
+    [eyebrow]="'info.legalEyebrow' | translate"
+    [title]="'legal.title' | translate"
+    [narrow]="true"
+    appReveal>
+    <div class="prose">
+        <p>{{ 'legal.p1' | translate }}</p>
+        <p>{{ 'legal.p2' | translate }}</p>
+        <p>{{ 'legal.p3' | translate }}</p>
+        <p>{{ 'legal.p4' | translate }}</p>
+    </div>
+</ui-section>
+
+<!-- ═════════════════════════════════════════════════════════════
+     WHY BITCOIN — deeper technical confidence
      ═════════════════════════════════════════════════════════════ -->
 <ui-section
     [eyebrow]="'info.whyEyebrow' | translate"
@@ -305,22 +342,6 @@
         <p>{{ 'why.p3' | translate }}</p>
         <blockquote>{{ 'why.p4' | translate }}</blockquote>
         <p class="caption">{{ 'why.alt' | translate }}</p>
-    </div>
-</ui-section>
-
-<!-- ═════════════════════════════════════════════════════════════
-     LEGAL
-     ═════════════════════════════════════════════════════════════ -->
-<ui-section
-    [eyebrow]="'info.legalEyebrow' | translate"
-    [title]="'legal.title' | translate"
-    [narrow]="true"
-    appReveal>
-    <div class="prose">
-        <p>{{ 'legal.p1' | translate }}</p>
-        <p>{{ 'legal.p2' | translate }}</p>
-        <p>{{ 'legal.p3' | translate }}</p>
-        <p>{{ 'legal.p4' | translate }}</p>
     </div>
 </ui-section>
 
@@ -341,32 +362,162 @@
 </ui-section>
 
 <!-- ═════════════════════════════════════════════════════════════
-     VERSION HISTORY (local)
+     VERSION HISTORY (local, IndexedDB)
      ═════════════════════════════════════════════════════════════ -->
-@if (depositHistory().length > 0) {
-    <ui-section
-        [eyebrow]="'history.eyebrow' | translate"
-        [title]="'history.title' | translate"
-        [subtitle]="'history.subtitle' | translate"
-        appReveal>
-        <div class="history-list">
-            @for (rec of depositHistory(); track rec.digest) {
-                <ui-card class="history-item">
-                    <div class="history-meta">
-                        <strong>{{ rec.title }}</strong>
-                        <span class="caption mono">v{{ rec.version }}</span>
-                        <span class="caption">{{ 'drop.filesCount' | translate:{count: rec.fileCount} }}</span>
-                    </div>
-                    <div class="history-row">
-                        <code class="mono">{{ rec.digest.slice(0, 16) }}…</code>
-                        <span class="caption">{{ rec.timestamp | slice:0:10 }}</span>
-                        <ui-badge tone="brand">{{ rec.anchors.length }} anchors</ui-badge>
-                    </div>
-                </ui-card>
+<ui-section
+    [eyebrow]="'history.eyebrow' | translate"
+    [title]="'history.title' | translate"
+    [subtitle]="'history.subtitle' | translate"
+    appReveal>
+
+    @if (depositTotal() === 0) {
+        <ui-card class="hist-empty" [elevated]="true">
+            <div class="empty-body">
+                <span class="empty-icon" aria-hidden="true">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v5h5"/><path d="M3.05 13A9 9 0 1 0 6 5.3L3 8"/><path d="M12 7v5l4 2"/></svg>
+                </span>
+                <div class="empty-text">
+                    <h3>{{ 'history.emptyTitle' | translate }}</h3>
+                    <p>{{ 'history.emptySub' | translate }}</p>
+                </div>
+                <a ui-button variant="primary" size="md" href="#deposit">{{ 'hero.cta' | translate }}</a>
+            </div>
+        </ui-card>
+    } @else {
+        <!-- ── stats strip ─────────────────────────────────── -->
+        <div class="hist-stats">
+            <div class="stat">
+                <span class="stat-value mono">{{ depositTotal() }}</span>
+                <span class="stat-label">{{ 'history.statDeposits' | translate }}</span>
+            </div>
+            <div class="stat">
+                <span class="stat-value mono">{{ projectTotal() }}</span>
+                <span class="stat-label">{{ 'history.statProjects' | translate }}</span>
+            </div>
+            <div class="stat">
+                <span class="stat-value mono">
+                    @if (daysSinceFirst() === null) { — }
+                    @else if (daysSinceFirst() === 0) { {{ 'history.today' | translate }} }
+                    @else { {{ 'history.daysAgo' | translate:{ count: daysSinceFirst() } }} }
+                </span>
+                <span class="stat-label">{{ 'history.statSince' | translate }}</span>
+            </div>
+        </div>
+
+        <!-- ── search ──────────────────────────────────────── -->
+        <label class="hist-search">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+            <input type="search"
+                [placeholder]="'history.search' | translate"
+                [value]="historyQuery()"
+                (input)="historyQuery.set($any($event.target).value)" />
+            @if (historyQuery()) {
+                <button type="button" class="clear-q" (click)="historyQuery.set('')" aria-label="clear">×</button>
+            }
+        </label>
+
+        @if (filteredProjects().length === 0) {
+            <p class="caption hist-empty-query">{{ 'history.noResults' | translate }}</p>
+        }
+
+        <!-- ── project groups ──────────────────────────────── -->
+        <div class="hist-projects">
+            @for (proj of filteredProjects(); track proj.title) {
+                <article class="project" [class.is-open]="isProjectOpen(proj.title)">
+                    <button type="button" class="proj-head" (click)="toggleProject(proj.title)">
+                        <span class="proj-chevron" aria-hidden="true">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+                        </span>
+                        <span class="proj-title">{{ proj.title || '—' }}</span>
+                        <span class="proj-meta">
+                            <ui-badge tone="brand" [dot]="true">v{{ proj.latest.version }} · {{ 'history.latest' | translate }}</ui-badge>
+                            <span class="caption">{{ 'history.versionsCount' | translate:{ count: proj.versions.length } }}</span>
+                            <span class="caption">· {{ proj.totalFiles }} {{ 'drop.filesCount' | translate:{ count: proj.totalFiles } }}</span>
+                            <span class="caption mono">· {{ humanSize(proj.totalSize) }}</span>
+                        </span>
+                    </button>
+
+                    @if (isProjectOpen(proj.title)) {
+                        <ol class="timeline">
+                            @for (rec of proj.versions; track rec.digest; let i = $index) {
+                                <li class="tl-item">
+                                    <span class="tl-dot" aria-hidden="true"></span>
+                                    <div class="tl-body">
+                                        <header class="tl-head">
+                                            <span class="tl-version mono">v{{ rec.version }}</span>
+                                            <span class="caption">{{ rec.timestamp | slice:0:10 }}</span>
+                                            <span class="caption">·</span>
+                                            <span class="caption">{{ 'history.anchorsPassing' | translate:{ ok: anchorsOk(rec), total: rec.anchors.length || 5 } }}</span>
+                                            @if (rec.gpgSigned) {
+                                                <ui-badge tone="success" [dot]="true">{{ 'history.signed' | translate }}</ui-badge>
+                                            } @else {
+                                                <ui-badge>{{ 'history.unsigned' | translate }}</ui-badge>
+                                            }
+                                        </header>
+
+                                        <div class="tl-detail">
+                                            <span class="caption">{{ rec.authorName }}</span>
+                                            <span class="caption">·</span>
+                                            <span class="caption">{{ rec.fileCount }} {{ 'drop.filesCount' | translate:{ count: rec.fileCount } }}</span>
+                                            <span class="caption mono">· {{ humanSize(rec.totalSize) }}</span>
+                                        </div>
+
+                                        <div class="tl-anchors">
+                                            @for (a of rec.anchors; track $index) {
+                                                <ui-status-dot [state]="anchorDotForRecord(rec, $index)" />
+                                            }
+                                            @if (!rec.anchors.length) {
+                                                <span class="caption">—</span>
+                                            }
+                                        </div>
+
+                                        <button type="button" class="tl-digest" (click)="copyDigest(rec.digest)"
+                                                [class.is-copied]="copiedDigest() === rec.digest">
+                                            <code class="mono">{{ rec.digest.slice(0, 24) }}…</code>
+                                            <span class="caption">
+                                                @if (copiedDigest() === rec.digest) {
+                                                    ✓ {{ 'history.copied' | translate }}
+                                                } @else {
+                                                    ⧉ {{ 'history.copyDigest' | translate }}
+                                                }
+                                            </span>
+                                        </button>
+
+                                        @if (diffWithPrevious(proj, i); as diff) {
+                                            @if (diff === 'same') {
+                                                <span class="tl-diff tl-diff--same">= {{ 'history.identical' | translate }}</span>
+                                            } @else {
+                                                <span class="tl-diff tl-diff--changed">⇆ {{ 'history.changed' | translate }}</span>
+                                            }
+                                        }
+
+                                        <div class="tl-actions">
+                                            <button ui-button variant="ghost" size="sm" (click)="deleteDeposit(rec)">
+                                                {{ 'history.delete' | translate }}
+                                            </button>
+                                        </div>
+                                    </div>
+                                </li>
+                            }
+                        </ol>
+                    }
+                </article>
             }
         </div>
-    </ui-section>
-}
+
+        <!-- ── footer actions ──────────────────────────────── -->
+        <div class="hist-tools">
+            <button ui-button variant="secondary" size="sm" (click)="exportHistory()">{{ 'history.export' | translate }}</button>
+            <button ui-button variant="secondary" size="sm" (click)="triggerImport()">{{ 'history.import' | translate }}</button>
+            <input #historyImportInput type="file" accept="application/json,.json" hidden (change)="onHistoryImport($event)" />
+            <button ui-button variant="ghost" size="sm" (click)="clearHistory()">{{ 'history.clearAll' | translate }}</button>
+
+            @if (historyMessage(); as msg) {
+                <span class="hist-msg" [class.is-ok]="msg.kind === 'ok'" [class.is-err]="msg.kind === 'err'">{{ msg.text }}</span>
+            }
+        </div>
+    }
+</ui-section>
 
 <!-- ═════════════════════════════════════════════════════════════
      FAQ
@@ -381,7 +532,9 @@
             <details class="faq-item">
                 <summary>
                     <span>{{ 'faq.q' + i | translate }}</span>
-                    <span class="faq-caret" aria-hidden="true">＋</span>
+                    <svg class="faq-caret" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="M12 5v14M5 12h14"/>
+                    </svg>
                 </summary>
                 <p>{{ 'faq.a' + i | translate }}</p>
             </details>
@@ -394,10 +547,16 @@
      ═════════════════════════════════════════════════════════════ -->
 <section class="final-cta">
     <div class="container final-inner">
-        <h2 class="display-2">{{ 'hero.cta' | translate }}</h2>
-        <p class="lead">{{ 'hero.ctaHint' | translate }}</p>
-        <a ui-button variant="primary" size="lg" href="#deposit">
-            {{ 'deposit.eyebrow' | translate }} · {{ 'actions.generate' | translate }}
-        </a>
+        <h2 class="display-2">{{ 'cta.finalTitle' | translate }}</h2>
+        <p class="lead">{{ 'cta.finalSub' | translate }}</p>
+        <div class="final-row">
+            <a ui-button variant="primary" size="lg" href="#deposit">
+                {{ 'hero.cta' | translate }}
+            </a>
+            <a ui-button variant="ghost" size="lg" routerLink="/how">
+                {{ 'info.howEyebrow' | translate }}
+            </a>
+        </div>
+        <p class="caption">{{ 'hero.ctaHint' | translate }}</p>
     </div>
 </section>

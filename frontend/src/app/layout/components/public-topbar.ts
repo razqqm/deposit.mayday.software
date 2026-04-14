@@ -15,20 +15,18 @@ import { ThemeService } from '@/app/shared/services/theme.service';
                 <a routerLink="/" class="brand" [attr.aria-label]="'a11y.homeLink' | translate">
                     <span class="brand-mark" aria-hidden="true">
                         <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M7 10 L12 15 L17 10" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
-                            <path d="M12 4 L12 14" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>
-                            <path d="M5 19 L19 19" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>
+                            <path d="M7 10 L12 15 L17 10" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M12 4 L12 14" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/>
+                            <path d="M5 19 L19 19" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/>
                         </svg>
                     </span>
-                    <span class="brand-word">
-                        <span class="brand-main">mayday</span><span class="brand-dim">.software</span>
-                    </span>
+                    <span class="brand-word">deposit</span>
                 </a>
 
                 <nav class="links" [class.is-open]="menuOpen()">
-                    <a routerLink="/" routerLinkActive="is-active" [routerLinkActiveOptions]="{ exact: true }" class="link">Home</a>
+                    <a routerLink="/" routerLinkActive="is-active" [routerLinkActiveOptions]="{ exact: true }" class="link">{{ 'nav.home' | translate }}</a>
+                    <a routerLink="/how" routerLinkActive="is-active" class="link">{{ 'info.howEyebrow' | translate }}</a>
                     <a routerLink="/verify" routerLinkActive="is-active" class="link">{{ 'verify.title' | translate }}</a>
-                    <a href="https://github.com/iarestov/mayday.software" target="_blank" rel="noopener noreferrer" class="link">Docs</a>
                 </nav>
 
                 <div class="ctrls">
@@ -96,11 +94,13 @@ import { ThemeService } from '@/app/shared/services/theme.service';
             color: var(--bg);
         }
         .brand-word {
-            font-size: var(--fs-sm);
-            font-weight: var(--fw-bold);
-            letter-spacing: var(--ls-tight);
+            font-family: var(--font-brand);
+            font-size: var(--fs-lg);
+            font-weight: 600;
+            letter-spacing: -0.02em;
+            line-height: 1;
+            color: var(--text);
         }
-        .brand-dim { color: var(--text-dim); font-weight: var(--fw-medium); }
 
         .links {
             display: flex;

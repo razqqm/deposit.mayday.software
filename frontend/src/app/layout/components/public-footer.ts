@@ -11,9 +11,16 @@ import { TranslateModule } from '@ngx-translate/core';
             <div class="inner">
                 <div class="col brand-col">
                     <span class="brand">
-                        <span class="mark"></span>
-                        mayday<span class="dim">.software</span>
+                        <span class="mark" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M7 10 L12 15 L17 10" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M12 4 L12 14" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/>
+                                <path d="M5 19 L19 19" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/>
+                            </svg>
+                        </span>
+                        <span class="brand-word">deposit</span>
                     </span>
+                    <p class="tag">by <a href="https://mayday.software" target="_blank" rel="noopener noreferrer">mayday.software</a></p>
                     <p class="disc">{{ 'footer.disclaimer' | translate }}</p>
                 </div>
 
@@ -49,7 +56,7 @@ import { TranslateModule } from '@ngx-translate/core';
                 <span class="dot" aria-hidden="true"></span>
                 <span>© {{ year }} mayday.software</span>
                 <span class="sep">·</span>
-                <span>Zero-knowledge, open source, forever</span>
+                <span>{{ 'footer.tagline' | translate }}</span>
             </div>
         </footer>
     `,
@@ -78,18 +85,35 @@ import { TranslateModule } from '@ngx-translate/core';
             display: inline-flex;
             align-items: center;
             gap: var(--sp-2);
-            font-size: var(--fs-base);
-            font-weight: var(--fw-bold);
-            letter-spacing: var(--ls-tight);
             color: var(--text);
         }
         .mark {
-            width: 10px;
-            height: 10px;
-            border-radius: 3px;
-            background: var(--brand);
+            display: grid;
+            place-items: center;
+            width: 28px;
+            height: 28px;
+            border-radius: 8px;
+            background: var(--text);
+            color: var(--bg);
         }
-        .dim { color: var(--text-dim); font-weight: var(--fw-medium); }
+        .brand-word {
+            font-family: var(--font-brand);
+            font-size: var(--fs-xl);
+            font-weight: 600;
+            letter-spacing: -0.02em;
+            line-height: 1;
+        }
+        .tag {
+            font-size: var(--fs-xs);
+            color: var(--text-dim);
+            margin-top: calc(-1 * var(--sp-1));
+        }
+        .tag a {
+            color: var(--text-mute);
+            text-decoration: none;
+            transition: color var(--dur-fast) var(--ease-out);
+        }
+        .tag a:hover { color: var(--text); }
         .disc {
             font-size: var(--fs-xs);
             color: var(--text-mute);

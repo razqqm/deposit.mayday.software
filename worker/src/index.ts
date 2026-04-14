@@ -47,6 +47,36 @@ const OTS_CALENDARS: Record<string, string> = {
     catallaxy: 'https://btc.calendar.catallaxy.com'
 };
 
+/**
+ * Ethereum L2 anchors — feature-flagged by the presence of ETH_PRIVATE_KEY.
+ * ─────────────────────────────────────────────────────────────
+ * To enable this anchor in production:
+ *
+ *   1. Generate a dedicated wallet (do NOT reuse a personal wallet).
+ *      Keep this key air-gapped from any address holding real assets.
+ *        $ openssl rand -hex 32        # 64-char hex secret
+ *      Or via viem:
+ *        import { generatePrivateKey } from 'viem/accounts';
+ *        console.log(generatePrivateKey());
+ *
+ *   2. Fund the wallet on Base (Ethereum L2). Base tx costs are fractions
+ *      of a cent — $5 covers several thousand anchors. Bridge from Ethereum
+ *      mainnet (https://bridge.base.org) or buy directly on Coinbase.
+ *
+ *   3. Register the key as a Cloudflare Worker secret (NOT a plain env var —
+ *      secrets are encrypted at rest and never shown in the dashboard):
+ *        $ npx wrangler secret put ETH_PRIVATE_KEY
+ *      Paste the 0x-prefixed hex when prompted. Commit nothing.
+ *
+ *   4. Monitor the wallet balance — add an external watch (e.g. Tenderly
+ *      alert or a cron job hitting basescan.org). When balance falls below
+ *      ~0.0005 ETH, top it up; otherwise anchors will start failing with
+ *      "insufficient funds for gas".
+ *
+ * While the secret is unset, /api/v1/info reports `ethereum: []` and the
+ * frontend orchestrator hides the row entirely (see anchor-orchestrator).
+ * `handleEth` still returns 503 for anyone hitting the endpoint directly.
+ */
 const ETH_CHAINS: Record<string, { chain: ReturnType<typeof defineChain>; rpcUrl: string; explorerUrl: string }> = {
     base: {
         chain: base,
@@ -224,6 +254,10 @@ async function handleApiV1(url: URL, request: Request, env: Env): Promise<Respon
 
     // GET /api/v1/info — service metadata
     if (path === 'info' && request.method === 'GET') {
+        // Ethereum anchor only appears in the advertised list when a signing
+        // key is configured. The frontend orchestrator uses this to hide
+        // the UI row entirely instead of showing a "not configured" error.
+        const ethereumEnabled = !!env.ETH_PRIVATE_KEY;
         return withCors(jsonResponse({
             service: 'mayday.software',
             version: '1.0.0',
@@ -231,7 +265,7 @@ async function handleApiV1(url: URL, request: Request, env: Env): Promise<Respon
             anchors: {
                 rfc3161: Object.keys(TSA_PROVIDERS),
                 opentimestamps: Object.keys(OTS_CALENDARS),
-                ethereum: Object.keys(ETH_CHAINS)
+                ethereum: ethereumEnabled ? Object.keys(ETH_CHAINS) : []
             },
             endpoints: {
                 'POST /api/tsa/:provider': 'Submit RFC 3161 timestamp request (DER-encoded TimeStampReq)',
@@ -309,7 +343,7 @@ async function handleApiV1(url: URL, request: Request, env: Env): Promise<Respon
 
     // GET /api/v1/embed.js — embeddable widget for CMS plugins
     if (path === 'embed.js' && request.method === 'GET') {
-        const js = `(function(){var d=document,s=d.createElement('iframe');s.src='https://mayday.software/?embed=1';s.style.cssText='width:100%;height:600px;border:none;border-radius:12px;';s.title='mayday.software — Cryptographic Copyright Deposit';var t=d.getElementById('mayday-widget');if(t)t.appendChild(s);else d.currentScript.parentNode.appendChild(s);})();`;
+        const js = `(function(){var d=document,s=d.createElement('iframe');s.src='https://deposit.mayday.software/?embed=1';s.style.cssText='width:100%;height:600px;border:none;border-radius:12px;';s.title='deposit — Cryptographic Copyright Deposit by mayday.software';var t=d.getElementById('mayday-widget');if(t)t.appendChild(s);else d.currentScript.parentNode.appendChild(s);})();`;
         return withCors(new Response(js, {
             headers: { 'Content-Type': 'application/javascript', 'Cache-Control': 'public, max-age=3600' }
         }));
