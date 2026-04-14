@@ -11,6 +11,10 @@
                 <span class="accent">{{ 'hero.titleLine2' | translate }}</span>
             </h1>
             <p class="lead">{{ 'hero.subtitle' | translate }}</p>
+            <p class="hero-risk">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                <span>{{ 'hero.riskReversal' | translate }}</span>
+            </p>
             <div class="cta-row">
                 <a ui-button variant="primary" size="lg" href="#deposit">
                     {{ 'hero.cta' | translate }}
@@ -313,6 +317,50 @@
 </ui-section>
 
 <!-- ═════════════════════════════════════════════════════════════
+     USE CASES — "is this for me?" persona-grid
+     ═════════════════════════════════════════════════════════════ -->
+<ui-section
+    [eyebrow]="'useCases.eyebrow' | translate"
+    [title]="'useCases.title' | translate"
+    [subtitle]="'useCases.subtitle' | translate"
+    appReveal>
+    <div class="use-cases">
+        <ui-card class="uc-card">
+            <span class="uc-icon" aria-hidden="true">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+            </span>
+            <h3 class="uc-title">{{ 'useCases.dev' | translate }}</h3>
+            <p class="uc-desc">{{ 'useCases.devDesc' | translate }}</p>
+            <code class="uc-snippet mono">git tag v1 && deposit ./dist</code>
+        </ui-card>
+        <ui-card class="uc-card">
+            <span class="uc-icon" aria-hidden="true">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m12 19 7-7 3 3-7 7-3-3z"/><path d="m18 13-1.5-7.5L2 2l3.5 14.5L13 18z"/><path d="m2 2 7.586 7.586"/><circle cx="11" cy="11" r="2"/></svg>
+            </span>
+            <h3 class="uc-title">{{ 'useCases.designer' | translate }}</h3>
+            <p class="uc-desc">{{ 'useCases.designerDesc' | translate }}</p>
+            <code class="uc-snippet mono">aurora-kit-v4.fig → CITATION.cff</code>
+        </ui-card>
+        <ui-card class="uc-card">
+            <span class="uc-icon" aria-hidden="true">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="15" y2="17"/></svg>
+            </span>
+            <h3 class="uc-title">{{ 'useCases.writer' | translate }}</h3>
+            <p class="uc-desc">{{ 'useCases.writerDesc' | translate }}</p>
+            <code class="uc-snippet mono">chapter-07.docx → Bitcoin block #890207</code>
+        </ui-card>
+        <ui-card class="uc-card">
+            <span class="uc-icon" aria-hidden="true">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>
+            </span>
+            <h3 class="uc-title">{{ 'useCases.legal' | translate }}</h3>
+            <p class="uc-desc">{{ 'useCases.legalDesc' | translate }}</p>
+            <code class="uc-snippet mono">POST /api/v1/anchor (batch)</code>
+        </ui-card>
+    </div>
+</ui-section>
+
+<!-- ═════════════════════════════════════════════════════════════
      LEGAL — primary objection handler, before the technical "why"
      ═════════════════════════════════════════════════════════════ -->
 <ui-section
@@ -325,6 +373,81 @@
         <p>{{ 'legal.p2' | translate }}</p>
         <p>{{ 'legal.p3' | translate }}</p>
         <p>{{ 'legal.p4' | translate }}</p>
+    </div>
+</ui-section>
+
+<!-- ═════════════════════════════════════════════════════════════
+     COMPARISON — mayday vs traditional alternatives
+     ═════════════════════════════════════════════════════════════ -->
+<ui-section
+    [eyebrow]="'compare.eyebrow' | translate"
+    [title]="'compare.title' | translate"
+    [subtitle]="'compare.subtitle' | translate"
+    appReveal>
+    <div class="compare-wrap">
+        <table class="compare-table">
+            <thead>
+                <tr>
+                    <th class="cmp-corner" scope="col">{{ 'compare.dimension' | translate }}</th>
+                    <th class="cmp-mayday" scope="col">deposit<span class="cmp-mark"></span></th>
+                    <th scope="col">{{ 'compare.altNotary' | translate }}</th>
+                    <th scope="col">{{ 'compare.altRospatent' | translate }}</th>
+                    <th scope="col">{{ 'compare.altIpchain' | translate }}</th>
+                    <th scope="col">{{ 'compare.altEidas' | translate }}</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th scope="row">{{ 'compare.rowCost' | translate }}</th>
+                    <td class="cmp-mayday cmp-good">{{ 'compare.costMayday' | translate }}</td>
+                    <td>{{ 'compare.costNotary' | translate }}</td>
+                    <td>{{ 'compare.costRospatent' | translate }}</td>
+                    <td>{{ 'compare.costIpchain' | translate }}</td>
+                    <td>{{ 'compare.costEidas' | translate }}</td>
+                </tr>
+                <tr>
+                    <th scope="row">{{ 'compare.rowTime' | translate }}</th>
+                    <td class="cmp-mayday cmp-good">{{ 'compare.timeMayday' | translate }}</td>
+                    <td>{{ 'compare.timeNotary' | translate }}</td>
+                    <td>{{ 'compare.timeRospatent' | translate }}</td>
+                    <td>{{ 'compare.timeIpchain' | translate }}</td>
+                    <td>{{ 'compare.timeEidas' | translate }}</td>
+                </tr>
+                <tr>
+                    <th scope="row">{{ 'compare.rowVerify' | translate }}</th>
+                    <td class="cmp-mayday cmp-yes">✓ {{ 'compare.verifyMayday' | translate }}</td>
+                    <td class="cmp-no">✗ {{ 'compare.verifyTrust' | translate }}</td>
+                    <td class="cmp-no">✗ {{ 'compare.verifyTrust' | translate }}</td>
+                    <td class="cmp-no">✗ {{ 'compare.verifyIpchain' | translate }}</td>
+                    <td class="cmp-yes">✓ X.509</td>
+                </tr>
+                <tr>
+                    <th scope="row">{{ 'compare.rowSurvive' | translate }}</th>
+                    <td class="cmp-mayday cmp-yes">✓ {{ 'compare.surviveMayday' | translate }}</td>
+                    <td class="cmp-no">✗</td>
+                    <td class="cmp-no">✗</td>
+                    <td class="cmp-no">✗</td>
+                    <td class="cmp-yes">✓ {{ 'compare.surviveEidas' | translate }}</td>
+                </tr>
+                <tr>
+                    <th scope="row">{{ 'compare.rowCourt' | translate }}</th>
+                    <td class="cmp-mayday cmp-yes">✓ {{ 'compare.courtMayday' | translate }}</td>
+                    <td class="cmp-yes">✓ {{ 'compare.courtNotary' | translate }}</td>
+                    <td class="cmp-yes">✓ {{ 'compare.courtRospatent' | translate }}</td>
+                    <td class="cmp-na">⊘ {{ 'compare.courtIpchain' | translate }}</td>
+                    <td class="cmp-yes">✓ EU</td>
+                </tr>
+                <tr>
+                    <th scope="row">{{ 'compare.rowOpen' | translate }}</th>
+                    <td class="cmp-mayday cmp-yes">✓ MIT</td>
+                    <td class="cmp-na">—</td>
+                    <td class="cmp-no">✗</td>
+                    <td class="cmp-no">✗</td>
+                    <td class="cmp-na">{{ 'compare.openVaries' | translate }}</td>
+                </tr>
+            </tbody>
+        </table>
+        <p class="compare-foot caption">{{ 'compare.footnote' | translate }}</p>
     </div>
 </ui-section>
 
@@ -358,6 +481,47 @@
         <ui-card [title]="'trust.paris' | translate" [subtitle]="'trust.parisDesc' | translate" />
         <ui-card [title]="'trust.eidas' | translate" [subtitle]="'trust.eidasDesc' | translate" />
         <ui-card [title]="'trust.privacy' | translate" [subtitle]="'trust.privacyDesc' | translate" />
+    </div>
+</ui-section>
+
+<!-- ═════════════════════════════════════════════════════════════
+     PRICING — single transparent strip; no fake tiers
+     ═════════════════════════════════════════════════════════════ -->
+<ui-section
+    [eyebrow]="'pricing.eyebrow' | translate"
+    [title]="'pricing.title' | translate"
+    [subtitle]="'pricing.subtitle' | translate"
+    [narrow]="true"
+    appReveal>
+    <div class="pricing-card">
+        <div class="pricing-head">
+            <span class="pricing-amount">{{ 'pricing.amount' | translate }}</span>
+            <div class="pricing-tag">
+                <strong>{{ 'pricing.tag' | translate }}</strong>
+                <span class="caption">{{ 'pricing.tagSub' | translate }}</span>
+            </div>
+        </div>
+        <ul class="pricing-list">
+            <li>
+                <span class="p-check" aria-hidden="true">✓</span>
+                <span><strong>{{ 'pricing.point1' | translate }}</strong> — {{ 'pricing.point1Desc' | translate }}</span>
+            </li>
+            <li>
+                <span class="p-check" aria-hidden="true">✓</span>
+                <span><strong>{{ 'pricing.point2' | translate }}</strong> — {{ 'pricing.point2Desc' | translate }}</span>
+            </li>
+            <li>
+                <span class="p-check p-soon" aria-hidden="true">→</span>
+                <span><strong>{{ 'pricing.point3' | translate }}</strong> — {{ 'pricing.point3Desc' | translate }}</span>
+            </li>
+        </ul>
+        <div class="pricing-actions">
+            <a ui-button variant="primary" size="md" href="#deposit">{{ 'hero.cta' | translate }}</a>
+            <a ui-button variant="ghost" size="md" href="https://github.com/iarestov/mayday.software" target="_blank" rel="noopener noreferrer">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .3a12 12 0 0 0-3.79 23.4c.6.1.83-.26.83-.58v-2.05c-3.34.73-4.04-1.6-4.04-1.6-.55-1.39-1.34-1.76-1.34-1.76-1.09-.74.08-.73.08-.73 1.21.09 1.84 1.24 1.84 1.24 1.07 1.84 2.81 1.31 3.5 1 .1-.78.42-1.31.76-1.61-2.66-.3-5.47-1.33-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.13-.31-.54-1.53.12-3.18 0 0 1.01-.32 3.3 1.23a11.5 11.5 0 0 1 6 0c2.29-1.55 3.3-1.23 3.3-1.23.66 1.65.25 2.87.12 3.18.77.84 1.24 1.91 1.24 3.22 0 4.61-2.81 5.62-5.49 5.92.43.37.81 1.1.81 2.22v3.29c0 .32.22.69.83.58A12 12 0 0 0 12 .3"/></svg>
+                {{ 'pricing.viewSource' | translate }}
+            </a>
+        </div>
     </div>
 </ui-section>
 

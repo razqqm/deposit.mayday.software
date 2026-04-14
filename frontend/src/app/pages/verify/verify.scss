@@ -47,7 +47,9 @@
     border-color: var(--brand);
     box-shadow: var(--ring);
 }
-.key-pass-hint { margin: 0; }
+.key-pass-hint {
+    margin: 0;
+}
 
 .side {
     position: sticky;

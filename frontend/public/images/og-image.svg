@@ -1,0 +1,122 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-label="deposit — Prove you created it first">
+  <!-- Background gradient -->
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#fdfdfd"/>
+      <stop offset="100%" stop-color="#fff7e6"/>
+    </linearGradient>
+    <linearGradient id="brandText" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0b0b0f"/>
+      <stop offset="100%" stop-color="#1a1a1f"/>
+    </linearGradient>
+    <linearGradient id="amber" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#f59e0b"/>
+      <stop offset="100%" stop-color="#d97706"/>
+    </linearGradient>
+    <radialGradient id="meshA" cx="20%" cy="30%" r="55%">
+      <stop offset="0%" stop-color="#f59e0b" stop-opacity="0.45"/>
+      <stop offset="100%" stop-color="#f59e0b" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="meshB" cx="80%" cy="80%" r="55%">
+      <stop offset="0%" stop-color="#fbbf24" stop-opacity="0.35"/>
+      <stop offset="100%" stop-color="#fbbf24" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <rect width="1200" height="630" fill="url(#meshA)"/>
+  <rect width="1200" height="630" fill="url(#meshB)"/>
+
+  <!-- Subtle dotted grid -->
+  <g opacity="0.08">
+    <pattern id="dots" x="0" y="0" width="36" height="36" patternUnits="userSpaceOnUse">
+      <circle cx="2" cy="2" r="1" fill="#0b0b0f"/>
+    </pattern>
+    <rect width="1200" height="630" fill="url(#dots)"/>
+  </g>
+
+  <!-- Brand mark (top-left) -->
+  <g transform="translate(64, 64)">
+    <rect width="56" height="56" rx="14" fill="url(#amber)"/>
+    <g transform="translate(28, 28)" stroke="#1a1208" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" fill="none">
+      <path d="M -10 -2 L 0 8 L 10 -2"/>
+      <line x1="0" y1="-12" x2="0" y2="6"/>
+      <line x1="-14" y1="16" x2="14" y2="16"/>
+    </g>
+    <text x="80" y="38" font-family="Space Grotesk, Inter, system-ui, sans-serif" font-size="32" font-weight="700" fill="#0b0b0f" letter-spacing="-0.02em">deposit</text>
+    <text x="80" y="60" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="500" fill="#52525b" letter-spacing="0.02em">by mayday.software</text>
+  </g>
+
+  <!-- Headline -->
+  <g transform="translate(64, 220)">
+    <text font-family="Inter, system-ui, sans-serif" font-size="76" font-weight="800" fill="url(#brandText)" letter-spacing="-0.035em">
+      <tspan x="0" dy="0">Prove you created it</tspan>
+      <tspan x="0" dy="86">first — without notaries</tspan>
+    </text>
+  </g>
+
+  <!-- Subhead -->
+  <g transform="translate(64, 440)">
+    <text font-family="Inter, system-ui, sans-serif" font-size="22" font-weight="500" fill="#52525b" letter-spacing="-0.005em">
+      <tspan x="0" dy="0">Cryptographic copyright deposit · Bitcoin · RFC 3161 · GPG</tspan>
+      <tspan x="0" dy="32">Free · Open source · Files never leave your browser</tspan>
+    </text>
+  </g>
+
+  <!-- Right column: artifact card -->
+  <g transform="translate(740, 130)">
+    <rect width="400" height="370" rx="20" fill="#ffffff" stroke="#d4d4d8" stroke-width="1.5" filter="url(#shadow)"/>
+    <!-- Card head -->
+    <g transform="translate(0, 0)">
+      <rect width="400" height="48" rx="20" fill="#f4f4f5"/>
+      <rect y="32" width="400" height="16" fill="#f4f4f5"/>
+      <circle cx="22" cy="24" r="5" fill="#dc6e6e"/>
+      <circle cx="40" cy="24" r="5" fill="#f5b04b"/>
+      <circle cx="58" cy="24" r="5" fill="#7fc995"/>
+      <text x="200" y="29" font-family="JetBrains Mono, monospace" font-size="13" fill="#71717a" text-anchor="middle">CITATION-9c07646d.cff</text>
+    </g>
+    <!-- Rows -->
+    <g transform="translate(28, 80)" font-family="JetBrains Mono, monospace">
+      <text font-size="11" fill="#71717a" letter-spacing="0.04em">WHAT</text>
+      <text x="80" font-size="14" fill="#0b0b0f">9c07…856d2</text>
+      <line x1="0" y1="22" x2="344" y2="22" stroke="#e5e5e7" stroke-dasharray="2 4"/>
+      <g transform="translate(0, 50)">
+        <text font-size="11" fill="#71717a" letter-spacing="0.04em">WHO</text>
+        <text x="80" font-size="14" fill="#0b0b0f" font-family="Inter, sans-serif">Mila Sorokina</text>
+        <line x1="0" y1="22" x2="344" y2="22" stroke="#e5e5e7" stroke-dasharray="2 4"/>
+      </g>
+      <g transform="translate(0, 100)">
+        <text font-size="11" fill="#71717a" letter-spacing="0.04em">WHEN</text>
+        <text x="80" font-size="14" fill="#0b0b0f">2026-04-08T14:32Z</text>
+        <line x1="0" y1="22" x2="344" y2="22" stroke="#e5e5e7" stroke-dasharray="2 4"/>
+      </g>
+      <g transform="translate(0, 150)">
+        <text font-size="11" fill="#71717a" letter-spacing="0.04em">BLOCK</text>
+        <text x="80" font-size="14" fill="#0b0b0f">#890241</text>
+        <line x1="0" y1="22" x2="344" y2="22" stroke="#e5e5e7" stroke-dasharray="2 4"/>
+      </g>
+      <g transform="translate(0, 200)">
+        <text font-size="11" fill="#71717a" letter-spacing="0.04em">ANCHORS</text>
+        <g transform="translate(80, -8)">
+          <circle cx="6" cy="6" r="6" fill="#7fc995"/>
+          <circle cx="22" cy="6" r="6" fill="#7fc995"/>
+          <circle cx="38" cy="6" r="6" fill="#7fc995"/>
+          <circle cx="54" cy="6" r="6" fill="#7fc995"/>
+          <circle cx="70" cy="6" r="6" fill="#7fc995"/>
+          <text x="86" y="11" font-size="13" fill="#0b0b0f" font-family="Inter, sans-serif">5/5</text>
+        </g>
+      </g>
+    </g>
+    <!-- Footer badge -->
+    <g transform="translate(28, 322)">
+      <rect width="160" height="28" rx="14" fill="#fff7e6" stroke="#f59e0b" stroke-opacity="0.4"/>
+      <text x="80" y="18" font-family="Inter, sans-serif" font-size="12" font-weight="600" fill="#d97706" text-anchor="middle">eIDAS · court-ready</text>
+    </g>
+  </g>
+
+  <!-- Bottom strip -->
+  <g transform="translate(0, 580)">
+    <rect width="1200" height="50" fill="#0b0b0f" opacity="0.06"/>
+    <text x="64" y="32" font-family="JetBrains Mono, monospace" font-size="14" fill="#52525b" letter-spacing="0.02em">deposit.mayday.software · open source · zero-knowledge · forever verifiable</text>
+  </g>
+</svg>
