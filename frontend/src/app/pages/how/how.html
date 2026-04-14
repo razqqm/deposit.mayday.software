@@ -4,130 +4,143 @@
     [subtitle]="'how.subtitle' | translate"
     [wide]="true">
 
-    <!-- Split: narration (left) connected to animated pipeline (right) -->
-    <div class="how-split">
+    <div class="how-split" [style.--progress.%]="cycleProgress() * 100">
 
-        <!-- ═════ Narration column — step-by-step explanation ═════ -->
-        <aside class="narrate">
+        <!-- ═════ Narration column ═════ -->
+        <aside class="narrate" aria-label="Pipeline stages">
             <ol class="narr-list">
-                <li class="narr-item">
-                    <span class="narr-num">01</span>
-                    <div class="narr-body">
-                        <h3>{{ 'how.pipeline.detect' | translate }}</h3>
-                        <p>{{ 'how.pipeline.detectDesc' | translate }}</p>
-                        <code class="mono narr-code">{{ 'how.pipeline.detectCode' | translate }}</code>
-                    </div>
-                </li>
-                <li class="narr-item">
-                    <span class="narr-num">02</span>
-                    <div class="narr-body">
-                        <h3>{{ 'how.pipeline.hash' | translate }}</h3>
-                        <p>{{ 'how.pipeline.hashDesc' | translate }}</p>
-                        <code class="mono narr-code">{{ 'how.pipeline.hashCode' | translate }}</code>
-                    </div>
-                </li>
-                <li class="narr-item">
-                    <span class="narr-num">03</span>
-                    <div class="narr-body">
-                        <h3>{{ 'how.pipeline.sign' | translate }}</h3>
-                        <p>{{ 'how.pipeline.signDesc' | translate }}</p>
-                        <code class="mono narr-code">{{ 'how.pipeline.signCode' | translate }}</code>
-                    </div>
-                </li>
-                <li class="narr-item">
-                    <span class="narr-num">04</span>
-                    <div class="narr-body">
-                        <h3>{{ 'how.pipeline.manifest' | translate }}</h3>
-                        <p>{{ 'how.pipeline.manifestDesc' | translate }}</p>
-                        <code class="mono narr-code">{{ 'how.pipeline.manifestCode' | translate }}</code>
-                    </div>
-                </li>
-                <li class="narr-item">
-                    <span class="narr-num">05</span>
-                    <div class="narr-body">
-                        <h3>{{ 'how.pipeline.anchor' | translate }}</h3>
-                        <p>{{ 'how.pipeline.anchorDesc' | translate }}</p>
-                        <code class="mono narr-code">{{ 'how.pipeline.anchorCode' | translate }}</code>
-                    </div>
-                </li>
-                <li class="narr-item">
-                    <span class="narr-num">06</span>
-                    <div class="narr-body">
-                        <h3>{{ 'how.pipeline.certificate' | translate }}</h3>
-                        <p>{{ 'how.pipeline.certificateDesc' | translate }}</p>
-                        <code class="mono narr-code">{{ 'how.pipeline.certificateCode' | translate }}</code>
-                    </div>
-                </li>
+                @for (i of stageRange; track i) {
+                    <li class="narr-item"
+                        [class.is-active]="currentStage() === i"
+                        [class.is-done]="currentStage() > i"
+                        (click)="goToStage(i)"
+                        [attr.aria-current]="currentStage() === i ? 'step' : null">
+                        <span class="narr-num">{{ '0' + (i + 1) }}</span>
+                        <div class="narr-body">
+                            @switch (i) {
+                                @case (0) {
+                                    <h3>{{ 'how.pipeline.detect' | translate }}</h3>
+                                    <p>{{ 'how.pipeline.detectDesc' | translate }}</p>
+                                    <code class="mono narr-code">{{ 'how.pipeline.detectCode' | translate }}</code>
+                                }
+                                @case (1) {
+                                    <h3>{{ 'how.pipeline.hash' | translate }}</h3>
+                                    <p>{{ 'how.pipeline.hashDesc' | translate }}</p>
+                                    <code class="mono narr-code">{{ 'how.pipeline.hashCode' | translate }}</code>
+                                }
+                                @case (2) {
+                                    <h3>{{ 'how.pipeline.sign' | translate }}</h3>
+                                    <p>{{ 'how.pipeline.signDesc' | translate }}</p>
+                                    <code class="mono narr-code">{{ 'how.pipeline.signCode' | translate }}</code>
+                                }
+                                @case (3) {
+                                    <h3>{{ 'how.pipeline.manifest' | translate }}</h3>
+                                    <p>{{ 'how.pipeline.manifestDesc' | translate }}</p>
+                                    <code class="mono narr-code">{{ 'how.pipeline.manifestCode' | translate }}</code>
+                                }
+                                @case (4) {
+                                    <h3>{{ 'how.pipeline.anchor' | translate }}</h3>
+                                    <p>{{ 'how.pipeline.anchorDesc' | translate }}</p>
+                                    <code class="mono narr-code">{{ 'how.pipeline.anchorCode' | translate }}</code>
+                                }
+                                @case (5) {
+                                    <h3>{{ 'how.pipeline.certificate' | translate }}</h3>
+                                    <p>{{ 'how.pipeline.certificateDesc' | translate }}</p>
+                                    <code class="mono narr-code">{{ 'how.pipeline.certificateCode' | translate }}</code>
+                                }
+                            }
+                        </div>
+                    </li>
+                }
             </ol>
         </aside>
 
-        <!-- ═════ Animated pipeline — sticky on desktop ═════ -->
-        <aside class="hero-demo" aria-hidden="true">
-            <div class="demo-card" (click)="showExampleCert()">
+        <!-- ═════ Animated pipeline column ═════ -->
+        <aside class="hero-demo" #pipelineRoot>
+            <div
+                class="demo-card"
+                [attr.data-stage]="currentStage()"
+                [attr.data-playing]="isPlaying() ? '' : null"
+                [attr.data-cycle]="cycleSeed()"
+                role="group"
+                aria-label="Pipeline visualization"
+                aria-live="polite">
+
                 <div class="card-grid" aria-hidden="true"></div>
-                <div class="demo-pipeline">
-                    <!-- Stage 1: File detected -->
-                    <div class="stage stage-file">
+
+                <!-- Floating controls overlay -->
+                <div class="demo-controls">
+                    <button type="button" class="demo-ctrl" (click)="togglePlay()"
+                            [attr.aria-label]="isPlaying() ? 'Pause' : 'Play'">
+                        @if (isPlaying()) {
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg>
+                        } @else {
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+                        }
+                    </button>
+                    <span class="demo-step mono">{{ currentStage() + 1 }} / {{ stageCount }}</span>
+                </div>
+
+                <div class="demo-pipeline"
+                     [attr.data-stage]="currentStage()"
+                     (click)="nextStage($event)">
+
+                    <!-- ─────── Stage 0 · DETECT ─────── -->
+                    <div class="stage stage-file" [class.is-active]="currentStage() === 0" (click)="goToStage(0)">
                         <div class="file-icon-wrap">
                             <svg class="file-svg file-svg--generic" viewBox="0 0 40 48" fill="none">
                                 <path d="M4 6a4 4 0 0 1 4-4h16l12 12v28a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4V6z" fill="var(--bg-sunk)" stroke="var(--border-strong)" stroke-width="1.5"/>
                                 <path d="M24 2v12h12" stroke="var(--border-strong)" stroke-width="1.5" fill="none"/>
-                                <line class="fp-line fp-l1" x1="10" y1="22" x2="30" y2="22"/>
-                                <line class="fp-line fp-l2" x1="10" y1="27" x2="26" y2="27"/>
-                                <line class="fp-line fp-l3" x1="10" y1="32" x2="28" y2="32"/>
-                                <line class="fp-line fp-l4" x1="10" y1="37" x2="22" y2="37"/>
                             </svg>
-                            <span class="file-type-icon"></span>
+                            <span class="file-type-icon">{{ demoFrame().icon }}</span>
                             <div class="file-scan-line"></div>
                             <div class="file-glow"></div>
                         </div>
                         <div class="file-info">
-                            <span class="file-name"></span>
+                            <span class="file-name mono">{{ demoFrame().filename }}</span>
                             <div class="file-detail-grid">
                                 <span class="fd-label">Type</span>
-                                <span class="fd-val file-type-badge"></span>
+                                <span class="fd-val mono">.{{ demoFrame().ext }}</span>
                                 <span class="fd-label">Size</span>
-                                <span class="fd-val file-size"></span>
+                                <span class="fd-val mono">{{ demoFrame().size }}</span>
                                 <span class="fd-label">Author</span>
-                                <span class="fd-val file-author"></span>
+                                <span class="fd-val">{{ demoFrame().author }}</span>
                                 <span class="fd-label">Modified</span>
-                                <span class="fd-val file-date"></span>
+                                <span class="fd-val mono">{{ demoFrame().date }}</span>
                             </div>
                             <div class="file-progress">
-                                <span class="file-progress-label">analyzing</span>
+                                <span class="file-progress-label">detected</span>
                             </div>
                         </div>
                     </div>
 
-                    <div class="stage-conn sc-1" aria-hidden="true"></div>
-
-                    <!-- Stage 2: Hashing -->
-                    <div class="stage stage-hash">
-                        <div class="hash-bar">
-                            <span class="hash-label">SHA-256</span>
-                            <div class="hash-progress"></div>
-                            <span class="hash-pct"></span>
+                    <!-- ─────── Stage 1 · HASH ─────── -->
+                    <div class="stage stage-hash" [class.is-active]="currentStage() === 1" (click)="goToStage(1)">
+                        <div class="hash-head">
+                            <span class="hash-label mono">SHA-256</span>
+                            <span class="hash-pct mono" aria-live="polite"></span>
                         </div>
-                        <code class="hash-output"></code>
+                        <div class="hash-bar">
+                            <div class="hash-fill"></div>
+                        </div>
+                        <code class="hash-output mono">{{ demoFrame().sha256 }}</code>
                     </div>
 
-                    <div class="stage-conn sc-2" aria-hidden="true"></div>
-
-                    <!-- Stage 2.5: Signature -->
-                    <div class="stage stage-sign">
+                    <!-- ─────── Stage 2 · SIGN ─────── -->
+                    <div class="stage stage-sign" [class.is-active]="currentStage() === 2" (click)="goToStage(2)">
                         <div class="sign-wrap">
                             <div class="sign-header">
                                 <svg class="sign-key-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>
                                 <span class="sign-label">GPG Signature</span>
-                                <span class="sign-algo">RSA-4096</span>
+                                <span class="sign-algo mono">ed25519</span>
                             </div>
                             <div class="sign-body">
-                                <span class="sign-status-msg">Signing manifest…</span>
-                                <span class="sign-time"></span>
+                                <span class="sign-status-msg">Manifest signed ✓</span>
+                                <span class="sign-time mono">key {{ demoFrame().gpgKeyId }}</span>
                                 <div class="sign-pgp-block">
-                                    <span class="sign-pgp-header">-----BEGIN PGP SIGNATURE-----</span>
-                                    <code class="sign-fingerprint"></code>
-                                    <span class="sign-pgp-footer">-----END PGP SIGNATURE-----</span>
+                                    <span class="sign-pgp-header mono">-----BEGIN PGP SIGNATURE-----</span>
+                                    <code class="sign-fingerprint mono">{{ demoFrame().gpgFingerprint }}</code>
+                                    <span class="sign-pgp-footer mono">-----END PGP SIGNATURE-----</span>
                                 </div>
                             </div>
                             <div class="sign-bar">
@@ -136,95 +149,115 @@
                         </div>
                     </div>
 
-                    <div class="stage-conn sc-2b" aria-hidden="true"></div>
-
-                    <!-- Stage 3: Proof manifest -->
-                    <div class="stage stage-proof">
+                    <!-- ─────── Stage 3 · MANIFEST / PROOF ─────── -->
+                    <div class="stage stage-proof" [class.is-active]="currentStage() === 3" (click)="goToStage(3)">
                         <div class="proof-chip proof-chip--what">
                             <span class="pc-key">{{ 'hero.bento.what' | translate }}</span>
-                            <span class="pc-val pc-val--what"></span>
+                            <span class="pc-val mono">{{ demoFrame().sha256.slice(0, 8) }}…{{ demoFrame().sha256.slice(-4) }}</span>
                         </div>
                         <div class="proof-chip proof-chip--who">
                             <span class="pc-key">{{ 'hero.bento.who' | translate }}</span>
-                            <span class="pc-val pc-val--who"></span>
+                            <span class="pc-val">{{ demoFrame().author }}</span>
                         </div>
                         <div class="proof-chip proof-chip--when">
                             <span class="pc-key">{{ 'hero.bento.when' | translate }}</span>
-                            <span class="pc-val pc-val--when"></span>
-                            <span class="pc-time pc-val--when-time"></span>
+                            <span class="pc-val mono">{{ demoFrame().date }}</span>
+                            <span class="pc-time mono">14:32 UTC</span>
                         </div>
                     </div>
 
-                    <div class="stage-conn sc-3" aria-hidden="true"></div>
-
-                    <!-- Stage 4: Anchor broadcast — terminal -->
-                    <div class="stage stage-anchor">
+                    <!-- ─────── Stage 4 · ANCHOR (parallel!) ─────── -->
+                    <div class="stage stage-anchor" [class.is-active]="currentStage() === 4" (click)="goToStage(4)">
                         <div class="anch-term">
                             <div class="term-head">
                                 <span class="term-dot"></span>
                                 <span class="term-dot"></span>
                                 <span class="term-dot"></span>
-                                <span class="term-title">mayday anchor-broadcast</span>
+                                <span class="term-title mono">mayday anchor-broadcast · parallel</span>
                             </div>
                             <div class="term-body">
                                 <div class="term-line tl--btc">
-                                    <span class="tl-prompt">&#9658;</span>
-                                    <span class="tl-cmd">opentimestamps</span>
-                                    <span class="tl-arg">--digest sha256 --calendar btc</span>
-                                    <div class="tl-resp tl-resp--ok"><span class="tl-icon">&#10003;</span> pending · Bitcoin merkle tree</div>
-                                    <div class="tl-detail">nonce 0x4a1f… · calendar.opentimestamps.org</div>
+                                    <span class="tl-prompt">▸</span>
+                                    <span class="tl-cmd mono">opentimestamps</span>
+                                    <span class="tl-arg mono">--digest sha256 --calendar btc</span>
+                                    <div class="tl-resp tl-resp--ok">
+                                        <span class="tl-icon" aria-hidden="true">✓</span>
+                                        <span>pending · Bitcoin merkle tree</span>
+                                    </div>
+                                    <div class="tl-detail mono">nonce 0x{{ demoFrame().otsSerial }}… · calendar.opentimestamps.org</div>
                                 </div>
                                 <div class="term-line tl--tsa1">
-                                    <span class="tl-prompt">&#9658;</span>
-                                    <span class="tl-cmd">rfc3161-stamp</span>
-                                    <span class="tl-arg">--tsa freetsa.org --hash sha256</span>
-                                    <div class="tl-resp tl-resp--ok"><span class="tl-icon">&#10003;</span> TimeStampResp &#123;status: granted&#125;</div>
-                                    <div class="tl-detail">serial 8A3F10C9… · policy 1.2.3.4.1</div>
+                                    <span class="tl-prompt">▸</span>
+                                    <span class="tl-cmd mono">rfc3161-stamp</span>
+                                    <span class="tl-arg mono">--tsa freetsa.org</span>
+                                    <div class="tl-resp tl-resp--ok">
+                                        <span class="tl-icon" aria-hidden="true">✓</span>
+                                        <span>TimeStampResp · granted</span>
+                                    </div>
+                                    <div class="tl-detail mono">serial {{ demoFrame().freetsaSerial }}… · policy 1.2.3.4.1</div>
                                 </div>
                                 <div class="term-line tl--tsa2">
-                                    <span class="tl-prompt">&#9658;</span>
-                                    <span class="tl-cmd">rfc3161-stamp</span>
-                                    <span class="tl-arg">--tsa timestamp.digicert.com</span>
-                                    <div class="tl-resp tl-resp--ok"><span class="tl-icon">&#10003;</span> TimeStampResp &#123;status: granted&#125;</div>
-                                    <div class="tl-detail">serial 0B72E4D1… · DigiCert SHA2 TSA</div>
+                                    <span class="tl-prompt">▸</span>
+                                    <span class="tl-cmd mono">rfc3161-stamp</span>
+                                    <span class="tl-arg mono">--tsa timestamp.digicert.com</span>
+                                    <div class="tl-resp tl-resp--ok">
+                                        <span class="tl-icon" aria-hidden="true">✓</span>
+                                        <span>TimeStampResp · granted</span>
+                                    </div>
+                                    <div class="tl-detail mono">serial {{ demoFrame().digicertSerial }}… · DigiCert SHA2</div>
                                 </div>
                                 <div class="term-line tl--tsa3">
-                                    <span class="tl-prompt">&#9658;</span>
-                                    <span class="tl-cmd">rfc3161-stamp</span>
-                                    <span class="tl-arg">--tsa timestamp.sectigo.com</span>
-                                    <div class="tl-resp tl-resp--ok"><span class="tl-icon">&#10003;</span> TimeStampResp &#123;status: granted&#125;</div>
-                                    <div class="tl-detail">serial 5D91A0FE… · Sectigo RSA TSA</div>
+                                    <span class="tl-prompt">▸</span>
+                                    <span class="tl-cmd mono">rfc3161-stamp</span>
+                                    <span class="tl-arg mono">--tsa timestamp.sectigo.com</span>
+                                    <div class="tl-resp tl-resp--ok">
+                                        <span class="tl-icon" aria-hidden="true">✓</span>
+                                        <span>TimeStampResp · granted</span>
+                                    </div>
+                                    <div class="tl-detail mono">serial {{ demoFrame().sectigoSerial }}… · Sectigo RSA</div>
                                 </div>
                                 <div class="term-line tl--eth">
-                                    <span class="tl-prompt">&#9658;</span>
-                                    <span class="tl-cmd">eth-anchor</span>
-                                    <span class="tl-arg">--chain base --contract 0x7aE1…</span>
-                                    <div class="tl-resp tl-resp--ok"><span class="tl-icon">&#10003;</span> tx 0x9f4d…e1a2 · block #28491037</div>
-                                    <div class="tl-detail">gasUsed 47,293 · 12 confirmations</div>
+                                    <span class="tl-prompt">▸</span>
+                                    <span class="tl-cmd mono">eth-anchor</span>
+                                    <span class="tl-arg mono">--chain base</span>
+                                    <div class="tl-resp tl-resp--ok">
+                                        <span class="tl-icon" aria-hidden="true">✓</span>
+                                        <span>tx {{ demoFrame().txHash.slice(0, 8) }}… · block #{{ demoFrame().txBlock }}</span>
+                                    </div>
+                                    <div class="tl-detail mono">gasUsed 47,293 · 12 confirmations</div>
                                 </div>
                             </div>
                         </div>
 
                         <div class="chain-vis">
-                            <div class="chain-label">blockchain</div>
+                            <div class="chain-label mono">bitcoin blockchain</div>
                             <div class="chain-blocks">
-                                <div class="chain-block cb--old"><span class="cb-hash">a3f1…08d2</span><span class="cb-n">#28491035</span></div>
+                                <div class="chain-block cb--old">
+                                    <span class="cb-hash mono">a3f1…08d2</span>
+                                    <span class="cb-n mono">#{{ +demoFrame().txBlock - 2 }}</span>
+                                </div>
                                 <div class="chain-link"></div>
-                                <div class="chain-block cb--old2"><span class="cb-hash">0e7d…4b19</span><span class="cb-n">#28491036</span></div>
+                                <div class="chain-block cb--old2">
+                                    <span class="cb-hash mono">0e7d…4b19</span>
+                                    <span class="cb-n mono">#{{ +demoFrame().txBlock - 1 }}</span>
+                                </div>
                                 <div class="chain-link"></div>
-                                <div class="chain-block cb--new"><span class="cb-hash">9c07…4293</span><span class="cb-n">#28491037</span><span class="cb-you">← your tx</span></div>
+                                <div class="chain-block cb--new">
+                                    <span class="cb-hash mono">{{ demoFrame().sha256.slice(0, 4) }}…{{ demoFrame().sha256.slice(-4) }}</span>
+                                    <span class="cb-n mono">#{{ demoFrame().txBlock }}</span>
+                                    <span class="cb-you">← your tx</span>
+                                </div>
                                 <div class="chain-link chain-link--after"></div>
-                                <div class="chain-block cb--future"><span class="cb-hash">d41a…72f1</span><span class="cb-n">#28491038</span></div>
-                                <div class="chain-link chain-link--after2"></div>
-                                <div class="chain-block cb--future2"><span class="cb-hash">8b2e…c930</span><span class="cb-n">#28491039</span></div>
+                                <div class="chain-block cb--future">
+                                    <span class="cb-hash mono">d41a…72f1</span>
+                                    <span class="cb-n mono">#{{ +demoFrame().txBlock + 1 }}</span>
+                                </div>
                             </div>
                         </div>
                     </div>
 
-                    <div class="stage-conn sc-4" aria-hidden="true"></div>
-
-                    <!-- Stage 5: Certificate ready -->
-                    <div class="stage stage-seal">
+                    <!-- ─────── Stage 5 · CERTIFICATE ─────── -->
+                    <div class="stage stage-seal" [class.is-active]="currentStage() === 5" (click)="goToStage(5)">
                         <div class="cert-card">
                             <div class="cert-header">
                                 <svg class="cert-icon" viewBox="0 0 24 24" fill="none" stroke="var(--brand)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><path d="M9 15l2 2 4-4"/></svg>
@@ -235,23 +268,23 @@
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9 12l2 2 4-4"/></svg>
                             </div>
                             <div class="cert-body">
-                                <div class="cert-row"><span class="cert-label">Cert #</span><code class="cert-val cert-num"></code></div>
-                                <div class="cert-row"><span class="cert-label">SHA-256</span><code class="cert-val">9c07646d…a6374293</code></div>
+                                <div class="cert-row"><span class="cert-label">Cert #</span><code class="cert-val mono">{{ demoFrame().sha256.slice(0, 8) | uppercase }}</code></div>
+                                <div class="cert-row"><span class="cert-label">SHA-256</span><code class="cert-val mono">{{ demoFrame().sha256.slice(0, 8) }}…{{ demoFrame().sha256.slice(-8) }}</code></div>
                                 <div class="cert-anchors">
-                                    <div class="ca-row ca--btc"><span class="ca-icon">&#x20BF;</span><span class="ca-name">Bitcoin OTS</span><span class="ca-status ca-ok">pending</span></div>
-                                    <div class="ca-row ca--tsa1"><span class="ca-icon ca-icon--lock">&#x1F512;</span><span class="ca-name">FreeTSA</span><span class="ca-status ca-ok">granted</span></div>
-                                    <div class="ca-row ca--tsa2"><span class="ca-icon ca-icon--lock">&#x1F512;</span><span class="ca-name">DigiCert</span><span class="ca-status ca-ok">granted</span></div>
-                                    <div class="ca-row ca--tsa3"><span class="ca-icon ca-icon--lock">&#x1F512;</span><span class="ca-name">Sectigo</span><span class="ca-status ca-ok">granted</span></div>
-                                    <div class="ca-row ca--eth"><span class="ca-icon">&#x039E;</span><span class="ca-name">Base L2</span><span class="ca-status ca-ok">confirmed</span></div>
+                                    <div class="ca-row ca--btc"><span class="ca-icon">₿</span><span class="ca-name">Bitcoin OTS</span><span class="ca-status ca-ok">pending</span></div>
+                                    <div class="ca-row ca--tsa1"><span class="ca-icon ca-icon--lock">🔒</span><span class="ca-name">FreeTSA</span><span class="ca-status ca-ok">granted</span></div>
+                                    <div class="ca-row ca--tsa2"><span class="ca-icon ca-icon--lock">🔒</span><span class="ca-name">DigiCert</span><span class="ca-status ca-ok">granted</span></div>
+                                    <div class="ca-row ca--tsa3"><span class="ca-icon ca-icon--lock">🔒</span><span class="ca-name">Sectigo</span><span class="ca-status ca-ok">granted</span></div>
+                                    <div class="ca-row ca--eth"><span class="ca-icon">Ξ</span><span class="ca-name">Base L2</span><span class="ca-status ca-ok">confirmed</span></div>
                                 </div>
-                                <div class="cert-row"><span class="cert-label">GPG</span><code class="cert-val cert-val--gpg">A1B2…F6A1</code></div>
-                                <div class="cert-row"><span class="cert-label">Issued</span><span class="cert-val">2026-04-08T14:32:07Z</span></div>
+                                <div class="cert-row"><span class="cert-label">GPG</span><code class="cert-val mono">{{ demoFrame().gpgKeyId }}</code></div>
+                                <div class="cert-row"><span class="cert-label">Issued</span><span class="cert-val mono">{{ demoFrame().date }}T14:32:07Z</span></div>
                                 <div class="cert-row"><span class="cert-label">eIDAS</span><span class="cert-val cert-val--ok">Qualified</span></div>
                             </div>
-                            <div class="cert-dl">
+                            <button type="button" class="cert-dl" (click)="showExampleCert(); $event.stopPropagation()">
                                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
                                 {{ 'deposit.download' | translate }}
-                            </div>
+                            </button>
                         </div>
                     </div>
                 </div>

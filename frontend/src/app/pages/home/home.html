@@ -30,11 +30,11 @@
                     <span class="art-label mono">CITATION-{{ demoSample().hash.slice(0, 8) }}.cff</span>
                 </div>
                 <div class="art-body">
-                    <div class="art-row"><span class="art-k mono">WHAT</span><code class="art-v mono">{{ demoSample().hash }}</code></div>
-                    <div class="art-row"><span class="art-k mono">WHO</span><span class="art-v">{{ demoSample().author }}</span></div>
-                    <div class="art-row"><span class="art-k mono">FILE</span><span class="art-v mono">{{ demoSample().file }}</span></div>
-                    <div class="art-row"><span class="art-k mono">WHEN</span><span class="art-v mono">{{ demoSample().date }}</span></div>
-                    <div class="art-row"><span class="art-k mono">BLOCK</span><code class="art-v mono">{{ demoSample().block }}</code></div>
+                    <div class="art-row"><span class="art-k mono">{{ 'hero.bento.what' | translate }}</span><code class="art-v mono">{{ demoSample().hash }}</code></div>
+                    <div class="art-row"><span class="art-k mono">{{ 'hero.bento.who' | translate }}</span><span class="art-v">{{ demoSample().author }}</span></div>
+                    <div class="art-row"><span class="art-k mono">{{ 'hero.bento.file' | translate }}</span><span class="art-v mono">{{ demoSample().file }}</span></div>
+                    <div class="art-row"><span class="art-k mono">{{ 'hero.bento.when' | translate }}</span><span class="art-v mono">{{ demoSample().date }}</span></div>
+                    <div class="art-row"><span class="art-k mono">{{ 'hero.bento.block' | translate }}</span><code class="art-v mono">{{ demoSample().block }}</code></div>
                 </div>
                 <footer class="art-foot">
                     <ui-badge tone="success" [dot]="true">Bitcoin confirmed</ui-badge>

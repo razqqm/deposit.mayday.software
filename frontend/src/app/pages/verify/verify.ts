@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { HashingService } from '@/app/shared/services/deposit/hashing.service';
 import { SigningService, VerifyResult } from '@/app/shared/services/deposit/signing.service';
@@ -16,7 +17,7 @@ interface CheckResult {
 @Component({
     selector: 'app-verify',
     standalone: true,
-    imports: [TranslateModule, UiButton, UiCard, UiDropZone, UiCodeBlock, UiBadge, UiSection],
+    imports: [TranslateModule, FormsModule, UiButton, UiCard, UiDropZone, UiCodeBlock, UiBadge, UiSection],
     changeDetection: ChangeDetectionStrategy.OnPush,
     template: `
         <ui-section
@@ -57,6 +58,20 @@ interface CheckResult {
                         icon="key"
                         [files]="publicKeyFile()"
                         (filesChange)="setPublicKey($event)" />
+
+                    @if (keyNeedsPassphrase()) {
+                        <div class="key-pass">
+                            <label class="key-pass-label">
+                                <span class="caption">{{ 'verify.keyPassphraseLabel' | translate }}</span>
+                                <input type="password"
+                                    [(ngModel)]="keyPassphrase"
+                                    autocomplete="off"
+                                    spellcheck="false"
+                                    class="key-pass-input" />
+                            </label>
+                            <p class="caption key-pass-hint">{{ 'verify.keyPassphraseHint' | translate }}</p>
+                        </div>
+                    }
 
                     <ui-drop-zone
                         [label]="'verify.dropSignature' | translate"
@@ -160,6 +175,12 @@ export class VerifyPage {
     readonly publicKeyFile = signal<File | null>(null);
     readonly signatureFile = signal<File | null>(null);
 
+    /** Set true once we've parsed the uploaded key and confirmed it's a
+     *  passphrase-locked private key. Triggers the passphrase input. */
+    readonly keyNeedsPassphrase = signal(false);
+    /** Two-way bound to the passphrase field. Cleared after each verify run. */
+    keyPassphrase = '';
+
     readonly verifying = signal(false);
     readonly checks = signal<CheckResult[]>([]);
 
@@ -189,7 +210,21 @@ export class VerifyPage {
     setManifest(files: File[]): void { this.manifestFile.set(files[0] ?? null); }
     setSources(files: File[]): void { this.sourceFiles.set(files); }
     setProofs(files: File[]): void { this.proofFiles.set(files); }
-    setPublicKey(files: File[]): void { this.publicKeyFile.set(files[0] ?? null); }
+    async setPublicKey(files: File[]): Promise<void> {
+        const file = files[0] ?? null;
+        this.publicKeyFile.set(file);
+        this.keyNeedsPassphrase.set(false);
+        this.keyPassphrase = '';
+        if (!file) return;
+        try {
+            const text = await file.text();
+            const needs = await this.signingSvc.needsPassphraseForKey(text);
+            this.keyNeedsPassphrase.set(needs);
+        } catch {
+            // Malformed file — leave passphrase hidden, real error will surface
+            // when the user clicks Verify and the underlying parser throws.
+        }
+    }
     setSignature(files: File[]): void { this.signatureFile.set(files[0] ?? null); }
 
     async runVerification(): Promise<void> {
@@ -276,7 +311,8 @@ export class VerifyPage {
 
         try {
             const [sigText, keyText] = await Promise.all([sigFile.text(), keyFile.text()]);
-            const result: VerifyResult = await this.signingSvc.verify(manifestText, sigText, keyText);
+            const passphrase = this.keyPassphrase.trim() || undefined;
+            const result: VerifyResult = await this.signingSvc.verify(manifestText, sigText, keyText, passphrase);
 
             if (result.valid) {
                 return {
@@ -288,11 +324,15 @@ export class VerifyPage {
             }
             return { kind: 'who', label: this.t('verify.checkWho'), status: 'failed', details: this.t('verify.sigInvalid') };
         } catch (err) {
+            const raw = err instanceof Error ? err.message : String(err);
+            const friendly = raw === 'GPG_PASSPHRASE_REQUIRED'
+                ? this.t('verify.keyPassphraseRequired')
+                : raw;
             return {
                 kind: 'who',
                 label: this.t('verify.checkWho'),
                 status: 'failed',
-                details: err instanceof Error ? err.message : String(err),
+                details: friendly,
             };
         }
     }
