@@ -176,6 +176,7 @@
         "filesInfo": "{{count}} files · {{size}}"
     },
     "verify": {
+        "eyebrow": "Verification",
         "title": "Verify a deposit",
         "subtitle": "Drop your manifest, proof files, and optionally the source files to verify the deposit independently.",
         "dropManifest": "Drop manifest (.cff)",
@@ -183,6 +184,12 @@
         "dropSources": "Drop source files (optional — for hash re-verification)",
         "dropPublicKey": "Paste or drop public GPG key (optional)",
         "dropSignature": "Drop detached signature (.asc)",
+        "readiness": "Ready to verify",
+        "readinessHint": "Manifest is required. Other files enable deeper checks.",
+        "required": "required",
+        "cliEyebrow": "Offline verification",
+        "cliTitle": "Same checks, via CLI",
+        "verifying": "Verifying…",
         "runButton": "Run verification",
         "checkWhat": "WHAT — Content integrity",
         "checkWho": "WHO — Author signature",

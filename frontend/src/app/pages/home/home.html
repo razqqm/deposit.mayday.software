@@ -1,0 +1,403 @@
+<!-- ═════════════════════════════════════════════════════════════
+     HERO
+     ═════════════════════════════════════════════════════════════ -->
+<section class="hero">
+    <ui-mesh [subtle]="true" />
+    <div class="container hero-inner">
+        <div class="hero-copy">
+            <ui-badge tone="brand" [dot]="true">{{ 'hero.badge' | translate }}</ui-badge>
+            <h1 class="display-1 title">
+                <span>{{ 'hero.titleLine1' | translate }}</span>
+                <span class="accent">{{ 'hero.titleLine2' | translate }}</span>
+            </h1>
+            <p class="lead">{{ 'hero.subtitle' | translate }}</p>
+            <div class="cta-row">
+                <a ui-button variant="primary" size="lg" href="#deposit">
+                    {{ 'hero.cta' | translate }}
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+                </a>
+                <a ui-button variant="ghost" size="lg" href="#how">
+                    {{ 'info.howEyebrow' | translate }}
+                </a>
+            </div>
+            <p class="caption cta-hint">{{ 'hero.ctaHint' | translate }}</p>
+        </div>
+
+        <aside class="hero-art" aria-hidden="true" (click)="showExampleCert()">
+            <div class="artifact">
+                <div class="art-head">
+                    <span class="art-dot"></span><span class="art-dot"></span><span class="art-dot"></span>
+                    <span class="art-label mono">CITATION-9c07646d.cff</span>
+                </div>
+                <div class="art-body">
+                    <div class="art-row"><span class="art-k mono">WHAT</span><code class="art-v mono">9c07…856d2</code></div>
+                    <div class="art-row"><span class="art-k mono">WHO</span><span class="art-v">Mila Sorokina</span></div>
+                    <div class="art-row"><span class="art-k mono">WHEN</span><span class="art-v mono">2026-04-08T14:32Z</span></div>
+                    <div class="art-row"><span class="art-k mono">BLOCK</span><code class="art-v mono">#890241</code></div>
+                </div>
+                <footer class="art-foot">
+                    <ui-badge tone="success" [dot]="true">Bitcoin confirmed</ui-badge>
+                    <ui-badge tone="brand">eIDAS</ui-badge>
+                </footer>
+            </div>
+        </aside>
+    </div>
+</section>
+
+<!-- ═════════════════════════════════════════════════════════════
+     TRUST BAR
+     ═════════════════════════════════════════════════════════════ -->
+<div class="trust-bar container">
+    <span class="tb-item"><span class="tb-mark">①</span> {{ 'trust.wipo' | translate }}</span>
+    <span class="tb-item"><span class="tb-mark">②</span> {{ 'trust.eidas' | translate }}</span>
+    <span class="tb-item"><span class="tb-mark">③</span> {{ 'trust.paris' | translate }}</span>
+    <span class="tb-item"><span class="tb-mark">④</span> {{ 'trust.privacy' | translate }}</span>
+</div>
+
+<!-- ═════════════════════════════════════════════════════════════
+     HOW IT WORKS
+     ═════════════════════════════════════════════════════════════ -->
+<ui-section
+    id="how"
+    [eyebrow]="'info.howEyebrow' | translate"
+    [title]="'how.title' | translate"
+    appReveal>
+    <div class="how-grid">
+        <ui-card class="how-card" [eyebrow]="'01'" [title]="'how.step1Title' | translate" [subtitle]="'how.step1Desc' | translate">
+            <ui-code-block value="sha256(file) -> 64-char fingerprint" label="in your browser" />
+        </ui-card>
+        <ui-card class="how-card" [eyebrow]="'02'" [title]="'how.step2Title' | translate" [subtitle]="'how.step2Desc' | translate">
+            <ui-code-block value="gpg --armor --detach-sign CITATION.cff" label="cryptographic authorship" />
+        </ui-card>
+        <ui-card class="how-card" [eyebrow]="'03'" [title]="'how.step3Title' | translate" [subtitle]="'how.step3Desc' | translate">
+            <ui-code-block value="Bitcoin + 3× RFC 3161 + Ethereum L2" label="six parallel anchors" />
+        </ui-card>
+    </div>
+</ui-section>
+
+<!-- ═════════════════════════════════════════════════════════════
+     DEPOSIT — main workflow
+     ═════════════════════════════════════════════════════════════ -->
+<ui-section
+    sectionId="deposit"
+    [eyebrow]="'deposit.eyebrow' | translate"
+    [title]="'deposit.sectionTitle' | translate"
+    [subtitle]="'deposit.sectionSub' | translate"
+    appReveal>
+
+    <div class="deposit-flow">
+        <!-- Step 1: Drop -->
+        <div class="step" [class.is-active]="!hashedFiles().length && !hashing()" [class.is-done]="hashedFiles().length > 0">
+            <div class="step-head">
+                <span class="step-num">1</span>
+                <h3 class="step-title">{{ 'drop.title' | translate }}</h3>
+            </div>
+            @if (hashing()) {
+                <ui-card>
+                    <div class="hashing">
+                        <div class="hashing-head">
+                            <span class="mono">{{ 'drop.computing' | translate }}</span>
+                            <span class="mono caption">{{ hashedCount() }} / {{ totalFiles() }}</span>
+                        </div>
+                        <ui-progress [value]="hashingProgress()" [showLabel]="true" />
+                    </div>
+                </ui-card>
+            } @else {
+                <ui-drop-zone
+                    [label]="hashedFiles().length ? ('drop.ready' | translate) : ('drop.title' | translate)"
+                    [hint]="'drop.subtitle' | translate"
+                    icon="folder"
+                    [multiple]="true"
+                    [files]="droppedFilesList()"
+                    (filesChange)="onDropZoneFiles($event)" />
+            }
+        </div>
+
+        @if (hashedFiles().length > 0) {
+            <!-- Step 2: Author form -->
+            <div class="step" [class.is-active]="!manifest()" [class.is-done]="!!manifest()">
+                <div class="step-head">
+                    <span class="step-num">2</span>
+                    <h3 class="step-title">{{ 'form.title' | translate }}</h3>
+                </div>
+                <ui-card>
+                    <div class="form">
+                        <div class="form-row">
+                            <label class="field">
+                                <span class="field-label">{{ 'form.author' | translate }}</span>
+                                <input type="text" [(ngModel)]="form.authorGivenNames" [placeholder]="'form.authorPh' | translate" class="field-input" />
+                            </label>
+                            <label class="field">
+                                <span class="field-label">{{ 'form.email' | translate }}</span>
+                                <input type="email" [(ngModel)]="form.authorEmail" [placeholder]="'form.emailPh' | translate" class="field-input" />
+                            </label>
+                        </div>
+                        <label class="field">
+                            <span class="field-label">{{ 'form.title' | translate }}</span>
+                            <input type="text" [(ngModel)]="form.title" [placeholder]="'form.titlePh' | translate" class="field-input" />
+                        </label>
+                        <div class="form-row">
+                            <label class="field">
+                                <span class="field-label">{{ 'form.version' | translate }}</span>
+                                <input type="text" [(ngModel)]="form.version" [placeholder]="'form.versionPh' | translate" class="field-input mono" />
+                            </label>
+                            <label class="field">
+                                <span class="field-label">{{ 'form.license' | translate }}</span>
+                                <input type="text" [(ngModel)]="form.license" [placeholder]="'form.licensePh' | translate" class="field-input" />
+                            </label>
+                        </div>
+
+                        <div class="gpg-toggle" (click)="toggleGpg()">
+                            <span class="gpg-caret" [class.is-open]="gpgOpen()">▸</span>
+                            <span class="gpg-title">{{ 'gpg.title' | translate }}</span>
+                            <ui-badge>{{ 'gpg.optional' | translate }}</ui-badge>
+                        </div>
+                        @if (gpgOpen()) {
+                            <div class="gpg-block">
+                                <p class="caption">{{ 'gpg.help' | translate }}</p>
+                                <label class="field">
+                                    <textarea
+                                        [(ngModel)]="form.gpgPrivateKey"
+                                        [placeholder]="'gpg.pasteKey' | translate"
+                                        rows="4"
+                                        spellcheck="false"
+                                        autocomplete="off"
+                                        class="field-input field-textarea mono"></textarea>
+                                </label>
+                                <label class="field">
+                                    <span class="field-label">{{ 'gpg.passphrase' | translate }}</span>
+                                    <input type="password" [(ngModel)]="form.gpgPassphrase" autocomplete="off" class="field-input" />
+                                </label>
+                                <p class="caption">{{ 'gpg.skipHint' | translate }}</p>
+                            </div>
+                        }
+
+                        <button ui-button variant="primary" size="lg"
+                                [disabled]="generating() || !canGenerate()"
+                                [loading]="generating()"
+                                (click)="generate()"
+                                style="align-self: flex-start;">
+                            {{ (generating() ? 'actions.generating' : 'actions.generate') | translate }}
+                        </button>
+                    </div>
+                </ui-card>
+            </div>
+        }
+
+        <!-- Step 3: Result -->
+        @if (manifest(); as m) {
+            <div class="step is-active is-done result">
+                <div class="step-head">
+                    <span class="step-num">3</span>
+                    <h3 class="step-title">{{ 'result.title' | translate }}</h3>
+                    <ui-badge tone="success" [dot]="true">{{ 'deposit.doneEyebrow' | translate }}</ui-badge>
+                </div>
+
+                <div class="proof-grid">
+                    <ui-card class="proof" [elevated]="true">
+                        <span class="eyebrow">{{ 'result.what' | translate }}</span>
+                        <code class="proof-hash mono">{{ m.sha256 }}</code>
+                    </ui-card>
+                    <ui-card class="proof" [elevated]="true">
+                        <span class="eyebrow">{{ 'result.who' | translate }}</span>
+                        @if (gpgSignature(); as gpg) {
+                            <div class="proof-val">{{ gpg.userId }}</div>
+                            <span class="caption mono">Key {{ gpg.keyId }}</span>
+                        } @else {
+                            <div class="proof-val">{{ form.authorGivenNames }} {{ form.authorFamilyNames }}</div>
+                            <span class="caption">{{ form.authorEmail }}</span>
+                            <span class="caption">{{ 'gpg.skipped' | translate }}</span>
+                        }
+                    </ui-card>
+                    <ui-card class="proof" [elevated]="true">
+                        <span class="eyebrow">{{ 'result.when' | translate }}</span>
+                        <div class="proof-val mono">{{ issuedHuman() }}</div>
+                    </ui-card>
+                </div>
+
+                <ui-card
+                    [eyebrow]="'anchors.title' | translate"
+                    [title]="anchors().length + ' independent anchors'"
+                    [subtitle]="'anchors.help' | translate">
+                    <div class="anchors">
+                        @for (a of anchors(); track a.provider) {
+                            <div class="anchor-row" [class]="'s-' + a.status">
+                                <ui-status-dot [state]="anchorDotState(a)" />
+                                <div class="anchor-body">
+                                    <div class="anchor-title">{{ a.providerLabel }}</div>
+                                    <div class="anchor-sum caption">
+                                        @if (a.status === 'confirmed') { {{ a.humanSummary }} }
+                                        @else if (a.status === 'failed') { {{ 'anchors.failed' | translate }}: {{ a.error }} }
+                                        @else { {{ 'anchors.submitting' | translate }} }
+                                    </div>
+                                </div>
+                                @if (a.status === 'confirmed' && a.proofBytes) {
+                                    <button ui-button variant="ghost" size="sm" (click)="downloadProof(a)">
+                                        {{ 'anchors.download' | translate }}
+                                    </button>
+                                }
+                            </div>
+                        }
+                    </div>
+                </ui-card>
+
+                <div class="result-actions">
+                    <button ui-button variant="primary" size="md" (click)="downloadCertificate()">
+                        {{ 'actions.download' | translate }}
+                    </button>
+                    <button ui-button variant="secondary" size="md" (click)="downloadManifest()">
+                        {{ 'actions.downloadManifest' | translate }}
+                    </button>
+                    @if (gpgSignature()) {
+                        <button ui-button variant="secondary" size="md" (click)="downloadGpgSignature()">
+                            {{ 'gpg.downloadAsc' | translate }}
+                        </button>
+                    }
+                    <button ui-button variant="secondary" size="md" (click)="downloadAllProofs()" [disabled]="!hasAnyConfirmedAnchor()">
+                        {{ 'anchors.downloadAll' | translate }}
+                    </button>
+                    <button ui-button variant="secondary" size="md" (click)="downloadReport()" [disabled]="!hasAnyConfirmedAnchor()">
+                        {{ 'report.download' | translate }}
+                    </button>
+                </div>
+
+                <details class="manifest-preview">
+                    <summary>{{ 'result.manifest' | translate }}</summary>
+                    <ui-code-block [value]="m.yaml" label="CITATION.cff" />
+                </details>
+
+                @if (gitMeta(); as git) {
+                    <ui-card [eyebrow]="'git.title' | translate">
+                        <div class="git-grid">
+                            <div class="git-row"><span class="caption">{{ 'git.branch' | translate }}</span><code class="mono">{{ git.branch }}</code></div>
+                            <div class="git-row"><span class="caption">{{ 'git.commit' | translate }}</span><code class="mono">{{ git.headCommit.slice(0, 12) }}</code></div>
+                            @if (git.commitMessage) {
+                                <div class="git-row"><span class="caption">{{ 'git.message' | translate }}</span><span>{{ git.commitMessage }}</span></div>
+                            }
+                            @if (git.remoteUrl) {
+                                <div class="git-row"><span class="caption">{{ 'git.remote' | translate }}</span><code class="mono">{{ git.remoteUrl }}</code></div>
+                            }
+                        </div>
+                    </ui-card>
+                }
+
+                @if (gostDigest()) {
+                    <ui-card [eyebrow]="'gost.title' | translate" [subtitle]="'gost.note' | translate">
+                        <code class="proof-hash mono">{{ gostDigest() }}</code>
+                    </ui-card>
+                }
+            </div>
+        }
+    </div>
+</ui-section>
+
+<!-- ═════════════════════════════════════════════════════════════
+     WHY BITCOIN
+     ═════════════════════════════════════════════════════════════ -->
+<ui-section
+    [eyebrow]="'info.whyEyebrow' | translate"
+    [title]="'why.title' | translate"
+    [narrow]="true"
+    appReveal>
+    <div class="prose">
+        <p>{{ 'why.p1' | translate }}</p>
+        <p>{{ 'why.p2' | translate }}</p>
+        <p>{{ 'why.p3' | translate }}</p>
+        <blockquote>{{ 'why.p4' | translate }}</blockquote>
+        <p class="caption">{{ 'why.alt' | translate }}</p>
+    </div>
+</ui-section>
+
+<!-- ═════════════════════════════════════════════════════════════
+     LEGAL
+     ═════════════════════════════════════════════════════════════ -->
+<ui-section
+    [eyebrow]="'info.legalEyebrow' | translate"
+    [title]="'legal.title' | translate"
+    [narrow]="true"
+    appReveal>
+    <div class="prose">
+        <p>{{ 'legal.p1' | translate }}</p>
+        <p>{{ 'legal.p2' | translate }}</p>
+        <p>{{ 'legal.p3' | translate }}</p>
+        <p>{{ 'legal.p4' | translate }}</p>
+    </div>
+</ui-section>
+
+<!-- ═════════════════════════════════════════════════════════════
+     TRUST CARDS
+     ═════════════════════════════════════════════════════════════ -->
+<ui-section
+    [eyebrow]="'trust.eyebrow' | translate"
+    [title]="'trust.title' | translate"
+    [subtitle]="'trust.subtitle' | translate"
+    appReveal>
+    <div class="trust-grid">
+        <ui-card [title]="'trust.wipo' | translate" [subtitle]="'trust.wipoDesc' | translate" />
+        <ui-card [title]="'trust.paris' | translate" [subtitle]="'trust.parisDesc' | translate" />
+        <ui-card [title]="'trust.eidas' | translate" [subtitle]="'trust.eidasDesc' | translate" />
+        <ui-card [title]="'trust.privacy' | translate" [subtitle]="'trust.privacyDesc' | translate" />
+    </div>
+</ui-section>
+
+<!-- ═════════════════════════════════════════════════════════════
+     VERSION HISTORY (local)
+     ═════════════════════════════════════════════════════════════ -->
+@if (depositHistory().length > 0) {
+    <ui-section
+        [eyebrow]="'history.eyebrow' | translate"
+        [title]="'history.title' | translate"
+        [subtitle]="'history.subtitle' | translate"
+        appReveal>
+        <div class="history-list">
+            @for (rec of depositHistory(); track rec.digest) {
+                <ui-card class="history-item">
+                    <div class="history-meta">
+                        <strong>{{ rec.title }}</strong>
+                        <span class="caption mono">v{{ rec.version }}</span>
+                        <span class="caption">{{ 'drop.filesCount' | translate:{count: rec.fileCount} }}</span>
+                    </div>
+                    <div class="history-row">
+                        <code class="mono">{{ rec.digest.slice(0, 16) }}…</code>
+                        <span class="caption">{{ rec.timestamp | slice:0:10 }}</span>
+                        <ui-badge tone="brand">{{ rec.anchors.length }} anchors</ui-badge>
+                    </div>
+                </ui-card>
+            }
+        </div>
+    </ui-section>
+}
+
+<!-- ═════════════════════════════════════════════════════════════
+     FAQ
+     ═════════════════════════════════════════════════════════════ -->
+<ui-section
+    [eyebrow]="'faq.eyebrow' | translate"
+    [title]="'faq.title' | translate"
+    [narrow]="true"
+    appReveal>
+    <div class="faq-list">
+        @for (i of [1,2,3,4,5,6,7,8]; track i) {
+            <details class="faq-item">
+                <summary>
+                    <span>{{ 'faq.q' + i | translate }}</span>
+                    <span class="faq-caret" aria-hidden="true">＋</span>
+                </summary>
+                <p>{{ 'faq.a' + i | translate }}</p>
+            </details>
+        }
+    </div>
+</ui-section>
+
+<!-- ═════════════════════════════════════════════════════════════
+     FINAL CTA
+     ═════════════════════════════════════════════════════════════ -->
+<section class="final-cta">
+    <div class="container final-inner">
+        <h2 class="display-2">{{ 'hero.cta' | translate }}</h2>
+        <p class="lead">{{ 'hero.ctaHint' | translate }}</p>
+        <a ui-button variant="primary" size="lg" href="#deposit">
+            {{ 'deposit.eyebrow' | translate }} · {{ 'actions.generate' | translate }}
+        </a>
+    </div>
+</section>
