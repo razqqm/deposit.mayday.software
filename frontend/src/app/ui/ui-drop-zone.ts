@@ -108,82 +108,48 @@ import { ChangeDetectionStrategy, Component, computed, input, output, signal } f
            "run of light", not a rainbow — calm, not party lights.
            ────────────────────────────────────────────────────────── */
         /* ──────────────────────────────────────────────────────────
-           Featured: amber frame + green "Bitcoin confirmed" sweep.
-
-           Both amber and green share exactly the same ring (the zone's
-           border region). We use three stacked background layers on the
-           zone itself, each with its own background-clip target:
-
-             1. [top]    conic-gradient in success-green, clipped to
-                         border-box → paints on the border area. Mostly
-                         transparent with a ~160° bright arc that rotates
-                         via @property --spin over 8s.
-             2. [middle] solid amber, clipped to border-box → the static
-                         amber frame. Visible wherever the conic is
-                         transparent. Where the conic arc lights up,
-                         green overlays amber on the exact same line.
-             3. [bottom] solid page bg, clipped to padding-box → fills
-                         the card interior.
-
-           Because layers 1 and 2 occupy the same 2px ring, the sweep is
-           clearly readable against the amber — no tiny inset gap, no
-           competing rings. Supported since Safari 16.4 / Firefox 128 /
-           Chrome 85. Fallback: static amber only, no rotation.
+           Featured: a real solid amber frame that gently breathes —
+           every 3.2s the border slightly deepens toward brand-strong
+           and the amber glow expands 2-3px, then eases back. Contained
+           entirely inside box-shadow (no bleeding blobs on the page) and
+           needs no pseudo-elements, no conic gradients, no filters —
+           identical in Safari / Firefox / Chrome.
            ────────────────────────────────────────────────────────── */
-        @property --spin {
-            syntax: '<angle>';
-            inherits: false;
-            initial-value: 0deg;
-        }
         .zone.is-featured {
-            --spin: 0deg;
             position: relative;
-            border: 2px solid transparent;
-            background-image:
-                conic-gradient(
-                    from var(--spin),
-                    transparent 0deg 200deg,
-                    color-mix(in oklch, var(--success) 55%, transparent) 260deg,
-                    var(--success) 320deg,
-                    color-mix(in oklch, var(--success) 55%, transparent) 350deg,
-                    transparent 360deg
-                ),
-                linear-gradient(var(--brand), var(--brand)),
-                linear-gradient(var(--bg-elev), var(--bg-elev));
-            background-origin: border-box, border-box, padding-box;
-            background-clip:   border-box, border-box, padding-box;
-            animation: featured-spin 8s linear infinite;
-            box-shadow:
-                0 0 0 1px color-mix(in oklch, var(--brand) 25%, transparent),
-                0 0 34px -4px color-mix(in oklch, var(--brand) 38%, transparent);
+            border: 2px solid var(--brand);
+            background: var(--bg-elev);
+            animation: featured-breathe 3.2s ease-in-out infinite;
         }
-        @keyframes featured-spin {
-            to { --spin: 360deg; }
+        @keyframes featured-breathe {
+            0%, 100% {
+                border-color: var(--brand);
+                box-shadow:
+                    0 0 0 1px color-mix(in oklch, var(--brand) 18%, transparent),
+                    0 0 16px -4px color-mix(in oklch, var(--brand) 28%, transparent);
+            }
+            50% {
+                border-color: var(--brand-strong);
+                box-shadow:
+                    0 0 0 2px color-mix(in oklch, var(--brand) 34%, transparent),
+                    0 0 26px -2px color-mix(in oklch, var(--brand) 52%, transparent);
+            }
         }
 
-        /* Hover / drag: calm the sweep and let the amber frame lead. */
+        /* Hover / drag: lock to the fullest amber state. */
         .zone.is-featured:hover,
         .zone.is-featured.is-dragging {
             animation-play-state: paused;
+            border-color: var(--brand-strong);
         }
-        .zone.is-featured.is-dragging {
-            background-image:
-                linear-gradient(var(--brand), var(--brand)),
-                linear-gradient(var(--brand), var(--brand)),
-                linear-gradient(var(--brand-soft), var(--brand-soft));
-        }
+        .zone.is-featured.is-dragging { background: var(--brand-soft); }
 
         @media (prefers-reduced-motion: reduce) {
-            .zone.is-featured { animation: none; }
-        }
-        /* Fallback: browsers without @property or conic-gradient get a
-           clean static amber frame — no broken half-animation. */
-        @supports not ((background: conic-gradient(red, blue)) and (background-clip: border-box)) {
             .zone.is-featured {
                 animation: none;
-                background-image: none;
-                background: var(--bg-elev);
-                border-color: var(--brand);
+                box-shadow:
+                    0 0 0 1px color-mix(in oklch, var(--brand) 22%, transparent),
+                    0 0 20px -4px color-mix(in oklch, var(--brand) 36%, transparent);
             }
         }
         input[type="file"] {
