@@ -86,10 +86,6 @@
     <div class="deposit-flow">
         <!-- Step 1: Drop -->
         <div class="step" [class.is-active]="!hashedFiles().length && !hashing()" [class.is-done]="hashedFiles().length > 0">
-            <div class="step-head">
-                <span class="step-num">1</span>
-                <h3 class="step-title">{{ 'drop.title' | translate }}</h3>
-            </div>
             @if (hashing()) {
                 <ui-card>
                     <div class="hashing">
@@ -114,10 +110,6 @@
         @if (hashedFiles().length > 0) {
             <!-- Step 2: Author form -->
             <div class="step" [class.is-active]="!manifest()" [class.is-done]="!!manifest()">
-                <div class="step-head">
-                    <span class="step-num">2</span>
-                    <h3 class="step-title">{{ 'form.title' | translate }}</h3>
-                </div>
                 <ui-card>
                     <div class="form">
                         <div class="form-row">
@@ -185,9 +177,8 @@
         <!-- Step 3: Result -->
         @if (manifest(); as m) {
             <div class="step is-active is-done result">
-                <div class="step-head">
-                    <span class="step-num">3</span>
-                    <h3 class="step-title">{{ 'result.title' | translate }}</h3>
+                <div class="result-head">
+                    <h3 class="result-title">{{ 'result.title' | translate }}</h3>
                     <ui-badge tone="success" [dot]="true">{{ 'deposit.doneEyebrow' | translate }}</ui-badge>
                 </div>
 
