@@ -2,7 +2,7 @@
 
 Open-source cryptographic deposit for source code authorship and timestamp evidence.
 
-- License: MIT (see [LICENSE](LICENSE))
+- License: MIT (see [LICENSE](LICENSE)) 
 - Production app: [https://deposit.mayday.software/](https://deposit.mayday.software/)
 - Monorepo: Angular frontend + Cloudflare Worker API relay
 
