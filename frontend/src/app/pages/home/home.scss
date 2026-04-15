@@ -32,6 +32,8 @@
 }
 .hero-copy .title .accent {
     display: block;
+    line-height: 1.1;
+    padding-bottom: 0.08em;
     background: linear-gradient(120deg, var(--brand-strong), var(--brand));
     -webkit-background-clip: text;
     background-clip: text;
