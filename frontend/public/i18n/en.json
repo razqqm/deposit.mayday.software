@@ -124,12 +124,12 @@
         "step2Title": "2. Sign",
         "step2Desc": "Hashes are bundled into a CITATION.cff manifest. Optionally sign it with your GPG key for cryptographic authorship proof.",
         "step3Title": "3. Anchor",
-        "step3Desc": "The manifest hash is submitted to Bitcoin via OpenTimestamps, to RFC 3161 timestamping authorities, and to Ethereum L2. Nobody — not even you — can change the date afterwards.",
+        "step3Desc": "The manifest hash is submitted to Bitcoin via OpenTimestamps, to RFC 3161 timestamping authorities, and to Ethereum L2. Nobody, not even you, can change the date afterwards.",
         "step4Title": "4. Certificate",
         "step4Desc": "You get a printable PDF certificate plus the raw proof files. Anyone can independently verify every layer — without trusting us.",
         "pipeline": {
             "detect": "Detect",
-            "detectDesc": "The browser reads file headers and metadata — type, size, author, last-modified — without uploading anything. Local inspection only.",
+            "detectDesc": "The browser reads file headers and metadata (type, size, author, last-modified) without uploading anything. Local inspection only.",
             "detectCode": "file.type / file.size / lastModified",
             "hash": "Hash",
             "hashDesc": "SHA-256 fingerprint of every byte, computed in-browser via WebCrypto. 32 bytes. Change one pixel, change the hash.",
@@ -161,7 +161,7 @@
         "title": "Accepted as legal evidence",
         "p1": "Under the Berne Convention (Art. 5), copyright arises automatically upon creation — registration is nowhere required. What matters in court is proof of authorship and the date a particular version existed.",
         "p2": "In the EU, Bitcoin-anchored timestamps qualify as advanced electronic timestamps under eIDAS 910/2014. The Paris Tribunal accepted them as evidence (March 2025). RFC 3161 timestamps from eIDAS-qualified TSAs go further — they carry a legal presumption of accuracy under Art. 41.",
-        "p3": "Important — this is a complement, not a replacement. In Russia the Supreme Court (ruling № 305-ЭС17-4311, 2020) confirmed that deposit alone does not create a presumption of authorship. Only state registration at Rospatent under Art. 1262 of the Civil Code does. mayday.software doesn't replace it — it adds an independent cryptographic layer that costs nothing, takes minutes, and survives any single institution.",
+        "p3": "Important: this is a complement, not a replacement. In Russia the Supreme Court (ruling № 305-ЭС17-4311, 2020) confirmed that deposit alone does not create a presumption of authorship. Only state registration at Rospatent under Art. 1262 of the Civil Code does. mayday.software doesn't replace it; it adds an independent cryptographic layer that costs nothing, takes minutes, and survives any single institution.",
         "p4": "Use it like signed git commits: one of several independent pieces of evidence. Combined with Rospatent, n'RIS, or a notary, a cryptographic hash anchored in a public chain is extremely difficult for any expert to discredit."
     },
     "cert": {
@@ -262,7 +262,7 @@
     "useCases": {
         "eyebrow": "Use cases",
         "title": "Built for anyone who creates",
-        "subtitle": "Wherever proof of authorship matters — code, design, writing, legal artifacts — a deposit gives you an independent timestamp anyone can verify.",
+        "subtitle": "Wherever proof of authorship matters (code, design, writing, legal artifacts), a deposit gives you an independent timestamp anyone can verify.",
         "dev": "Indie developer",
         "devDesc": "Lock the exact source state of a release before filing a patent or shipping to clients. Plays nicely with git tags and CI.",
         "designer": "Designer / freelancer",
@@ -422,7 +422,7 @@
         "h5": "5. Intellectual property",
         "p5": "The deposit codebase is released under the MIT License (see LICENSE in the repository). Files you submit through the service remain entirely yours; we claim no rights of any kind over them.",
         "h6": "6. Limitation of liability",
-        "p6": "To the maximum extent permitted by applicable law, in no event shall the authors or copyright holders be liable for any claim, damages or other liability — including direct, indirect, incidental, consequential, punitive or exemplary damages — arising from your use of the service.",
+        "p6": "To the maximum extent permitted by applicable law, in no event shall the authors or copyright holders be liable for any claim, damages or other liability (including direct, indirect, incidental, consequential, punitive or exemplary damages) arising from your use of the service.",
         "h7": "7. Governing law",
         "p7": "Governing law and jurisdiction are to be determined by counsel before public launch. Until then, treat this as a non-binding informational service.",
         "h8": "8. Changes",
@@ -459,12 +459,12 @@
         "q4": "What if mayday.software goes offline?",
         "a4": "Your proof still works. Bitcoin anchors are verified against any Bitcoin node. RFC 3161 timestamps are verified with OpenSSL against the TSA's public certificate. The proof files are self-contained and independent of this site.",
         "q5": "How is this different from a notary?",
-        "a5": "A notary certifies a single snapshot in person. mayday.software lets you create unlimited timestamps instantly, for free, with mathematical proof that no one — not even you — can backdate. It complements (not replaces) notarial acts.",
+        "a5": "A notary certifies a single snapshot in person. mayday.software lets you create unlimited timestamps instantly, for free, with mathematical proof that no one, not even you, can backdate. It complements (not replaces) notarial acts.",
         "q6": "What file types can I protect?",
         "a6": "Anything. Source code, designs, documents, images, music, video, datasets — if it's a file, it can be hashed. There are no format or size restrictions.",
         "q7": "Is this really free?",
         "a7": "Yes. No accounts, no limits, no hidden fees. The core deposit service is and will remain free. Future premium features (API, white-label, monitoring) will fund the project.",
         "q8": "Can I use this as evidence in court?",
-        "a8": "The deposit produces multiple independent pieces of evidence: Bitcoin blockchain anchors, RFC 3161 timestamps from certified authorities, and optionally GPG signatures. Combined they form a strong evidentiary chain. Use it alongside other evidence — registered IP, signed commits, notarial acts — for the strongest case."
+        "a8": "The deposit produces multiple independent pieces of evidence: Bitcoin blockchain anchors, RFC 3161 timestamps from certified authorities, and optionally GPG signatures. Combined they form a strong evidentiary chain. Use it alongside other evidence (registered IP, signed commits, notarial acts) for the strongest case."
     }
 }

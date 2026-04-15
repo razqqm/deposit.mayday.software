@@ -10,6 +10,7 @@ import { ChangeDetectionStrategy, Component, computed, input, output, signal } f
             [class.is-dragging]="dragging()"
             [class.has-files]="hasFiles()"
             [class.is-compact]="compact()"
+            [class.is-featured]="featured() && !hasFiles()"
             (dragenter)="onDragEnter($event)"
             (dragover)="onDragOver($event)"
             (dragleave)="onDragLeave($event)"
@@ -86,6 +87,103 @@ import { ChangeDetectionStrategy, Component, computed, input, output, signal } f
             border-color: color-mix(in oklch, var(--success) 50%, var(--border));
             background: var(--success-soft);
         }
+
+        /* ──────────────────────────────────────────────────────────
+           Featured state — primary page drop target.
+           Two layers:
+           1. Rotating conic-gradient BORDER via ::before (masked to
+              a 1.5px ring). @property --angle = 0..360deg in 8s.
+           2. Same gradient BLURRED outside via ::after for ambient glow.
+           Both pause on hover / drag / has-files, and are disabled under
+           prefers-reduced-motion. One flowing "run of light" (not a full
+           rainbow) so it reads as calm, not party lights.
+           ────────────────────────────────────────────────────────── */
+        @property --angle {
+            syntax: '<angle>';
+            inherits: false;
+            initial-value: 0deg;
+        }
+        .zone.is-featured {
+            --angle: 0deg;
+            border-color: transparent;
+            border-style: solid;
+            background: var(--bg-elev);
+            animation: featured-angle 8s linear infinite;
+            isolation: isolate;
+        }
+        .zone.is-featured::before,
+        .zone.is-featured::after {
+            content: '';
+            position: absolute;
+            inset: -1px;
+            border-radius: inherit;
+            padding: 1.5px;
+            background: conic-gradient(
+                from var(--angle),
+                transparent 0deg,
+                transparent 200deg,
+                color-mix(in oklch, var(--brand) 60%, transparent) 260deg,
+                var(--brand) 310deg,
+                color-mix(in oklch, var(--brand) 60%, transparent) 340deg,
+                transparent 360deg
+            );
+            /* Two masks combined cut the fill, leaving only the ring. */
+            -webkit-mask:
+                linear-gradient(#000 0 0) content-box,
+                linear-gradient(#000 0 0);
+            -webkit-mask-composite: xor;
+                    mask:
+                linear-gradient(#000 0 0) content-box,
+                linear-gradient(#000 0 0);
+                    mask-composite: exclude;
+            pointer-events: none;
+            z-index: -1;
+        }
+        /* Outer ambient glow — same gradient, blurred, softer. */
+        .zone.is-featured::after {
+            inset: -14px;
+            padding: 0;
+            filter: blur(18px);
+            opacity: 0.55;
+            -webkit-mask: none;
+                    mask: none;
+            border-radius: calc(var(--r-md) + 8px);
+        }
+        @keyframes featured-angle {
+            from { --angle: 0deg; }
+            to   { --angle: 360deg; }
+        }
+        /* Clean hand-off: on hover/drag/files, pause the shimmer and
+           show the static state — animation feels intentional, not noisy. */
+        .zone.is-featured:hover,
+        .zone.is-featured.is-dragging {
+            animation-play-state: paused;
+        }
+        .zone.is-featured:hover::before,
+        .zone.is-featured:hover::after,
+        .zone.is-featured.is-dragging::before,
+        .zone.is-featured.is-dragging::after {
+            opacity: 0;
+            transition: opacity var(--dur-base) var(--ease-out);
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .zone.is-featured {
+                animation: none;
+                border-color: var(--brand);
+            }
+            .zone.is-featured::before,
+            .zone.is-featured::after { display: none; }
+        }
+        /* Fallback for browsers without @property support —
+           stay static with a solid brand border. No broken half-animation. */
+        @supports not (background: conic-gradient(from 0deg, red, blue)) {
+            .zone.is-featured::before,
+            .zone.is-featured::after { display: none; }
+            .zone.is-featured {
+                animation: none;
+                border-color: var(--brand);
+            }
+        }
         input[type="file"] {
             position: absolute;
             inset: 0;
@@ -159,6 +257,14 @@ export class UiDropZone {
     files = input<File[] | File | null>(null);
     compact = input<boolean>(false);
     showClear = input<boolean>(true);
+    /**
+     * Turn on when this drop-zone is the page's primary call to action.
+     * Adds a slow (8s) conic-gradient shimmer around the border plus a
+     * soft ambient glow behind the card, so the eye finds the target
+     * without feeling pressured. Disabled once files are loaded and
+     * auto-disabled for `prefers-reduced-motion: reduce`.
+     */
+    featured = input<boolean>(false);
 
     readonly filesChange = output<File[]>();
 
