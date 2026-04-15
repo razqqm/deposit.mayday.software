@@ -85,11 +85,26 @@ const ETH_CHAINS: Record<string, { chain: ReturnType<typeof defineChain>; rpcUrl
     }
 };
 
+/**
+ * Production hardening headers added to every API response.
+ * Static assets get the same protections via `frontend/public/_headers`,
+ * which Cloudflare Workers Static Assets honours without invoking the
+ * Worker (cheaper and faster than wrapping ASSETS.fetch).
+ */
+const API_SECURITY_HEADERS: Record<string, string> = {
+    'Strict-Transport-Security': 'max-age=15552000; includeSubDomains',
+    'X-Content-Type-Options': 'nosniff',
+    'Referrer-Policy': 'strict-origin-when-cross-origin',
+    'Cross-Origin-Resource-Policy': 'same-site',
+    'X-Frame-Options': 'SAMEORIGIN'
+};
+
 export default {
     async fetch(request: Request, env: Env): Promise<Response> {
         const url = new URL(request.url);
 
         // Everything outside /api/* goes straight to the static SPA.
+        // Security headers for those paths are set by public/_headers.
         if (!url.pathname.startsWith('/api/')) {
             return env.ASSETS.fetch(request);
         }
@@ -380,6 +395,7 @@ function corsHeaders(): Record<string, string> {
 function withCors(resp: Response): Response {
     const headers = new Headers(resp.headers);
     for (const [k, v] of Object.entries(corsHeaders())) headers.set(k, v);
+    for (const [k, v] of Object.entries(API_SECURITY_HEADERS)) headers.set(k, v);
     return new Response(resp.body, { status: resp.status, headers });
 }
 

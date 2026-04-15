@@ -1,0 +1,41 @@
+# Production security + caching headers for the deposit SPA.
+# Honoured by Cloudflare Workers Static Assets without invoking the Worker.
+
+/*
+  Strict-Transport-Security: max-age=15552000; includeSubDomains
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=(), magnetometer=(), gyroscope=(), accelerometer=(), interest-cohort=()
+  Cross-Origin-Opener-Policy: same-origin
+  Cross-Origin-Resource-Policy: same-site
+  X-Frame-Options: SAMEORIGIN
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob:; connect-src 'self'; worker-src 'self'; manifest-src 'self'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'; object-src 'none'; upgrade-insecure-requests
+
+# Angular emits hashed chunk filenames (main-<hash>.js, chunk-<hash>.js, styles-<hash>.css)
+# so they can be cached immutably for a year — the SW picks up new ones by hash.
+/main-*.js
+  Cache-Control: public, max-age=31536000, immutable
+/chunk-*.js
+  Cache-Control: public, max-age=31536000, immutable
+/styles-*.css
+  Cache-Control: public, max-age=31536000, immutable
+
+# Immutable font files from our own domain (if any) get the same treatment.
+/images/*
+  Cache-Control: public, max-age=2592000
+
+# ngsw.json MUST revalidate on every request — that's how the SW detects
+# new deployments. Cloudflare's default already sets max-age=0, but we
+# state it explicitly to guard against dashboard overrides.
+/ngsw.json
+  Cache-Control: public, max-age=0, must-revalidate
+/ngsw-worker.js
+  Cache-Control: public, max-age=0, must-revalidate
+/safety-worker.js
+  Cache-Control: public, max-age=0, must-revalidate
+
+# index.html is not hashed; must revalidate so users pick up new SW manifests.
+/index.html
+  Cache-Control: public, max-age=0, must-revalidate
+/
+  Cache-Control: public, max-age=0, must-revalidate
