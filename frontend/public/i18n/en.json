@@ -1,4 +1,13 @@
 {
+    "pwa": {
+        "install": "Install deposit",
+        "updateTitle": "New version available",
+        "updateDesc": "Reload to get the latest deposit app.",
+        "updateCta": "Reload",
+        "offlineTitle": "You're offline",
+        "offlineDesc": "Hashing and signing still work locally. Anchoring resumes when the connection returns.",
+        "dismiss": "Dismiss"
+    },
     "a11y": {
         "skipLink": "Skip to main content",
         "mainNav": "Main navigation",

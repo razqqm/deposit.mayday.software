@@ -3,6 +3,7 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { LanguageService } from '@/app/shared/services/language.service';
 import { ThemeService } from '@/app/shared/services/theme.service';
+import { PwaService } from '@/app/shared/services/pwa.service';
 
 @Component({
     selector: 'app-public-topbar',
@@ -30,6 +31,17 @@ import { ThemeService } from '@/app/shared/services/theme.service';
                 </nav>
 
                 <div class="ctrls">
+                    @if (pwa.canInstall()) {
+                        <button type="button" class="icon-btn install-btn" (click)="installApp()"
+                                [attr.aria-label]="'pwa.install' | translate"
+                                [title]="'pwa.install' | translate">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                                <polyline points="7 10 12 15 17 10"/>
+                                <line x1="12" y1="15" x2="12" y2="3"/>
+                            </svg>
+                        </button>
+                    }
                     <div class="seg" role="group" [attr.aria-label]="'a11y.switchLang' | translate">
                         <button type="button" class="seg-btn" [class.is-on]="lang.currentLang() === 'en'" (click)="setLang('en')">EN</button>
                         <button type="button" class="seg-btn" [class.is-on]="lang.currentLang() === 'ru'" (click)="setLang('ru')">RU</button>
@@ -156,6 +168,8 @@ import { ThemeService } from '@/app/shared/services/theme.service';
             transition: background-color var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out);
         }
         .icon-btn:hover { background: var(--bg-mute); color: var(--text); }
+        .install-btn { color: var(--brand-strong); }
+        .install-btn:hover { background: var(--brand-soft); color: var(--brand-strong); }
         .menu-btn { display: none; }
 
         @media (max-width: 720px) {
@@ -186,7 +200,12 @@ import { ThemeService } from '@/app/shared/services/theme.service';
 export class PublicTopbar {
     readonly lang = inject(LanguageService);
     readonly theme = inject(ThemeService);
+    readonly pwa = inject(PwaService);
     readonly menuOpen = signal(false);
+
+    async installApp(): Promise<void> {
+        await this.pwa.install();
+    }
 
     setLang(code: 'en' | 'ru'): void {
         if (this.lang.currentLang() === code) return;

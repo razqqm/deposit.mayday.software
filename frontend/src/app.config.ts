@@ -1,6 +1,7 @@
 import { provideHttpClient, withFetch } from '@angular/common/http';
-import { ApplicationConfig, provideZonelessChangeDetection } from '@angular/core';
+import { ApplicationConfig, isDevMode, provideZonelessChangeDetection } from '@angular/core';
 import { provideRouter, withEnabledBlockingInitialNavigation, withInMemoryScrolling } from '@angular/router';
+import { provideServiceWorker } from '@angular/service-worker';
 import { providePrimeNG } from 'primeng/config';
 import { provideTranslateService } from '@ngx-translate/core';
 import { provideTranslateHttpLoader } from '@ngx-translate/http-loader';
@@ -81,6 +82,12 @@ export const appConfig: ApplicationConfig = {
         provideTranslateHttpLoader({
             prefix: '/i18n/',
             suffix: `.json?v=${I18N_VERSION}`
+        }),
+        provideServiceWorker('ngsw-worker.js', {
+            enabled: !isDevMode(),
+            // Wait for the app to become idle before registering so we
+            // don't compete with initial render / translation load.
+            registrationStrategy: 'registerWhenStable:30000'
         })
     ]
 };
