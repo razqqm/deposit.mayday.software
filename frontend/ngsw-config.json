@@ -8,10 +8,7 @@
             "updateMode": "prefetch",
             "resources": {
                 "files": [
-                    "/favicon.ico",
-                    "/index.csr.html",
                     "/index.html",
-                    "/manifest.webmanifest",
                     "/site.webmanifest",
                     "/*.css",
                     "/*.js"
@@ -22,6 +19,9 @@
             "name": "app-assets",
             "installMode": "lazy",
             "updateMode": "prefetch",
+            "cacheQueryOptions": {
+                "ignoreSearch": true
+            },
             "resources": {
                 "files": [
                     "/images/**",
@@ -47,8 +47,9 @@
             "name": "google-fonts-css",
             "urls": ["https://fonts.googleapis.com/**"],
             "cacheConfig": {
-                "maxSize": 6,
+                "maxSize": 8,
                 "maxAge": "7d",
+                "timeout": "2s",
                 "strategy": "freshness"
             }
         },
@@ -56,7 +57,7 @@
             "name": "google-fonts-files",
             "urls": ["https://fonts.gstatic.com/**"],
             "cacheConfig": {
-                "maxSize": 20,
+                "maxSize": 24,
                 "maxAge": "30d",
                 "strategy": "performance"
             }
@@ -64,6 +65,9 @@
     ],
     "navigationUrls": [
         "/**",
-        "!/api/**"
+        "!/api/**",
+        "!/ngsw-worker.js",
+        "!/ngsw.json",
+        "!/safety-worker.js"
     ]
 }
