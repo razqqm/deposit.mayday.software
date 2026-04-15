@@ -90,97 +90,99 @@ import { ChangeDetectionStrategy, Component, computed, input, output, signal } f
 
         /* ──────────────────────────────────────────────────────────
            Featured state — primary page drop target.
-           Two layers:
-           1. Rotating conic-gradient BORDER via ::before (masked to
-              a 1.5px ring). @property --angle = 0..360deg in 8s.
-           2. Same gradient BLURRED outside via ::after for ambient glow.
-           Both pause on hover / drag / has-files, and are disabled under
-           prefers-reduced-motion. One flowing "run of light" (not a full
-           rainbow) so it reads as calm, not party lights.
+
+           Transform-rotation technique (Safari / Firefox / Chrome all OK).
+           Three layers inside the zone:
+             ::before — an oversized square painted with a conic-gradient,
+                         rotates with transform:rotate at 8s linear.
+             ::after  — a solid inner fill inset by 1.5px, covers the
+                         rotating gradient everywhere except the outermost
+                         1.5px ring (so the rotation "leaks" only at the
+                         border, making it look like a flowing edge).
+             content  — bumped to z-index:2 so labels/icons sit on top.
+
+           Outer ambient glow is done via box-shadow instead of a mask —
+           no mask-composite quirks, works identically across browsers.
+
+           One short lit arc (≈160° of the full 360°) means the eye sees a
+           "run of light", not a rainbow — calm, not party lights.
            ────────────────────────────────────────────────────────── */
-        @property --angle {
+        /* ──────────────────────────────────────────────────────────
+           Featured: amber frame + green "Bitcoin confirmed" sweep.
+
+           Both amber and green share exactly the same ring (the zone's
+           border region). We use three stacked background layers on the
+           zone itself, each with its own background-clip target:
+
+             1. [top]    conic-gradient in success-green, clipped to
+                         border-box → paints on the border area. Mostly
+                         transparent with a ~160° bright arc that rotates
+                         via @property --spin over 8s.
+             2. [middle] solid amber, clipped to border-box → the static
+                         amber frame. Visible wherever the conic is
+                         transparent. Where the conic arc lights up,
+                         green overlays amber on the exact same line.
+             3. [bottom] solid page bg, clipped to padding-box → fills
+                         the card interior.
+
+           Because layers 1 and 2 occupy the same 2px ring, the sweep is
+           clearly readable against the amber — no tiny inset gap, no
+           competing rings. Supported since Safari 16.4 / Firefox 128 /
+           Chrome 85. Fallback: static amber only, no rotation.
+           ────────────────────────────────────────────────────────── */
+        @property --spin {
             syntax: '<angle>';
             inherits: false;
             initial-value: 0deg;
         }
         .zone.is-featured {
-            --angle: 0deg;
-            border-color: transparent;
-            border-style: solid;
-            background: var(--bg-elev);
-            animation: featured-angle 8s linear infinite;
-            isolation: isolate;
+            --spin: 0deg;
+            position: relative;
+            border: 2px solid transparent;
+            background-image:
+                conic-gradient(
+                    from var(--spin),
+                    transparent 0deg 200deg,
+                    color-mix(in oklch, var(--success) 55%, transparent) 260deg,
+                    var(--success) 320deg,
+                    color-mix(in oklch, var(--success) 55%, transparent) 350deg,
+                    transparent 360deg
+                ),
+                linear-gradient(var(--brand), var(--brand)),
+                linear-gradient(var(--bg-elev), var(--bg-elev));
+            background-origin: border-box, border-box, padding-box;
+            background-clip:   border-box, border-box, padding-box;
+            animation: featured-spin 8s linear infinite;
+            box-shadow:
+                0 0 0 1px color-mix(in oklch, var(--brand) 25%, transparent),
+                0 0 34px -4px color-mix(in oklch, var(--brand) 38%, transparent);
         }
-        .zone.is-featured::before,
-        .zone.is-featured::after {
-            content: '';
-            position: absolute;
-            inset: -1px;
-            border-radius: inherit;
-            padding: 1.5px;
-            background: conic-gradient(
-                from var(--angle),
-                transparent 0deg,
-                transparent 200deg,
-                color-mix(in oklch, var(--brand) 60%, transparent) 260deg,
-                var(--brand) 310deg,
-                color-mix(in oklch, var(--brand) 60%, transparent) 340deg,
-                transparent 360deg
-            );
-            /* Two masks combined cut the fill, leaving only the ring. */
-            -webkit-mask:
-                linear-gradient(#000 0 0) content-box,
-                linear-gradient(#000 0 0);
-            -webkit-mask-composite: xor;
-                    mask:
-                linear-gradient(#000 0 0) content-box,
-                linear-gradient(#000 0 0);
-                    mask-composite: exclude;
-            pointer-events: none;
-            z-index: -1;
+        @keyframes featured-spin {
+            to { --spin: 360deg; }
         }
-        /* Outer ambient glow — same gradient, blurred, softer. */
-        .zone.is-featured::after {
-            inset: -14px;
-            padding: 0;
-            filter: blur(18px);
-            opacity: 0.55;
-            -webkit-mask: none;
-                    mask: none;
-            border-radius: calc(var(--r-md) + 8px);
-        }
-        @keyframes featured-angle {
-            from { --angle: 0deg; }
-            to   { --angle: 360deg; }
-        }
-        /* Clean hand-off: on hover/drag/files, pause the shimmer and
-           show the static state — animation feels intentional, not noisy. */
+
+        /* Hover / drag: calm the sweep and let the amber frame lead. */
         .zone.is-featured:hover,
         .zone.is-featured.is-dragging {
             animation-play-state: paused;
         }
-        .zone.is-featured:hover::before,
-        .zone.is-featured:hover::after,
-        .zone.is-featured.is-dragging::before,
-        .zone.is-featured.is-dragging::after {
-            opacity: 0;
-            transition: opacity var(--dur-base) var(--ease-out);
+        .zone.is-featured.is-dragging {
+            background-image:
+                linear-gradient(var(--brand), var(--brand)),
+                linear-gradient(var(--brand), var(--brand)),
+                linear-gradient(var(--brand-soft), var(--brand-soft));
         }
+
         @media (prefers-reduced-motion: reduce) {
-            .zone.is-featured {
-                animation: none;
-                border-color: var(--brand);
-            }
-            .zone.is-featured::before,
-            .zone.is-featured::after { display: none; }
+            .zone.is-featured { animation: none; }
         }
-        /* Fallback for browsers without @property support —
-           stay static with a solid brand border. No broken half-animation. */
-        @supports not (background: conic-gradient(from 0deg, red, blue)) {
-            .zone.is-featured::before,
-            .zone.is-featured::after { display: none; }
+        /* Fallback: browsers without @property or conic-gradient get a
+           clean static amber frame — no broken half-animation. */
+        @supports not ((background: conic-gradient(red, blue)) and (background-clip: border-box)) {
             .zone.is-featured {
                 animation: none;
+                background-image: none;
+                background: var(--bg-elev);
                 border-color: var(--brand);
             }
         }
