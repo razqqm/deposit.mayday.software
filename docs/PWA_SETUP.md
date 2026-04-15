@@ -1,99 +1,87 @@
-# PWA setup — offline-first deposit
+# PWA setup and operations
 
-> Turn the Angular SPA into a real installable Progressive Web App.
-> Almost the entire deposit workflow is already client-side (WebCrypto,
-> openpgp.js, manifest building, certificate rendering) — only the
-> anchor submission needs network. PWA-ifying just formalises what is
-> already true.
+This document defines the production PWA behavior for the Angular frontend.
+It is written as an evergreen operations guide, not a sprint log.
 
-## Goal state
+## Objectives
 
-1. App installable on mobile + desktop (Add to Home Screen / Install app).
-2. Full shell loads offline — last visited pages reopen with zero network.
-3. Local workflow (drop → hash → manifest → GPG sign → download cert/manifest) works completely offline.
-4. Only anchor submission to `/api/*` surfaces an "offline" notice when user has no network.
-5. Auto-update toast when a new deploy arrives — "Reload for the latest version".
-6. No stale cache bugs — ngsw config is explicit.
+1. Installable app on mobile and desktop.
+2. Offline shell for last-visited routes.
+3. Local artifact workflow available offline up to network-dependent anchor submission.
+4. Explicit and safe cache rules to avoid stale-content regressions.
+5. User-visible update path when a new app version is available.
 
-## Progress checklist
+## Current implementation model
 
-- [x] Install `@angular/service-worker` via `ng add @angular/pwa`.
-- [x] Tune `ngsw-config.json` for our asset groups (JS/CSS/fonts/i18n) and data groups (/api/v1/info, /api/*).
-- [x] Register `ServiceWorker` in bootstrap with update-check frequency.
-- [x] `PwaService`: wraps `SwUpdate` + `beforeinstallprompt` + `online/offline` events.
-- [x] UI: install button in topbar (shown when installable, hidden when standalone).
-- [x] UI: offline banner + "update available, reload" toast.
-- [x] Verify: build, smoke test lighthouse PWA score + offline via DevTools.
+### Build and registration
+
+- `@angular/service-worker` is used for PWA support.
+- Service worker registration is enabled in production and disabled in dev mode.
+- Registration strategy follows Angular recommendation (`registerWhenStable:30000`).
+
+Key references:
+
+- Angular SW getting started: [https://angular.dev/ecosystem/service-workers/getting-started](https://angular.dev/ecosystem/service-workers/getting-started)
+- Angular SW configuration: [https://angular.dev/ecosystem/service-workers/config](https://angular.dev/ecosystem/service-workers/config)
+
+### Cache policy
+
+Cache behavior is configured in `frontend/ngsw-config.json`.
+
+Recommended policy for this product:
+
+- App shell assets (`index.html`, JS, CSS): prefetch.
+- Static assets (`images`, `i18n`, manifest): lazy cache.
+- Dynamic data endpoints:
+  - informational endpoints: freshness with short timeout and finite TTL.
+  - timestamp submission endpoints: network-first (or not cached).
+
+Do not cache timestamp-proof submission routes where fresh upstream responses are required.
+
+## Runtime UX requirements
+
+- Show online/offline status in UI.
+- Show "update available" toast and provide reload action.
+- Show install CTA only when install prompt is available and app is not standalone.
+- Keep anchor/submit actions clearly marked as network-dependent.
+
+## Cloudflare deployment compatibility
+
+The current Cloudflare Workers + Static Assets model supports this setup.
+
+- Static files are deployed with Worker code as one unit.
+- SPA fallback should use `not_found_handling = "single-page-application"`.
+- API relay routes can remain Worker-driven via `/api/*`.
+
+Reference:
+
+- Cloudflare Static Assets docs: [https://developers.cloudflare.com/workers/static-assets/](https://developers.cloudflare.com/workers/static-assets/)
+
+## Verification checklist
+
+1. Build production frontend.
+2. Confirm `ngsw.json` and `ngsw-worker.js` are emitted.
+3. Run Worker locally and confirm service worker registration in browser DevTools.
+4. Test offline reload of previously visited routes.
+5. Confirm anchor-specific actions report offline/network errors clearly.
+6. Simulate new deploy and verify update prompt + reload flow.
+
+## Files involved
+
+- `frontend/ngsw-config.json`
+- `frontend/angular.json`
+- `frontend/src/app.config.ts`
+- `frontend/src/app/shared/services/pwa.service.ts`
+- `frontend/src/app/layout/components/pwa-indicators.ts`
 
 ---
 
-## Architecture
+## RU summary
 
-### Caching strategy (ngsw-config.json)
+Этот документ фиксирует рабочую PWA-модель для проекта:
 
-**Asset groups** (files shipped in the build):
-
-| group    | installMode | updateMode | resources                                         |
-|----------|-------------|------------|---------------------------------------------------|
-| `app`    | prefetch    | prefetch   | `/`, `/index.html`, `/*.css`, `/*.js`             |
-| `assets` | lazy        | lazy       | `/images/**`, `/i18n/**`, `/site.webmanifest`     |
-
-**Data groups** (dynamic URLs):
-
-| group       | strategy    | notes                                                      |
-|-------------|-------------|------------------------------------------------------------|
-| `api-info`  | freshness   | `/api/v1/info` — try network 3 s, fallback cache. 5 min TTL |
-| `fonts`     | performance | `https://fonts.gstatic.com/**` — cache forever              |
-| `fontsCss`  | freshness   | `https://fonts.googleapis.com/**` — revalidate weekly       |
-
-**Never cached** (network-only, no data group):
-- `/api/tsa/*`, `/api/ots/*`, `/api/eth/*`, `/api/v1/anchor` — timestamping must always hit fresh servers.
-- `/api/v1/embed.js` — embed widget changes independently.
-
-### Service files
-
-- [frontend/src/service-worker.ts](frontend/src/service-worker.ts) — auto-generated by Angular CLI on build; reads `ngsw-config.json`.
-- [frontend/ngsw-config.json](frontend/ngsw-config.json) — declarative manifest of what to cache how.
-- [frontend/src/app.config.ts](frontend/src/app.config.ts) — `provideServiceWorker()` with `enabled: !isDevMode()` and `registrationStrategy: registerWhenStable:30000`.
-- [frontend/src/app/shared/services/pwa.service.ts](frontend/src/app/shared/services/pwa.service.ts) — the orchestrator:
-  - `SwUpdate.versionUpdates` → update toast signal.
-  - `beforeinstallprompt` event → `canInstall` signal + `install()` method.
-  - `online`/`offline` events → `isOnline` signal.
-  - `(display-mode: standalone)` media query → `isInstalled` signal.
-
-### UI touchpoints
-
-- **Topbar**: small "Install" icon button, shown when `canInstall() && !isInstalled()`.
-- **Footer / toast region**: floating bottom toast for "Update available" (reload button) and "You're offline" (dismiss).
-- **Home deposit anchor stage**: when `!isOnline()`, disable the "Generate" CTA and show an inline note that anchoring requires a connection.
-
-## Critical files to add/change
-
-| file                                               | purpose                             |
-|----------------------------------------------------|-------------------------------------|
-| [frontend/ngsw-config.json](frontend/ngsw-config.json) | cache manifest                |
-| [frontend/angular.json](frontend/angular.json)     | `"serviceWorker": true` + `ngswConfigPath` in production builds |
-| [frontend/src/app.config.ts](frontend/src/app.config.ts) | register provider           |
-| [frontend/src/app/shared/services/pwa.service.ts](frontend/src/app/shared/services/pwa.service.ts) | SwUpdate + install + online orchestration |
-| [frontend/src/app/layout/components/pwa-indicators.ts](frontend/src/app/layout/components/pwa-indicators.ts) | floating toasts + install button wiring |
-| [frontend/src/app/layout/components/public-topbar.ts](frontend/src/app/layout/components/public-topbar.ts) | hosts the install button |
-| [frontend/src/app/layout/components/public-layout.ts](frontend/src/app/layout/components/public-layout.ts) | mounts the toasts |
-| [frontend/public/i18n/*.json](frontend/public/i18n/en.json) | new `pwa.*` keys (EN+RU) |
-
-## Worker considerations
-
-The Cloudflare Worker already serves the SPA through `env.ASSETS.fetch(request)`. `ngsw.json` and `ngsw-worker.js` are just additional static files in the build output — Workers Static Assets serves them automatically with correct MIME. No Worker code changes needed.
-
-`Cache-Control` on `ngsw-worker.js` should be `max-age=0` so browsers pick up new SW on deploy (Workers sets this by default).
-
-## Verification
-
-1. `cd frontend && npm install` — picks up new `@angular/service-worker` dep.
-2. `npx ng build` (prod build) — should emit `ngsw-worker.js`, `ngsw.json`, `safety-worker.js`.
-3. Rebuild in wrangler: `npx wrangler dev` serves at 8787.
-4. Open `http://localhost:8787` in Chrome → DevTools → Application → Service Workers → see it registered.
-5. DevTools → Application → Manifest → verify install button becomes active.
-6. DevTools → Network → tick "Offline" → reload page → shell loads, deposit flow works up to "anchor" step, inline "offline" banner appears on Generate button.
-7. Chrome Lighthouse → PWA category → should score close to 100. Only flag remaining: "Redirects HTTP to HTTPS" (works at deploy time on Cloudflare).
-8. Install the app (Chrome install button in address bar) → launches in standalone window, install button in topbar disappears.
-9. After a deploy with content changes, open app → update toast appears within 30 s → click Reload → new version.
+- PWA включается в production через Angular Service Worker.
+- Кэширование должно быть явным: shell/статические ресурсы кэшируются, критичные timestamp API не должны залипать в stale-cache.
+- UI обязан показывать offline/online статус, доступность обновления и install CTA.
+- Для Cloudflare используется связка Static Assets + Worker с SPA fallback.
+- Верификация включает проверку offline-перезагрузки, update-flow и поведения якорных API при отсутствии сети.

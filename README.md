@@ -1,321 +1,152 @@
-# mayday.software · deposit
+# mayday.software deposit
 
-Сервис для подписи исходного кода и депонирования авторских прав
-с использованием криптографических доказательств вместо бумажных нотариусов.
+Open-source cryptographic deposit for source code authorship and timestamp evidence.
 
-Открытый код, MIT-лицензия (см. [LICENSE](LICENSE)). Бесплатно навсегда
-для базового депонирования и проверки. Продакшн-домен:
-**[deposit.mayday.software](https://deposit.mayday.software/)**.
+- License: MIT (see [LICENSE](LICENSE))
+- Production app: [https://deposit.mayday.software/](https://deposit.mayday.software/)
+- Monorepo: Angular frontend + Cloudflare Worker API relay
 
-## Идея
+## What this project does
 
-Классическое депонирование через РАО/нотариуса — это бумага, очередь и
-доверие к третьей стороне. Мы делаем то же самое тремя строчками в
-терминале, а доказательство записываем в блокчейн Bitcoin — где его
-нельзя подделать, отозвать или потерять.
+The product creates independent evidence layers for software artifacts:
 
-Автор получает три независимых доказательства одного факта:
+1. WHAT: SHA-256 fingerprint of files and manifest content.
+2. WHO: cryptographic signature (roadmap item for browser GPG/OpenPGP flow).
+3. WHEN: timestamp anchors (OpenTimestamps/Bitcoin and RFC 3161 TSA providers).
 
-1. **ЧТО** — SHA-256 хеш файлов (целостность содержимого).
-2. **КТО** — GPG-подпись ключом автора (авторство и неотрекаемость).
-3. **КОГДА** — OpenTimestamps якорь в блокчейне Bitcoin (дата, которую
-   не мог подделать сам автор — её ставят майнеры).
+The evidence is designed to be verifiable without trusting this service.
 
-Каждый слой в отдельности недостаточен. Вместе они дают доказательство,
-которое принимается судами большинства юрисдикций как eIDAS-совместимое
-и которое невозможно подделать задним числом без контроля над хешрейтом
-Bitcoin.
+## Product positioning
 
-## Как это работает (workflow пользователя)
+This product is an evidence layer, not a government registration authority.
+
+- It helps prove existence and integrity at a certain time.
+- It does not automatically grant legal presumptions in every jurisdiction.
+- In Russia, state software registration under Civil Code Article 1262 is a separate mechanism.
+
+For regional legal background, see [docs/RESEARCH_CIS.md](docs/RESEARCH_CIS.md).
+
+## High-level workflow
 
 ```text
-┌──────────────┐   hash    ┌──────────────┐  GPG sign  ┌──────────────┐
-│  source code │ ────────▶ │  SHA-256     │ ─────────▶ │  .asc        │
-└──────────────┘           └──────────────┘            └──────────────┘
-                                                              │
-                                                              │ ots stamp
-                                                              ▼
-                                                       ┌──────────────┐
-                                                       │  .ots        │
-                                                       │ (Bitcoin)    │
-                                                       └──────────────┘
+files/folder -> SHA-256 -> manifest.cff -> signature -> timestamp proofs
 ```
 
-1. Пользователь загружает архив исходников (или указывает git-репозиторий).
-2. Сервис считает SHA-256 и формирует манифест в формате
-   [CITATION.cff](https://citation-file-format.github.io/) — стандарт
-   для цитирования ПО, уже умеет в авторов, версию и дату.
-3. Манифест подписывается GPG-ключом автора (EdDSA / ed25519, по
-   возможности из YubiKey или другого hardware token — приватный ключ
-   никогда не попадает на диск).
-4. Подпись отправляется в [OpenTimestamps](https://opentimestamps.org/),
-   который агрегирует её с миллионами других и записывает корень
-   Merkle-дерева в ближайший блок Bitcoin.
-5. Через ~6 часов proof апгрейдится до полного пути до блока. Готово —
-   авторство и дата зафиксированы навсегда.
+Expected output files:
 
-На выходе пользователь получает 4 файла:
+- `manifest.cff`
+- `manifest.cff.asc` (when signature flow is enabled)
+- `manifest.cff.ots`
+- `manifest.cff.asc.ots`
 
-| Файл | Что доказывает |
-|---|---|
-| `manifest.cff` | содержимое (список файлов + хеши) |
-| `manifest.cff.asc` | авторство (GPG-подпись) |
-| `manifest.cff.ots` | дату существования манифеста |
-| `manifest.cff.asc.ots` | дату существования подписи |
+## Verification model
 
-## Проверка (любой желающий, офлайн)
+Third parties can independently verify proofs:
 
-```bash
-# 1. Импортировать публичный ключ автора с keyserver
-gpg --keyserver keyserver.ubuntu.com --recv-keys <KEY_ID>
+1. Verify signature (`gpg --verify ...`) when signature is present.
+2. Verify timestamp (`ots verify ...`) against Bitcoin anchor data.
+3. Optionally validate RFC 3161 tokens with OpenSSL.
 
-# 2. Проверить авторство
-gpg --verify manifest.cff.asc manifest.cff
-# → Good signature from "Author Name <email>"
+The verification chain should remain valid even if this website is unavailable.
 
-# 3. Проверить дату в Bitcoin
-ots verify manifest.cff.ots
-# → Success! Bitcoin block 943848 attests existence as of 2026-04-05
+## Architecture
 
-# 4. (опционально) Посмотреть блок на blockstream
-# https://blockstream.info/block-height/943848
+```text
+Browser SPA (Angular)
+  - local hashing and manifest generation
+  - certificate rendering
+  - timestamp request assembly
+         |
+         v
+Cloudflare Worker (worker/src/index.ts)
+  - serves SPA static assets
+  - relays /api/tsa/* and /api/ots/* to allowlisted upstream providers
+         |
+         v
+External timestamp services (RFC 3161 + OTS calendars)
 ```
 
-Никаких наших серверов в цепочке проверки нет. Если сервис mayday.software
-завтра исчезнет — доказательства у пользователя останутся работать вечно.
+### Technical notes
 
-## Почему это работает юридически — и где границы
-
-### Что даёт
-
-- **Бернская конвенция (ст. 5)** — авторское право возникает в момент
-  создания произведения; для существования права регистрация не
-  требуется. Спор в суде сводится к двум вопросам: *кто автор* и
-  *на какую дату эта версия уже существовала*.
-- **eIDAS Regulation (EU) 910/2014, ст. 41** — RFC 3161 timestamp'ы от
-  eIDAS-аккредитованных TSA имеют **прямую презумпцию точности** в
-  судах ЕС. Bitcoin-anchored timestamps через OpenTimestamps
-  соответствуют категории advanced electronic timestamp.
-- **Парижский трибунал, 20.03.2025** — первое в континентальной
-  Европе судебное решение, где Bitcoin/OpenTimestamps был принят как
-  доказательство даты создания произведения.
-- **ФЗ-63 «Об электронной подписи», ст. 5 ч. 3 + ч. 5** — GPG/OpenPGP
-  формально подпадает под определение усиленной неквалифицированной
-  ЭП и допускается без сертификата УЦ. Не даёт автоматической силы
-  как у КЭП, но в суде может быть введён в дело как доказательство.
-
-### Где границы (важно)
-
-- **Депонирование само по себе НЕ создаёт презумпции авторства в РФ.**
-  Это закреплено Определением ВС РФ от 17.09.2020 № 305-ЭС17-4311
-  (дело РАО «Копирус», А40-46622/2019). Касается всех частных
-  сервисов: n'РИС, Copytrust, IREG — и нас тоже. Депонирование
-  фиксирует факт «такой-то файл существовал на такую-то дату», не
-  более.
-- **Единственный механизм с презумпцией в РФ** — государственная
-  регистрация программы для ЭВМ в Роспатенте по ст. 1262 ГК РФ
-  (~3 000 ₽, ~62 дня).
-- **IPChain / н'РИС** — это приватный Hyperledger Fabric с ~30
-  доверенными узлами, не публичный блокчейн. Прецедентов, где
-  IPChain был решающим доказательством в суде, на момент написания
-  не зафиксировано.
-- **Армения — исключение** в СНГ: закон прямо включает депонирование
-  в коллективной организации (ArmAuthor / AIPA) или у нотариуса в
-  презумпцию авторства.
-
-### Как mayday.software позиционируется
-
-**Дополнение, а не замена.** Мы даём независимый криптографический
-слой поверх Роспатента / н'РИС / нотариуса / git с GPG. Наше
-преимущество — не «мы заменяем государство», а:
-
-- бесплатно и за десять минут;
-- не зависит от того, жив ли через десять лет какой-либо институт;
-- проверяется глобально и без доверия к нам;
-- дублирует доказательство в нескольких независимых источниках
-  (Bitcoin + RFC 3161 TSA + Ethereum), что почти невозможно
-  дискредитировать как блок целиком;
-- идеально ложится на git workflow opensource-разработчика и
-  international due diligence.
-
-Подробный страновой обзор по СНГ — в [docs/RESEARCH_CIS.md](docs/RESEARCH_CIS.md).
-
-## Архитектура
-
-```
-                  ┌─────────────────────────────────────┐
-                  │       Cloudflare (mayday.software)  │
-                  │   ┌─────────────────────────────┐   │
-   browser ─────▶ │   │  Static Assets (Angular)    │   │
-                  │   │  frontend/dist/...          │   │
-                  │   └─────────────────────────────┘   │
-                  │   ┌─────────────────────────────┐   │
-   POST /api/* ─▶ │   │  Worker (worker/src/*)      │   │
-                  │   │  - /api/tsa/:provider       │   │
-                  │   │  - /api/ots/:calendar       │   │
-                  │   └────────────┬────────────────┘   │
-                  └────────────────┼────────────────────┘
-                                   ▼
-                    ┌─────────────────────────────┐
-                    │  FreeTSA / DigiCert /       │
-                    │  Sectigo (RFC 3161)         │
-                    │  alice.btc / finney /       │
-                    │  bob / catallaxy (OTS)      │
-                    └─────────────────────────────┘
-```
-
-- **Frontend**: Angular 21, static SPA. Всё хеширование, манифест,
-  построение TimeStampReq и сборка .ots файлов — в браузере. Файлы
-  пользователя никуда не уходят.
-- **i18n**: `@ngx-translate`, EN / RU.
-- **Backend**: единственный Cloudflare Worker [worker/src/index.ts](worker/src/index.ts),
-  который на одном origin раздаёт SPA-ассеты и обрабатывает
-  `/api/tsa/*` + `/api/ots/*`. Публичные TSA и OTS-сервера не отдают
-  CORS, поэтому браузер не может постучаться к ним напрямую — Worker
-  это byte-relay с allowlist'ом провайдеров. Никакого хранилища, PII
-  или логов. Так как SPA и API на одном origin, CORS вообще не нужен.
-- **Хранилище доказательств**: у пользователя локально. Сам Bitcoin
-  и сами TSA — это уже хранилище. Опциональное зеркало в R2/S3 — в
-  roadmap.
-- **Деплой**: один `wrangler deploy` из корня репо. Сборка фронта,
-  загрузка ассетов в Static Assets и публикация Worker'а — одной
-  командой. В production CI делает то же самое нативно через
-  Cloudflare Workers Builds (не GitHub Actions) — CF сам подключается
-  к GitHub-репозиторию и пересобирает Worker на каждый push в `main`.
-
-## Roadmap
-
-- [x] Landing + объяснение принципа (one-pager, EN/RU).
-- [x] Client-side flow: drag-n-drop файлов/папок → SHA-256 → CFF-манифест → скачать.
-- [x] Генерация SVG-сертификата владения + печать в PDF.
-- [x] **Multi-anchor таймштампы** — отпечаток манифеста параллельно
-      отправляется в несколько независимых источников через
-      [Cloudflare Worker proxy](workers/tsa-proxy/), каждый якорь
-      показывается в сертификате отдельно:
-    - [x] **RFC 3161 TSA** — FreeTSA, DigiCert, Sectigo (через Worker,
-          т.к. публичные TSA не отдают CORS). Мгновенно, проверяется
-          через `openssl ts -verify`.
-    - [x] **OpenTimestamps / Bitcoin** — собственная реализация
-          (`opentimestamps` npm-пакет тянет Node-only deps). Шлём 32
-          байта SHA-256 в alice/finney calendar-серверы, упаковываем
-          ответ в валидный `.ots` файл прямо в браузере. Каждый
-          calendar = отдельный proof-файл, апгрейдится через
-          `ots upgrade *.ots` после Bitcoin-конфирма.
-    - [ ] **eIDAS Qualified Time-Stamp** — TSA из
-          [EU Trusted List](https://eidas.ec.europa.eu/efda/tl-browser/).
-          Даёт прямую презумпцию точности в судах ЕС по ст. 41 eIDAS,
-          но требует коммерческого аккаунта — отдельный заход.
-    - [ ] **Ethereum L2 anchor** — calldata в Base/Optimism как
-          дешёвая избыточность (после стабилизации основной связки).
-- [ ] **PDF-отчёт «для судьи»** — отдельный документ рядом с
-      proof-файлами, который объясняет на простом языке: что такое
-      хеш, что такое RFC 3161, что такое OpenTimestamps, как это
-      проверить через openssl. Без этого судья без технического
-      бэкграунда не сможет принять доказательство — по ресёрчу СНГ
-      это критический gap.
-- [ ] Интеграция GPG через [openpgp.js](https://openpgpjs.org/)
-      (браузерная подпись), затем YubiKey через WebHID. Сейчас «КТО»
-      — это просто заявление автора в форме, без криптографической
-      подписи имени.
-- [ ] Страница `/verify`: drag-n-drop сертификата + манифеста +
-      proof-файлов → показываем кто / что / когда / где якорь.
-- [ ] Git-интеграция: стемпить не архив, а commit hash (как у
-      Teensy/LED).
-- [ ] Опциональное зеркало доказательств в R2/S3 на случай потери
-      локальной копии (но не обязательное — основное хранилище это
-      сам Bitcoin / TSA).
-
-## Reference implementation
-
-Теми же принципами построен проект подписи прошивки Roshni
-([teensy/Teensy/LED](/Users/ilya/CODE/teensy/Teensy/LED)) — там же
-живая документация `docs/SIGNING.md` и `docs/PRIOR_ART.md`, которые
-стоит прочитать перед тем как трогать код здесь.
+- Frontend: Angular 21, static SPA.
+- i18n: EN and RU via `@ngx-translate`.
+- Worker: no user file storage; relay-only model for timestamp requests.
+- Deploy: single Cloudflare Workers deployment from repository root.
 
 ## Local development
 
-### Только фронт (быстрее всего)
+### Frontend only
 
 ```bash
 cd frontend
 npm install
 npm start
-# → http://localhost:4200/
+# http://localhost:4200/
 ```
 
-В этом режиме якоря не работают — нет Worker'а на этом порту.
-Пригодится для UI/стилей.
+Use this mode for UI work. Timestamp anchoring requires Worker API endpoints.
 
-### Фронт + Worker (полный стек)
+### Full stack (frontend + worker)
 
 ```bash
-# 1. Один раз — установить wrangler в корне репо
+# from repository root
 npm install
-
-# 2. В отдельном терминале — Worker через wrangler dev
 npx wrangler dev
-# → http://localhost:8787   (раздаёт и SPA, и /api/*)
+# http://localhost:8787
 ```
 
-`wrangler dev` сам собирает фронт через `[assets]` директиву, так что
-после редактирования файлов в `frontend/src/` нужно пересобрать:
+If frontend sources change, rebuild static assets:
 
 ```bash
 cd frontend && npm run build
 ```
-
-Альтернатива — поднять `ng serve` на 4200 и `wrangler dev` на 8787,
-проставить в DevTools `window.__MAYDAY_WORKER_BASE__ = 'http://localhost:8787'`
-до бутстрапа Angular. Тогда HMR работает, а якоря ходят к локальному
-Worker'у через CORS.
 
 ## Production build
 
 ```bash
 cd frontend && npm run build
-# → frontend/dist/mayday-software/browser/
+# output: frontend/dist/mayday-software/browser/
 ```
 
-## Deploy (Cloudflare Workers)
-
-Один `wrangler deploy` собирает SPA, заливает в Static Assets и
-публикует Worker:
+## Deploy
 
 ```bash
-# Один раз — авторизация
 npx wrangler login
-
-# Деплой
 npm run deploy
-# → https://mayday-software.<account>.workers.dev
-# (или mayday.software, если домен привязан в Cloudflare dashboard)
 ```
 
-[wrangler.toml](wrangler.toml) указывает на:
-- `frontend/dist/mayday-software/browser` как `[assets]` директорию
-- `worker/src/index.ts` как `main` (обработчик `/api/*`)
-- `not_found_handling = "single-page-application"` чтобы Angular routes работали
+`wrangler.toml` points to:
 
-### CI/CD через Cloudflare Workers Builds
+- static assets directory: `frontend/dist/mayday-software/browser`
+- worker entrypoint: `worker/src/index.ts`
+- SPA fallback mode via `not_found_handling = "single-page-application"`
 
-Никаких GitHub Actions не нужно — Cloudflare сам умеет билдить и
-деплоить Worker по push'у в репозиторий. Настраивается один раз в
-dashboard:
+## Documentation map
 
-1. Cloudflare dashboard → **Workers & Pages** → выбрать
-   `mayday-software` → **Settings** → **Builds** → **Connect**.
-2. Подключить GitHub-аккаунт, выбрать репозиторий и ветку `main`.
-3. Заполнить:
-   - **Build command**: `cd frontend && npm ci && npm run build`
-   - **Deploy command**: `npx wrangler deploy` *(стоит по умолчанию)*
-   - **Root directory**: `/`
-4. Сохранить. CF сам пересобирает Worker на каждый push в `main`.
+- [docs/README.md](docs/README.md)
+- [docs/PWA_SETUP.md](docs/PWA_SETUP.md)
+- [docs/PRE_PROD_SPRINT.md](docs/PRE_PROD_SPRINT.md)
+- [docs/MARKETING_REFRESH_2026.md](docs/MARKETING_REFRESH_2026.md)
+- [docs/RESEARCH_CIS.md](docs/RESEARCH_CIS.md)
 
-Никаких repo secrets, никаких токенов в репозитории, никаких
-workflow-файлов.
+## External references
 
-### Custom domain
+- CITATION File Format: [https://citation-file-format.github.io/](https://citation-file-format.github.io/)
+- OpenTimestamps: [https://opentimestamps.org/](https://opentimestamps.org/)
+- Angular Service Worker docs: [https://angular.dev/ecosystem/service-workers/getting-started](https://angular.dev/ecosystem/service-workers/getting-started)
+- Cloudflare Workers Static Assets docs: [https://developers.cloudflare.com/workers/static-assets/](https://developers.cloudflare.com/workers/static-assets/)
 
-После первого деплоя в Cloudflare dashboard → Workers & Pages →
-mayday-software → Settings → Domains & Routes → Add Custom Domain →
-`mayday.software`. CF сам настроит DNS и SSL.
+---
+
+## RU summary
+
+`mayday.software deposit` - это open-source сервис для криптографического депонирования программных артефактов.
+
+- Основной домен продукта: `deposit.mayday.software`.
+- Сервис фиксирует:
+  - что было создано (хеш),
+  - кем подписано (подпись, по roadmap),
+  - когда существовало (таймштампы OTS/Bitcoin и RFC 3161).
+- Позиционирование: дополнительный слой доказательств, а не замена государственной регистрации.
+- Архитектура: Angular SPA + Cloudflare Worker relay без хранения пользовательских файлов.
+- Подробности по правовым аспектам СНГ: [docs/RESEARCH_CIS.md](docs/RESEARCH_CIS.md).
