@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, HostListener, inject, signal } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { LanguageService } from '@/app/shared/services/language.service';
@@ -24,10 +24,13 @@ import { PwaService } from '@/app/shared/services/pwa.service';
                     <span class="brand-word">deposit</span>
                 </a>
 
+                @if (menuOpen()) {
+                    <div class="menu-backdrop" (click)="menuOpen.set(false)"></div>
+                }
                 <nav class="links" [class.is-open]="menuOpen()">
-                    <a routerLink="/" routerLinkActive="is-active" [routerLinkActiveOptions]="{ exact: true }" class="link">{{ 'nav.home' | translate }}</a>
-                    <a routerLink="/how" routerLinkActive="is-active" class="link">{{ 'info.howEyebrow' | translate }}</a>
-                    <a routerLink="/verify" routerLinkActive="is-active" class="link">{{ 'verify.title' | translate }}</a>
+                    <a routerLink="/" routerLinkActive="is-active" [routerLinkActiveOptions]="{ exact: true }" class="link" (click)="menuOpen.set(false)">{{ 'nav.home' | translate }}</a>
+                    <a routerLink="/how" routerLinkActive="is-active" class="link" (click)="menuOpen.set(false)">{{ 'info.howEyebrow' | translate }}</a>
+                    <a routerLink="/verify" routerLinkActive="is-active" class="link" (click)="menuOpen.set(false)">{{ 'verify.title' | translate }}</a>
                 </nav>
 
                 <div class="ctrls">
@@ -173,8 +176,18 @@ import { PwaService } from '@/app/shared/services/pwa.service';
         .install-btn { color: var(--brand-strong); }
         .install-btn:hover { background: var(--brand-soft); color: var(--brand-strong); }
         .menu-btn { display: none; }
+        .menu-backdrop { display: none; }
 
         @media (max-width: 720px) {
+            .menu-backdrop {
+                display: block;
+                position: fixed;
+                inset: 56px 0 0 0;
+                z-index: 490;
+                background: rgba(0, 0, 0, 0.3);
+                backdrop-filter: blur(2px);
+                -webkit-backdrop-filter: blur(2px);
+            }
             .inner { gap: var(--sp-3); padding: 0 var(--sp-4); }
             .ctrls { margin-left: auto; }
             .menu-btn { display: inline-flex; }
@@ -183,6 +196,7 @@ import { PwaService } from '@/app/shared/services/pwa.service';
                 top: 56px;
                 left: 0;
                 right: 0;
+                z-index: 500;
                 flex: none;
                 flex-direction: column;
                 align-items: stretch;

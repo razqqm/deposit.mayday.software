@@ -971,6 +971,22 @@
 }
 
 /* ═══════════════════════════════════════════════════════════
+   Mobile inline slides — hidden on desktop, shown on mobile
+   ═══════════════════════════════════════════════════════════ */
+
+.mobile-slide {
+    display: none;
+}
+
+.ms-card {
+    padding: var(--sp-4);
+    background: var(--bg-sunk);
+    border: 1px solid var(--border);
+    border-radius: var(--r-lg);
+    overflow: hidden;
+}
+
+/* ═══════════════════════════════════════════════════════════
    Responsive
    ═══════════════════════════════════════════════════════════ */
 
@@ -995,11 +1011,9 @@
 
 @media (max-width: 640px) {
     /*
-     * Mobile strategy: hide the heavy demo card entirely.
-     * The narration list becomes the sole content — each step
-     * has its own description + inline code sample, which is
-     * much more readable on small screens than a squished
-     * 520px interactive visualization.
+     * Mobile strategy: hide the desktop demo card.
+     * Instead, each narration item shows its visualization
+     * inline via .mobile-slide — alternating point + slide.
      */
     .how-split .hero-demo {
         display: none;
@@ -1009,9 +1023,18 @@
         gap: var(--sp-6);
     }
 
-    .narr-list { gap: var(--sp-6); }
+    /* Show inline slides on mobile */
+    .mobile-slide {
+        display: block;
+        grid-column: 1 / -1;
+        margin-top: var(--sp-3);
+    }
+
+    .narr-list { gap: var(--sp-8); }
     .narr-item {
+        display: grid;
         grid-template-columns: 32px 1fr;
+        grid-template-rows: auto auto;
         gap: var(--sp-3);
         opacity: 1;
         cursor: default;
@@ -1051,6 +1074,43 @@
         background:
             linear-gradient(to bottom, var(--brand) 0 100%),
             none;
+    }
+
+    /* Mobile slide card styling */
+    .ms-card {
+        padding: var(--sp-3);
+        font-size: var(--fs-xs);
+    }
+    .ms-card .stage-file {
+        grid-template-columns: 48px 1fr;
+        gap: var(--sp-3);
+        padding: 0;
+    }
+    .ms-card .file-icon-wrap {
+        width: 48px;
+        height: 56px;
+    }
+    .ms-card .file-type-icon { font-size: 22px; }
+    .ms-card .file-detail-grid {
+        grid-template-columns: 48px 1fr;
+        padding: var(--sp-2);
+    }
+    .ms-card .stage-proof {
+        grid-template-columns: 1fr;
+        gap: var(--sp-2);
+    }
+    .ms-card .proof-chip { padding: var(--sp-3); }
+    .ms-card .term-line {
+        grid-template-columns: 12px auto 1fr;
+        column-gap: 4px;
+    }
+    .ms-card .term-body { font-size: 11px; }
+    .ms-card .cert-row {
+        grid-template-columns: 52px 1fr;
+    }
+    .ms-card .ca-row {
+        font-size: 12px;
+        padding: 2px 0;
     }
 
     .bottom-cta { margin-top: var(--sp-8); }

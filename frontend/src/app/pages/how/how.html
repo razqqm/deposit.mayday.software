@@ -52,12 +52,117 @@
                                 }
                             }
                         </div>
+
+                        <!-- ═══ Mobile inline slide ═══ -->
+                        <div class="mobile-slide">
+                            @switch (i) {
+                                @case (0) {
+                                    <div class="ms-card stage-file is-active">
+                                        <div class="file-icon-wrap">
+                                            <span class="file-type-icon">{{ demoFrame().icon }}</span>
+                                        </div>
+                                        <div class="file-info">
+                                            <span class="file-name mono">{{ demoFrame().filename }}</span>
+                                            <div class="file-detail-grid">
+                                                <span class="fd-label">Type</span><span class="fd-val mono">.{{ demoFrame().ext }}</span>
+                                                <span class="fd-label">Size</span><span class="fd-val mono">{{ demoFrame().size }}</span>
+                                                <span class="fd-label">Author</span><span class="fd-val">{{ demoFrame().author }}</span>
+                                            </div>
+                                            <div class="file-progress"><span class="file-progress-label">detected</span></div>
+                                        </div>
+                                    </div>
+                                }
+                                @case (1) {
+                                    <div class="ms-card stage-hash is-active">
+                                        <div class="hash-head">
+                                            <span class="hash-label mono">SHA-256</span>
+                                            <span class="mono" style="font-size:var(--fs-lg);font-weight:var(--fw-bold);color:var(--text)">100%</span>
+                                        </div>
+                                        <div class="hash-bar"><div class="hash-fill" style="width:100%"></div></div>
+                                        <code class="hash-output mono" style="clip-path:none">{{ demoFrame().sha256 }}</code>
+                                    </div>
+                                }
+                                @case (2) {
+                                    <div class="ms-card">
+                                        <div class="sign-wrap">
+                                            <div class="sign-header">
+                                                <svg class="sign-key-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>
+                                                <span class="sign-label">GPG Signature</span>
+                                                <span class="sign-algo mono">ed25519</span>
+                                            </div>
+                                            <div class="sign-body">
+                                                <span class="sign-status-msg" style="opacity:1">Manifest signed ✓</span>
+                                                <span class="sign-time mono" style="opacity:1">key {{ demoFrame().gpgKeyId }}</span>
+                                            </div>
+                                            <div class="sign-bar" style="opacity:1"><span class="sign-bar-label">verified</span></div>
+                                        </div>
+                                    </div>
+                                }
+                                @case (3) {
+                                    <div class="ms-card stage-proof is-active">
+                                        <div class="proof-chip proof-chip--what" style="opacity:1;transform:none">
+                                            <span class="pc-key">{{ 'hero.bento.what' | translate }}</span>
+                                            <span class="pc-val mono">{{ demoFrame().sha256.slice(0, 8) }}…{{ demoFrame().sha256.slice(-4) }}</span>
+                                        </div>
+                                        <div class="proof-chip proof-chip--who" style="opacity:1;transform:none">
+                                            <span class="pc-key">{{ 'hero.bento.who' | translate }}</span>
+                                            <span class="pc-val">{{ demoFrame().author }}</span>
+                                        </div>
+                                        <div class="proof-chip proof-chip--when" style="opacity:1;transform:none">
+                                            <span class="pc-key">{{ 'hero.bento.when' | translate }}</span>
+                                            <span class="pc-val mono">{{ demoFrame().date }}</span>
+                                        </div>
+                                    </div>
+                                }
+                                @case (4) {
+                                    <div class="ms-card">
+                                        <div class="anch-term">
+                                            <div class="term-head">
+                                                <span class="term-dot"></span>
+                                                <span class="term-dot"></span>
+                                                <span class="term-dot"></span>
+                                                <span class="term-title mono">anchor-broadcast</span>
+                                            </div>
+                                            <div class="term-body">
+                                                <div class="term-line" style="opacity:1;transform:none"><span class="tl-prompt">▸</span><span class="tl-cmd mono">ots</span><div class="tl-resp tl-resp--ok" style="opacity:1;transform:none"><span class="tl-icon">✓</span><span>Bitcoin pending</span></div></div>
+                                                <div class="term-line" style="opacity:1;transform:none"><span class="tl-prompt">▸</span><span class="tl-cmd mono">rfc3161</span><div class="tl-resp tl-resp--ok" style="opacity:1;transform:none"><span class="tl-icon">✓</span><span>FreeTSA granted</span></div></div>
+                                                <div class="term-line" style="opacity:1;transform:none"><span class="tl-prompt">▸</span><span class="tl-cmd mono">rfc3161</span><div class="tl-resp tl-resp--ok" style="opacity:1;transform:none"><span class="tl-icon">✓</span><span>DigiCert granted</span></div></div>
+                                                <div class="term-line" style="opacity:1;transform:none"><span class="tl-prompt">▸</span><span class="tl-cmd mono">rfc3161</span><div class="tl-resp tl-resp--ok" style="opacity:1;transform:none"><span class="tl-icon">✓</span><span>Sectigo granted</span></div></div>
+                                                <div class="term-line" style="opacity:1;transform:none"><span class="tl-prompt">▸</span><span class="tl-cmd mono">eth-anchor</span><div class="tl-resp tl-resp--ok" style="opacity:1;transform:none"><span class="tl-icon">✓</span><span>Base #{{ demoFrame().txBlock }}</span></div></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                                @case (5) {
+                                    <div class="ms-card">
+                                        <div class="cert-card" style="box-shadow:none">
+                                            <div class="cert-header">
+                                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--brand)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><path d="M9 15l2 2 4-4"/></svg>
+                                                <span class="cert-title">{{ 'hero.bento.cert' | translate }}</span>
+                                                <span class="cert-badge">PDF</span>
+                                            </div>
+                                            <div class="cert-body">
+                                                <div class="cert-row"><span class="cert-label">SHA-256</span><code class="cert-val mono">{{ demoFrame().sha256.slice(0, 12) }}…</code></div>
+                                                <div class="cert-anchors">
+                                                    <div class="ca-row" style="opacity:1;transform:none"><span class="ca-icon">₿</span><span class="ca-name">Bitcoin OTS</span><span class="ca-status ca-ok">pending</span></div>
+                                                    <div class="ca-row" style="opacity:1;transform:none"><span class="ca-icon">🔒</span><span class="ca-name">FreeTSA</span><span class="ca-status ca-ok">granted</span></div>
+                                                    <div class="ca-row" style="opacity:1;transform:none"><span class="ca-icon">🔒</span><span class="ca-name">DigiCert</span><span class="ca-status ca-ok">granted</span></div>
+                                                    <div class="ca-row" style="opacity:1;transform:none"><span class="ca-icon">🔒</span><span class="ca-name">Sectigo</span><span class="ca-status ca-ok">granted</span></div>
+                                                    <div class="ca-row" style="opacity:1;transform:none"><span class="ca-icon">Ξ</span><span class="ca-name">Base L2</span><span class="ca-status ca-ok">confirmed</span></div>
+                                                </div>
+                                                <div class="cert-row"><span class="cert-label">eIDAS</span><span class="cert-val cert-val--ok">Qualified</span></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            }
+                        </div>
                     </li>
                 }
             </ol>
         </aside>
 
-        <!-- ═════ Animated pipeline column ═════ -->
+        <!-- ═════ Animated pipeline column (desktop only) ═════ -->
         <aside class="hero-demo" #pipelineRoot>
             <div
                 class="demo-card"
@@ -103,18 +208,12 @@
                         <div class="file-info">
                             <span class="file-name mono">{{ demoFrame().filename }}</span>
                             <div class="file-detail-grid">
-                                <span class="fd-label">Type</span>
-                                <span class="fd-val mono">.{{ demoFrame().ext }}</span>
-                                <span class="fd-label">Size</span>
-                                <span class="fd-val mono">{{ demoFrame().size }}</span>
-                                <span class="fd-label">Author</span>
-                                <span class="fd-val">{{ demoFrame().author }}</span>
-                                <span class="fd-label">Modified</span>
-                                <span class="fd-val mono">{{ demoFrame().date }}</span>
+                                <span class="fd-label">Type</span><span class="fd-val mono">.{{ demoFrame().ext }}</span>
+                                <span class="fd-label">Size</span><span class="fd-val mono">{{ demoFrame().size }}</span>
+                                <span class="fd-label">Author</span><span class="fd-val">{{ demoFrame().author }}</span>
+                                <span class="fd-label">Modified</span><span class="fd-val mono">{{ demoFrame().date }}</span>
                             </div>
-                            <div class="file-progress">
-                                <span class="file-progress-label">detected</span>
-                            </div>
+                            <div class="file-progress"><span class="file-progress-label">detected</span></div>
                         </div>
                     </div>
 
@@ -124,9 +223,7 @@
                             <span class="hash-label mono">SHA-256</span>
                             <span class="hash-pct mono" aria-live="polite"></span>
                         </div>
-                        <div class="hash-bar">
-                            <div class="hash-fill"></div>
-                        </div>
+                        <div class="hash-bar"><div class="hash-fill"></div></div>
                         <code class="hash-output mono">{{ demoFrame().sha256 }}</code>
                     </div>
 
@@ -147,115 +244,42 @@
                                     <span class="sign-pgp-footer mono">-----END PGP SIGNATURE-----</span>
                                 </div>
                             </div>
-                            <div class="sign-bar">
-                                <span class="sign-bar-label">verified</span>
-                            </div>
+                            <div class="sign-bar"><span class="sign-bar-label">verified</span></div>
                         </div>
                     </div>
 
                     <!-- ─────── Stage 3 · MANIFEST / PROOF ─────── -->
                     <div class="stage stage-proof" [class.is-active]="currentStage() === 3" role="tab" tabindex="0" (click)="goToStage(3)" (keydown.enter)="goToStage(3)">
-                        <div class="proof-chip proof-chip--what">
-                            <span class="pc-key">{{ 'hero.bento.what' | translate }}</span>
-                            <span class="pc-val mono">{{ demoFrame().sha256.slice(0, 8) }}…{{ demoFrame().sha256.slice(-4) }}</span>
-                        </div>
-                        <div class="proof-chip proof-chip--who">
-                            <span class="pc-key">{{ 'hero.bento.who' | translate }}</span>
-                            <span class="pc-val">{{ demoFrame().author }}</span>
-                        </div>
-                        <div class="proof-chip proof-chip--when">
-                            <span class="pc-key">{{ 'hero.bento.when' | translate }}</span>
-                            <span class="pc-val mono">{{ demoFrame().date }}</span>
-                            <span class="pc-time mono">14:32 UTC</span>
-                        </div>
+                        <div class="proof-chip proof-chip--what"><span class="pc-key">{{ 'hero.bento.what' | translate }}</span><span class="pc-val mono">{{ demoFrame().sha256.slice(0, 8) }}…{{ demoFrame().sha256.slice(-4) }}</span></div>
+                        <div class="proof-chip proof-chip--who"><span class="pc-key">{{ 'hero.bento.who' | translate }}</span><span class="pc-val">{{ demoFrame().author }}</span></div>
+                        <div class="proof-chip proof-chip--when"><span class="pc-key">{{ 'hero.bento.when' | translate }}</span><span class="pc-val mono">{{ demoFrame().date }}</span><span class="pc-time mono">14:32 UTC</span></div>
                     </div>
 
                     <!-- ─────── Stage 4 · ANCHOR (parallel!) ─────── -->
                     <div class="stage stage-anchor" [class.is-active]="currentStage() === 4" role="tab" tabindex="0" (click)="goToStage(4)" (keydown.enter)="goToStage(4)">
                         <div class="anch-term">
                             <div class="term-head">
-                                <span class="term-dot"></span>
-                                <span class="term-dot"></span>
-                                <span class="term-dot"></span>
+                                <span class="term-dot"></span><span class="term-dot"></span><span class="term-dot"></span>
                                 <span class="term-title mono">mayday anchor-broadcast · parallel</span>
                             </div>
                             <div class="term-body">
-                                <div class="term-line tl--btc">
-                                    <span class="tl-prompt">▸</span>
-                                    <span class="tl-cmd mono">opentimestamps</span>
-                                    <span class="tl-arg mono">--digest sha256 --calendar btc</span>
-                                    <div class="tl-resp tl-resp--ok">
-                                        <span class="tl-icon" aria-hidden="true">✓</span>
-                                        <span>pending · Bitcoin merkle tree</span>
-                                    </div>
-                                    <div class="tl-detail mono">nonce 0x{{ demoFrame().otsSerial }}… · calendar.opentimestamps.org</div>
-                                </div>
-                                <div class="term-line tl--tsa1">
-                                    <span class="tl-prompt">▸</span>
-                                    <span class="tl-cmd mono">rfc3161-stamp</span>
-                                    <span class="tl-arg mono">--tsa freetsa.org</span>
-                                    <div class="tl-resp tl-resp--ok">
-                                        <span class="tl-icon" aria-hidden="true">✓</span>
-                                        <span>TimeStampResp · granted</span>
-                                    </div>
-                                    <div class="tl-detail mono">serial {{ demoFrame().freetsaSerial }}… · policy 1.2.3.4.1</div>
-                                </div>
-                                <div class="term-line tl--tsa2">
-                                    <span class="tl-prompt">▸</span>
-                                    <span class="tl-cmd mono">rfc3161-stamp</span>
-                                    <span class="tl-arg mono">--tsa timestamp.digicert.com</span>
-                                    <div class="tl-resp tl-resp--ok">
-                                        <span class="tl-icon" aria-hidden="true">✓</span>
-                                        <span>TimeStampResp · granted</span>
-                                    </div>
-                                    <div class="tl-detail mono">serial {{ demoFrame().digicertSerial }}… · DigiCert SHA2</div>
-                                </div>
-                                <div class="term-line tl--tsa3">
-                                    <span class="tl-prompt">▸</span>
-                                    <span class="tl-cmd mono">rfc3161-stamp</span>
-                                    <span class="tl-arg mono">--tsa timestamp.sectigo.com</span>
-                                    <div class="tl-resp tl-resp--ok">
-                                        <span class="tl-icon" aria-hidden="true">✓</span>
-                                        <span>TimeStampResp · granted</span>
-                                    </div>
-                                    <div class="tl-detail mono">serial {{ demoFrame().sectigoSerial }}… · Sectigo RSA</div>
-                                </div>
-                                <div class="term-line tl--eth">
-                                    <span class="tl-prompt">▸</span>
-                                    <span class="tl-cmd mono">eth-anchor</span>
-                                    <span class="tl-arg mono">--chain base</span>
-                                    <div class="tl-resp tl-resp--ok">
-                                        <span class="tl-icon" aria-hidden="true">✓</span>
-                                        <span>tx {{ demoFrame().txHash.slice(0, 8) }}… · block #{{ demoFrame().txBlock }}</span>
-                                    </div>
-                                    <div class="tl-detail mono">gasUsed 47,293 · 12 confirmations</div>
-                                </div>
+                                <div class="term-line tl--btc"><span class="tl-prompt">▸</span><span class="tl-cmd mono">opentimestamps</span><span class="tl-arg mono">--digest sha256 --calendar btc</span><div class="tl-resp tl-resp--ok"><span class="tl-icon" aria-hidden="true">✓</span><span>pending · Bitcoin merkle tree</span></div><div class="tl-detail mono">nonce 0x{{ demoFrame().otsSerial }}… · calendar.opentimestamps.org</div></div>
+                                <div class="term-line tl--tsa1"><span class="tl-prompt">▸</span><span class="tl-cmd mono">rfc3161-stamp</span><span class="tl-arg mono">--tsa freetsa.org</span><div class="tl-resp tl-resp--ok"><span class="tl-icon" aria-hidden="true">✓</span><span>TimeStampResp · granted</span></div><div class="tl-detail mono">serial {{ demoFrame().freetsaSerial }}… · policy 1.2.3.4.1</div></div>
+                                <div class="term-line tl--tsa2"><span class="tl-prompt">▸</span><span class="tl-cmd mono">rfc3161-stamp</span><span class="tl-arg mono">--tsa timestamp.digicert.com</span><div class="tl-resp tl-resp--ok"><span class="tl-icon" aria-hidden="true">✓</span><span>TimeStampResp · granted</span></div><div class="tl-detail mono">serial {{ demoFrame().digicertSerial }}… · DigiCert SHA2</div></div>
+                                <div class="term-line tl--tsa3"><span class="tl-prompt">▸</span><span class="tl-cmd mono">rfc3161-stamp</span><span class="tl-arg mono">--tsa timestamp.sectigo.com</span><div class="tl-resp tl-resp--ok"><span class="tl-icon" aria-hidden="true">✓</span><span>TimeStampResp · granted</span></div><div class="tl-detail mono">serial {{ demoFrame().sectigoSerial }}… · Sectigo RSA</div></div>
+                                <div class="term-line tl--eth"><span class="tl-prompt">▸</span><span class="tl-cmd mono">eth-anchor</span><span class="tl-arg mono">--chain base</span><div class="tl-resp tl-resp--ok"><span class="tl-icon" aria-hidden="true">✓</span><span>tx {{ demoFrame().txHash.slice(0, 8) }}… · block #{{ demoFrame().txBlock }}</span></div><div class="tl-detail mono">gasUsed 47,293 · 12 confirmations</div></div>
                             </div>
                         </div>
-
                         <div class="chain-vis">
                             <div class="chain-label mono">bitcoin blockchain</div>
                             <div class="chain-blocks">
-                                <div class="chain-block cb--old">
-                                    <span class="cb-hash mono">a3f1…08d2</span>
-                                    <span class="cb-n mono">#{{ +demoFrame().txBlock - 2 }}</span>
-                                </div>
+                                <div class="chain-block cb--old"><span class="cb-hash mono">a3f1…08d2</span><span class="cb-n mono">#{{ +demoFrame().txBlock - 2 }}</span></div>
                                 <div class="chain-link"></div>
-                                <div class="chain-block cb--old2">
-                                    <span class="cb-hash mono">0e7d…4b19</span>
-                                    <span class="cb-n mono">#{{ +demoFrame().txBlock - 1 }}</span>
-                                </div>
+                                <div class="chain-block cb--old2"><span class="cb-hash mono">0e7d…4b19</span><span class="cb-n mono">#{{ +demoFrame().txBlock - 1 }}</span></div>
                                 <div class="chain-link"></div>
-                                <div class="chain-block cb--new">
-                                    <span class="cb-hash mono">{{ demoFrame().sha256.slice(0, 4) }}…{{ demoFrame().sha256.slice(-4) }}</span>
-                                    <span class="cb-n mono">#{{ demoFrame().txBlock }}</span>
-                                    <span class="cb-you">← your tx</span>
-                                </div>
+                                <div class="chain-block cb--new"><span class="cb-hash mono">{{ demoFrame().sha256.slice(0, 4) }}…{{ demoFrame().sha256.slice(-4) }}</span><span class="cb-n mono">#{{ demoFrame().txBlock }}</span><span class="cb-you">← your tx</span></div>
                                 <div class="chain-link chain-link--after"></div>
-                                <div class="chain-block cb--future">
-                                    <span class="cb-hash mono">d41a…72f1</span>
-                                    <span class="cb-n mono">#{{ +demoFrame().txBlock + 1 }}</span>
-                                </div>
+                                <div class="chain-block cb--future"><span class="cb-hash mono">d41a…72f1</span><span class="cb-n mono">#{{ +demoFrame().txBlock + 1 }}</span></div>
                             </div>
                         </div>
                     </div>
