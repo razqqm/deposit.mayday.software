@@ -90,16 +90,14 @@ import { PwaService } from '@/app/shared/services/pwa.service';
 
                 </div>
                 <div class="mob-bottom" (click)="$event.stopPropagation()">
-                    @if (pwa.canInstall()) {
-                        <button type="button" class="mob-install" (click)="installApp(); menuOpen.set(false)">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                                <polyline points="7 10 12 15 17 10"/>
-                                <line x1="12" y1="15" x2="12" y2="3"/>
-                            </svg>
-                            <span>{{ 'pwa.install' | translate }}</span>
-                        </button>
-                    }
+                    <button type="button" class="mob-install" (click)="installOrOpen(); menuOpen.set(false)">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                            <polyline points="7 10 12 15 17 10"/>
+                            <line x1="12" y1="15" x2="12" y2="3"/>
+                        </svg>
+                        <span>{{ 'pwa.install' | translate }}</span>
+                    </button>
                     <div class="mob-lang" role="group">
                         <button type="button" class="mob-lang-btn" [class.is-on]="lang.currentLang() === 'en'" (click)="setLang('en')">EN</button>
                         <button type="button" class="mob-lang-btn" [class.is-on]="lang.currentLang() === 'ru'" (click)="setLang('ru')">RU</button>
@@ -203,7 +201,10 @@ import { PwaService } from '@/app/shared/services/pwa.service';
             justify-content: center;
             width: 32px; height: 32px;
             color: var(--text-mute);
+            border: none;
+            background: none;
             border-radius: var(--r-sm);
+            cursor: pointer;
             transition: background-color var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out);
         }
         .icon-btn:hover { background: var(--bg-mute); color: var(--text); }
@@ -378,8 +379,12 @@ import { PwaService } from '@/app/shared/services/pwa.service';
                 font-size: var(--fs-base);
                 font-weight: var(--fw-bold);
                 color: var(--text-dim);
+                background: none;
+                border: none;
                 border-radius: var(--r-md);
                 letter-spacing: var(--ls-wide);
+                cursor: pointer;
+                font-family: inherit;
                 transition: background var(--dur-fast) var(--ease-out),
                             color var(--dur-fast) var(--ease-out);
             }
@@ -418,6 +423,13 @@ export class PublicTopbar {
 
     async installApp(): Promise<void> {
         await this.pwa.install();
+    }
+
+    async installOrOpen(): Promise<void> {
+        if (this.pwa.canInstall()) {
+            await this.pwa.install();
+        }
+        // If can't install (already installed or not available), button still shows as branding
     }
 
     setLang(code: 'en' | 'ru'): void {
