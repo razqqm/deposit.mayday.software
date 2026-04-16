@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, ElementRef, HostListener, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { LanguageService } from '@/app/shared/services/language.service';
@@ -31,8 +31,9 @@ import { PwaService } from '@/app/shared/services/pwa.service';
                 </nav>
 
                 <div class="ctrls">
+                    <!-- Desktop only: PWA install, lang, theme -->
                     @if (pwa.canInstall()) {
-                        <button type="button" class="icon-btn install-btn" (click)="installApp()"
+                        <button type="button" class="icon-btn install-btn desktop-only" (click)="installApp()"
                                 [attr.aria-label]="'pwa.install' | translate"
                                 [title]="'pwa.install' | translate">
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -42,11 +43,11 @@ import { PwaService } from '@/app/shared/services/pwa.service';
                             </svg>
                         </button>
                     }
-                    <div class="seg" role="group" [attr.aria-label]="'a11y.switchLang' | translate">
+                    <div class="seg desktop-only" role="group" [attr.aria-label]="'a11y.switchLang' | translate">
                         <button type="button" class="seg-btn" [class.is-on]="lang.currentLang() === 'en'" (click)="setLang('en')">EN</button>
                         <button type="button" class="seg-btn" [class.is-on]="lang.currentLang() === 'ru'" (click)="setLang('ru')">RU</button>
                     </div>
-                    <button type="button" class="icon-btn" (click)="cycleTheme()"
+                    <button type="button" class="icon-btn desktop-only" (click)="cycleTheme()"
                             [attr.aria-label]="('a11y.themeLabel' | translate:{mode: theme.mode()})"
                             [title]="('a11y.themeLabel' | translate:{mode: theme.mode()})">
                         @if (theme.mode() === 'light') {
@@ -69,8 +70,8 @@ import { PwaService } from '@/app/shared/services/pwa.service';
         </nav>
 
         <!-- ═══ Mobile fullscreen overlay menu ═══ -->
-        <div class="mob-overlay" [class.is-open]="menuOpen()" (click)="onOverlayClick($event)">
-            <div class="mob-menu">
+        <div class="mob-overlay" [class.is-open]="menuOpen()" (click)="menuOpen.set(false)">
+            <div class="mob-menu" (click)="$event.stopPropagation()">
                 <div class="mob-nav">
                     <a routerLink="/" routerLinkActive="mob-active" [routerLinkActiveOptions]="{ exact: true }" class="mob-link" (click)="menuOpen.set(false)">
                         <span class="mob-num">01</span>
@@ -87,6 +88,17 @@ import { PwaService } from '@/app/shared/services/pwa.service';
                         <span class="mob-text">{{ 'verify.title' | translate }}</span>
                         <svg class="mob-arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
                     </a>
+
+                    @if (pwa.canInstall()) {
+                        <button type="button" class="mob-install" (click)="installApp(); menuOpen.set(false)">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                                <polyline points="7 10 12 15 17 10"/>
+                                <line x1="12" y1="15" x2="12" y2="3"/>
+                            </svg>
+                            <span>{{ 'pwa.install' | translate }}</span>
+                        </button>
+                    }
                 </div>
                 <div class="mob-footer">
                     <div class="mob-lang" role="group" [attr.aria-label]="'a11y.switchLang' | translate">
@@ -210,6 +222,7 @@ import { PwaService } from '@/app/shared/services/pwa.service';
         .install-btn { color: var(--brand-strong); }
         .install-btn:hover { background: var(--brand-soft); color: var(--brand-strong); }
         .menu-btn { display: none; }
+        .desktop-only { display: inline-flex; }
 
         /* ═══ Mobile overlay ═══ */
         .mob-overlay {
@@ -220,8 +233,8 @@ import { PwaService } from '@/app/shared/services/pwa.service';
             .inner { gap: var(--sp-3); padding: 0 var(--sp-4); }
             .ctrls { margin-left: auto; }
             .menu-btn { display: inline-flex; }
+            .desktop-only { display: none !important; }
             .links { display: none; }
-            .seg { display: none; }
 
             .mob-overlay {
                 display: block;
@@ -244,9 +257,8 @@ import { PwaService } from '@/app/shared/services/pwa.service';
             .mob-menu {
                 display: flex;
                 flex-direction: column;
-                justify-content: space-between;
-                padding: calc(56px + var(--sp-8)) var(--sp-6) var(--sp-8);
-                height: 100%;
+                gap: var(--sp-8);
+                padding: calc(56px + var(--sp-6)) var(--sp-6) var(--sp-6);
             }
 
             .mob-nav {
@@ -325,6 +337,29 @@ import { PwaService } from '@/app/shared/services/pwa.service';
                 transform: translateX(0);
             }
 
+            .mob-install {
+                display: flex;
+                align-items: center;
+                gap: var(--sp-3);
+                padding: var(--sp-4);
+                margin-top: var(--sp-2);
+                border-radius: var(--r-lg);
+                background: var(--brand);
+                color: var(--brand-text);
+                font-size: var(--fs-base);
+                font-weight: var(--fw-semi);
+                letter-spacing: var(--ls-snug);
+                width: 100%;
+                border: none;
+                cursor: pointer;
+                transition: background var(--dur-fast) var(--ease-out),
+                            transform var(--dur-fast) var(--ease-out);
+            }
+            .mob-install:active {
+                background: var(--brand-strong);
+                transform: scale(0.98);
+            }
+
             .mob-footer {
                 display: flex;
                 align-items: center;
@@ -380,27 +415,10 @@ import { PwaService } from '@/app/shared/services/pwa.service';
     `],
 })
 export class PublicTopbar {
-    private readonly elRef = inject(ElementRef);
     readonly lang = inject(LanguageService);
     readonly theme = inject(ThemeService);
     readonly pwa = inject(PwaService);
     readonly menuOpen = signal(false);
-
-    @HostListener('document:click', ['$event'])
-    onDocumentClick(event: MouseEvent): void {
-        if (!this.menuOpen()) return;
-        const target = event.target as HTMLElement;
-        if (!this.elRef.nativeElement.contains(target)) {
-            this.menuOpen.set(false);
-        }
-    }
-
-    onOverlayClick(event: MouseEvent): void {
-        // Close only if clicking the overlay background, not menu content
-        if ((event.target as HTMLElement).classList.contains('mob-overlay')) {
-            this.menuOpen.set(false);
-        }
-    }
 
     async installApp(): Promise<void> {
         await this.pwa.install();

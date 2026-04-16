@@ -79,6 +79,7 @@ Reference:
 ## Actuality
 
 > ✅ Verified 2026-04-16 — all files, services, and cache policies confirmed operational.
+> Re-verified 2026-04-16 — pwa.service.ts, pwa-indicators.ts, ngsw-config.json confirmed present and correct.
 
 ## RU summary
 

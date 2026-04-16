@@ -219,6 +219,7 @@ npm run deploy
 
 > ✅ Verified 2026-04-16 — all sections, commands, and links confirmed accurate.
 > Extension (Chrome MV3 + Firefox) added to architecture and build documentation.
+> Re-verified 2026-04-16 — manifest version aligned, .gitignore gaps fixed, embed.js endpoint documented.
 
 ## RU summary
 

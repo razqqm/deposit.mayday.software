@@ -83,6 +83,7 @@ curl -s http://localhost:8787/sitemap.xml
 ## Actuality
 
 > ✅ Verified 2026-04-16 — all gates checked, extension build added, smoke commands updated.
+> Re-verified 2026-04-16 — routes confirmed (5 routes match sitemap), version consistency verified across all manifests.
 
 ---
 

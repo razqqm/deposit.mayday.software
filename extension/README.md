@@ -39,6 +39,13 @@ Build output: `dist/extension/browser/`
 - **Chrome:** `chrome://extensions` → Developer mode → Load unpacked → select `dist/extension/browser/`
 - **Firefox:** `about:debugging` → This Firefox → Load Temporary Add-on → select `dist/extension/browser/manifest.json`
 
+## Test
+
+```bash
+npm test              # Unit tests (watch mode)
+npm run test:ci       # Single run + coverage report
+```
+
 ## Package for distribution
 
 ```bash
@@ -77,3 +84,4 @@ npm run package:firefox  # → dist/mayday-ext-firefox.zip
 ## Actuality
 
 > ✅ Verified 2026-04-16 — builds, loads, and operates in Chrome and Firefox.
+> Re-verified 2026-04-16 — version aligned to 0.1.0, test commands documented, coverage/dist excluded from git.

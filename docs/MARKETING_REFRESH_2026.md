@@ -102,6 +102,7 @@ Single-card pricing message:
 
 > ✅ Verified 2026-04-16 — landing section order, OG image, and EN/RU parity confirmed.
 > Browser extension (Chrome + Firefox) adds a fifth distribution channel alongside web, PWA, API, and widget.
+> Re-verified 2026-04-16 — all claims cross-checked against codebase, no discrepancies found.
 
 ## RU summary
 

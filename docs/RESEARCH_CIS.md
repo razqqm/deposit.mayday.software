@@ -112,6 +112,7 @@ Note: Some legal portals expose anti-bot or script-heavy pages; manual legal rev
 
 > ✅ Verified 2026-04-16 — legal references checked, positioning recommendations unchanged.
 > All external legal portal links accessible as of audit date.
+> Re-verified 2026-04-16 — claims cross-checked against product code and JSON-LD; positioning consistent.
 
 ---
 

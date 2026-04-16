@@ -5,6 +5,7 @@ worker/node_modules/
 
 # Build output
 frontend/dist/
+extension/dist/
 
 # Cloudflare / Wrangler
 .wrangler/
@@ -26,6 +27,9 @@ extension/out-tsc/
 # OS
 .DS_Store
 Thumbs.db
+
+# Coverage reports
+extension/coverage/
 
 # Logs
 *.log

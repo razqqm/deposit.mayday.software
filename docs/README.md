@@ -24,3 +24,4 @@ Russian is provided as a secondary language in `RU summary` sections.
 ## Last review
 
 - Reviewed and normalized: 2026-04-16
+- Re-verified against codebase: 2026-04-16
