@@ -71,8 +71,8 @@ import { PwaService } from '@/app/shared/services/pwa.service';
 
         <!-- ═══ Mobile fullscreen overlay menu ═══ -->
         <div class="mob-overlay" [class.is-open]="menuOpen()" (click)="menuOpen.set(false)">
-            <div class="mob-menu" (click)="$event.stopPropagation()">
-                <div class="mob-nav">
+            <div class="mob-menu">
+                <div class="mob-nav" (click)="$event.stopPropagation()">
                     <a routerLink="/" routerLinkActive="mob-active" [routerLinkActiveOptions]="{ exact: true }" class="mob-link" (click)="menuOpen.set(false)">
                         <span class="mob-num">01</span>
                         <span class="mob-text">{{ 'nav.home' | translate }}</span>
@@ -90,23 +90,35 @@ import { PwaService } from '@/app/shared/services/pwa.service';
                     </a>
 
                 </div>
-                <div class="mob-footer">
-                    <div class="mob-lang" role="group" [attr.aria-label]="'a11y.switchLang' | translate">
-                        <button type="button" class="mob-lang-btn" [class.is-on]="lang.currentLang() === 'en'" (click)="setLang('en')">EN</button>
-                        <button type="button" class="mob-lang-btn" [class.is-on]="lang.currentLang() === 'ru'" (click)="setLang('ru')">RU</button>
+                <div class="mob-bottom" (click)="$event.stopPropagation()">
+                    @if (pwa.canInstall()) {
+                        <button type="button" class="mob-install" (click)="installApp(); menuOpen.set(false)">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                                <polyline points="7 10 12 15 17 10"/>
+                                <line x1="12" y1="15" x2="12" y2="3"/>
+                            </svg>
+                            <span>{{ 'pwa.install' | translate }}</span>
+                        </button>
+                    }
+                    <div class="mob-footer">
+                        <div class="mob-lang" role="group" [attr.aria-label]="'a11y.switchLang' | translate">
+                            <button type="button" class="mob-lang-btn" [class.is-on]="lang.currentLang() === 'en'" (click)="setLang('en')">EN</button>
+                            <button type="button" class="mob-lang-btn" [class.is-on]="lang.currentLang() === 'ru'" (click)="setLang('ru')">RU</button>
+                        </div>
+                        <button type="button" class="mob-theme-btn" (click)="cycleTheme()">
+                            @if (theme.mode() === 'light') {
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+                                <span>Light</span>
+                            } @else if (theme.mode() === 'dark') {
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+                                <span>Dark</span>
+                            } @else {
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 1 0 18z" fill="currentColor"/></svg>
+                                <span>Auto</span>
+                            }
+                        </button>
                     </div>
-                    <button type="button" class="mob-theme-btn" (click)="cycleTheme()">
-                        @if (theme.mode() === 'light') {
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
-                            <span>Light</span>
-                        } @else if (theme.mode() === 'dark') {
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
-                            <span>Dark</span>
-                        } @else {
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 1 0 18z" fill="currentColor"/></svg>
-                            <span>Auto</span>
-                        }
-                    </button>
                 </div>
             </div>
         </div>
@@ -247,8 +259,10 @@ import { PwaService } from '@/app/shared/services/pwa.service';
             .mob-menu {
                 display: flex;
                 flex-direction: column;
-                gap: var(--sp-8);
+                justify-content: space-between;
                 padding: calc(56px + var(--sp-6)) var(--sp-6) var(--sp-6);
+                height: 100%;
+                pointer-events: auto;
             }
 
             .mob-nav {
@@ -325,6 +339,12 @@ import { PwaService } from '@/app/shared/services/pwa.service';
             .mob-link.mob-active .mob-arrow {
                 opacity: 1;
                 transform: translateX(0);
+            }
+
+            .mob-bottom {
+                display: flex;
+                flex-direction: column;
+                gap: var(--sp-4);
             }
 
             .mob-install {
