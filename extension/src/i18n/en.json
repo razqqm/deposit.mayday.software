@@ -1,0 +1,48 @@
+{
+    "tabs": {
+        "deposit": "Deposit",
+        "capture": "Capture",
+        "dashboard": "History"
+    },
+    "deposit": {
+        "title": "Quick Deposit",
+        "dropLabel": "Drop files here",
+        "dropHint": "or click to browse — files never leave your device",
+        "formTitle": "Title",
+        "formVersion": "Version",
+        "formAuthor": "Author name",
+        "formEmail": "Email",
+        "submit": "Create Deposit",
+        "submitting": "Anchoring...",
+        "hashingProgress": "Hashing files...",
+        "done": "Deposit created",
+        "manifestHash": "Manifest SHA-256",
+        "downloadManifest": "Download CITATION.cff",
+        "downloadProofs": "Download proofs",
+        "newDeposit": "New deposit"
+    },
+    "capture": {
+        "title": "Capture Page",
+        "description": "Create a timestamped snapshot of the current web page.",
+        "captureBtn": "Capture this page",
+        "capturing": "Capturing...",
+        "includeScreenshot": "Include screenshot",
+        "pageTitle": "Page",
+        "pageUrl": "URL"
+    },
+    "dashboard": {
+        "title": "Recent Deposits",
+        "empty": "No deposits yet",
+        "emptyHint": "Create your first deposit from the Deposit tab.",
+        "totalDeposits": "deposits",
+        "openSite": "Open full site",
+        "files": "files",
+        "anchors": "anchors"
+    },
+    "anchors": {
+        "confirmed": "Confirmed",
+        "submitting": "Submitting...",
+        "failed": "Failed",
+        "pending": "Pending"
+    }
+}

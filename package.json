@@ -4,6 +4,7 @@
     "private": true,
     "scripts": {
         "build": "cd frontend && npm ci --prefer-offline --no-audit --no-fund && npm run build",
+        "build:ext": "cd extension && npm ci --prefer-offline --no-audit --no-fund && npm run build",
         "deploy": "npm run build && wrangler deploy",
         "dev": "wrangler dev"
     },

@@ -176,6 +176,7 @@ import { PwaService } from '@/app/shared/services/pwa.service';
 
         @media (max-width: 720px) {
             .inner { gap: var(--sp-3); padding: 0 var(--sp-4); }
+            .ctrls { margin-left: auto; }
             .menu-btn { display: inline-flex; }
             .links {
                 position: absolute;

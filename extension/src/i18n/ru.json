@@ -1,0 +1,48 @@
+{
+    "tabs": {
+        "deposit": "Депозит",
+        "capture": "Снимок",
+        "dashboard": "История"
+    },
+    "deposit": {
+        "title": "Быстрое депонирование",
+        "dropLabel": "Перетащите файлы сюда",
+        "dropHint": "или нажмите для выбора — файлы не покидают устройство",
+        "formTitle": "Название",
+        "formVersion": "Версия",
+        "formAuthor": "Имя автора",
+        "formEmail": "Email",
+        "submit": "Создать депозит",
+        "submitting": "Отправка...",
+        "hashingProgress": "Хеширование файлов...",
+        "done": "Депозит создан",
+        "manifestHash": "SHA-256 манифеста",
+        "downloadManifest": "Скачать CITATION.cff",
+        "downloadProofs": "Скачать подтверждения",
+        "newDeposit": "Новый депозит"
+    },
+    "capture": {
+        "title": "Снимок страницы",
+        "description": "Создайте снимок текущей веб-страницы с временной меткой.",
+        "captureBtn": "Снять эту страницу",
+        "capturing": "Захват...",
+        "includeScreenshot": "Включить скриншот",
+        "pageTitle": "Страница",
+        "pageUrl": "URL"
+    },
+    "dashboard": {
+        "title": "Последние депозиты",
+        "empty": "Депозитов пока нет",
+        "emptyHint": "Создайте первый депозит на вкладке Депозит.",
+        "totalDeposits": "депозитов",
+        "openSite": "Открыть сайт",
+        "files": "файлов",
+        "anchors": "якорей"
+    },
+    "anchors": {
+        "confirmed": "Подтверждено",
+        "submitting": "Отправка...",
+        "failed": "Ошибка",
+        "pending": "Ожидание"
+    }
+}

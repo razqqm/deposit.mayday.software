@@ -1,0 +1,88 @@
+/* Design tokens (copied from frontend/src/assets/tokens.scss) */
+@use 'tokens';
+
+/* Extension-specific base styles */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html,
+body {
+    width: 400px;
+    min-height: 500px;
+    max-height: 600px;
+    overflow-y: auto;
+    font-family: var(--font-display);
+    font-size: var(--fs-sm);
+    line-height: var(--lh-base);
+    color: var(--text);
+    background: var(--bg);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* Dark mode: follow system preference by applying the same
+   overrides that the main frontend uses via .app-dark class */
+@media (prefers-color-scheme: dark) {
+    :root {
+        --bg:             oklch(0.145 0.012 270);
+        --bg-elev:        oklch(0.195 0.014 270);
+        --bg-sunk:        oklch(0.115 0.012 270);
+        --bg-overlay:     oklch(0.145 0.012 270 / 0.72);
+        --bg-mute:        oklch(0.175 0.014 270);
+
+        --text:           oklch(0.97 0.005 270);
+        --text-mute:      oklch(0.72 0.01 270);
+        --text-dim:       oklch(0.52 0.01 270);
+
+        --border:         oklch(0.28 0.012 270);
+        --border-strong:  oklch(0.40 0.012 270);
+        --border-soft:    oklch(0.22 0.012 270);
+
+        --brand-soft:     color-mix(in oklch, var(--brand) 20%, var(--bg));
+        --brand-glow:     color-mix(in oklch, var(--brand) 45%, transparent);
+        --accent-soft:    var(--brand-soft);
+
+        --success-soft:   color-mix(in oklch, oklch(0.66 0.16 145) 18%, var(--bg));
+        --danger-soft:    color-mix(in oklch, oklch(0.60 0.20 25) 18%, var(--bg));
+        --info-soft:      color-mix(in oklch, oklch(0.68 0.11 245) 18%, var(--bg));
+
+        --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.35);
+        --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.4);
+        --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.5);
+        --shadow-lg: 0 16px 40px rgba(0, 0, 0, 0.6);
+        --shadow-xl: 0 24px 60px rgba(0, 0, 0, 0.7);
+    }
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+    width: 6px;
+}
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+::-webkit-scrollbar-thumb {
+    background: var(--border-strong);
+    border-radius: var(--r-full);
+}
+
+/* Utility classes */
+.mono {
+    font-family: var(--font-mono);
+    letter-spacing: var(--ls-mono);
+}
+
+.truncate {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}

@@ -47,25 +47,26 @@
     <text x="80" y="60" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="500" fill="#52525b" letter-spacing="0.02em">by mayday.software</text>
   </g>
 
-  <!-- Headline -->
-  <g transform="translate(64, 220)">
-    <text font-family="Inter, system-ui, sans-serif" font-size="76" font-weight="800" fill="url(#brandText)" letter-spacing="-0.035em">
-      <tspan x="0" dy="0">Prove you created it</tspan>
-      <tspan x="0" dy="86">first — without notaries</tspan>
+  <!-- Headline — 3 shorter lines, stays within x < 680 -->
+  <g transform="translate(64, 200)">
+    <text font-family="Inter, system-ui, sans-serif" font-size="58" font-weight="800" fill="url(#brandText)" letter-spacing="-0.035em">
+      <tspan x="0" dy="0">Prove you</tspan>
+      <tspan x="0" dy="70">created it first —</tspan>
+      <tspan x="0" dy="70">without notaries</tspan>
     </text>
   </g>
 
   <!-- Subhead -->
-  <g transform="translate(64, 440)">
-    <text font-family="Inter, system-ui, sans-serif" font-size="22" font-weight="500" fill="#52525b" letter-spacing="-0.005em">
+  <g transform="translate(64, 450)">
+    <text font-family="Inter, system-ui, sans-serif" font-size="20" font-weight="500" fill="#52525b" letter-spacing="-0.005em">
       <tspan x="0" dy="0">Cryptographic copyright deposit · Bitcoin · RFC 3161 · GPG</tspan>
-      <tspan x="0" dy="32">Free · Open source · Files never leave your browser</tspan>
+      <tspan x="0" dy="30">Free · Open source · Files never leave your browser</tspan>
     </text>
   </g>
 
   <!-- Right column: artifact card -->
   <g transform="translate(740, 130)">
-    <rect width="400" height="370" rx="20" fill="#ffffff" stroke="#d4d4d8" stroke-width="1.5" filter="url(#shadow)"/>
+    <rect width="400" height="370" rx="20" fill="#ffffff" stroke="#d4d4d8" stroke-width="1.5"/>
     <!-- Card head -->
     <g transform="translate(0, 0)">
       <rect width="400" height="48" rx="20" fill="#f4f4f5"/>

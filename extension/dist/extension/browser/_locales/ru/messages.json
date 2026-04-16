@@ -1,0 +1,10 @@
+{
+    "extName": {
+        "message": "Mayday Deposit",
+        "description": "Extension name shown in browser toolbar and extensions page"
+    },
+    "extDescription": {
+        "message": "Криптографическое депонирование авторских прав — докажите авторство без нотариусов.",
+        "description": "Extension description shown on the extensions page"
+    }
+}

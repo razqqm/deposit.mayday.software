@@ -1,0 +1,12 @@
+{
+    "background": {
+        "scripts": ["background.js"],
+        "type": "module"
+    },
+    "browser_specific_settings": {
+        "gecko": {
+            "id": "deposit@mayday.software",
+            "strict_min_version": "109.0"
+        }
+    }
+}
