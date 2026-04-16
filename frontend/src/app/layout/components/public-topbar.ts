@@ -42,7 +42,7 @@ import { PwaService } from '@/app/shared/services/pwa.service';
                             </svg>
                         </button>
                     }
-                    <div class="seg" role="group" [attr.aria-label]="'a11y.switchLang' | translate">
+                    <div class="seg desktop-only" role="group" [attr.aria-label]="'a11y.switchLang' | translate">
                         <button type="button" class="seg-btn" [class.is-on]="lang.currentLang() === 'en'" (click)="setLang('en')">EN</button>
                         <button type="button" class="seg-btn" [class.is-on]="lang.currentLang() === 'ru'" (click)="setLang('ru')">RU</button>
                     </div>
@@ -89,8 +89,8 @@ import { PwaService } from '@/app/shared/services/pwa.service';
                     </a>
 
                 </div>
-                @if (pwa.canInstall()) {
-                    <div class="mob-bottom" (click)="$event.stopPropagation()">
+                <div class="mob-bottom" (click)="$event.stopPropagation()">
+                    @if (pwa.canInstall()) {
                         <button type="button" class="mob-install" (click)="installApp(); menuOpen.set(false)">
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                                 <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
@@ -99,8 +99,12 @@ import { PwaService } from '@/app/shared/services/pwa.service';
                             </svg>
                             <span>{{ 'pwa.install' | translate }}</span>
                         </button>
+                    }
+                    <div class="mob-lang" role="group">
+                        <button type="button" class="mob-lang-btn" [class.is-on]="lang.currentLang() === 'en'" (click)="setLang('en')">EN</button>
+                        <button type="button" class="mob-lang-btn" [class.is-on]="lang.currentLang() === 'ru'" (click)="setLang('ru')">RU</button>
                     </div>
-                }
+                </div>
             </div>
         </div>
     `,
