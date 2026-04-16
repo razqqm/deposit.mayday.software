@@ -366,18 +366,18 @@ import { PwaService } from '@/app/shared/services/pwa.service';
             .mob-lang {
                 display: flex;
                 align-items: center;
-                gap: var(--sp-1);
-                padding: 3px;
-                background: var(--bg-sunk);
-                border: 1px solid var(--border);
-                border-radius: var(--r-md);
+                gap: 0;
+                padding: 4px;
+                background: var(--bg-elev);
+                border: 1px solid var(--border-strong);
+                border-radius: var(--r-lg);
             }
             .mob-lang-btn {
-                padding: var(--sp-2) var(--sp-4);
-                font-size: var(--fs-sm);
-                font-weight: var(--fw-semi);
-                color: var(--text-mute);
-                border-radius: var(--r-sm);
+                padding: var(--sp-3) var(--sp-6);
+                font-size: var(--fs-base);
+                font-weight: var(--fw-bold);
+                color: var(--text-dim);
+                border-radius: var(--r-md);
                 letter-spacing: var(--ls-wide);
                 transition: background var(--dur-fast) var(--ease-out),
                             color var(--dur-fast) var(--ease-out);
@@ -385,7 +385,7 @@ import { PwaService } from '@/app/shared/services/pwa.service';
             .mob-lang-btn.is-on {
                 background: var(--brand);
                 color: var(--brand-text);
-                box-shadow: var(--shadow-sm);
+                box-shadow: 0 2px 8px var(--brand-glow);
             }
 
             .mob-theme-btn {
