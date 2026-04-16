@@ -183,6 +183,7 @@ import { PwaService } from '@/app/shared/services/pwa.service';
                 top: 56px;
                 left: 0;
                 right: 0;
+                flex: none;
                 flex-direction: column;
                 align-items: stretch;
                 gap: 0;
@@ -194,7 +195,8 @@ import { PwaService } from '@/app/shared/services/pwa.service';
                 pointer-events: none;
                 transition: opacity var(--dur-fast) var(--ease-out), transform var(--dur-fast) var(--ease-out);
             }
-            .links.is-open { opacity: 1; transform: translateY(0); pointer-events: auto; }
+            .links:not(.is-open) { display: none; }
+            .links.is-open { display: flex; opacity: 1; transform: translateY(0); pointer-events: auto; }
             .link { padding: var(--sp-3); border-radius: var(--r-sm); }
             .seg { display: none; }
         }

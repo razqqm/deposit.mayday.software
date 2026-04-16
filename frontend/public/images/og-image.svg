@@ -47,20 +47,22 @@
     <text x="80" y="60" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="500" fill="#52525b" letter-spacing="0.02em">by mayday.software</text>
   </g>
 
-  <!-- Headline — 3 shorter lines, stays within x < 680 -->
-  <g transform="translate(64, 200)">
-    <text font-family="Inter, system-ui, sans-serif" font-size="58" font-weight="800" fill="url(#brandText)" letter-spacing="-0.035em">
+  <!-- Headline — 4 lines, stays within x < 660 -->
+  <g transform="translate(64, 180)">
+    <text font-family="Inter, system-ui, sans-serif" font-size="48" font-weight="800" fill="url(#brandText)" letter-spacing="-0.035em">
       <tspan x="0" dy="0">Prove you</tspan>
-      <tspan x="0" dy="70">created it first —</tspan>
-      <tspan x="0" dy="70">without notaries</tspan>
+      <tspan x="0" dy="58">created it</tspan>
+      <tspan x="0" dy="58">first — without</tspan>
+      <tspan x="0" dy="58">notaries</tspan>
     </text>
   </g>
 
   <!-- Subhead -->
   <g transform="translate(64, 450)">
-    <text font-family="Inter, system-ui, sans-serif" font-size="20" font-weight="500" fill="#52525b" letter-spacing="-0.005em">
-      <tspan x="0" dy="0">Cryptographic copyright deposit · Bitcoin · RFC 3161 · GPG</tspan>
-      <tspan x="0" dy="30">Free · Open source · Files never leave your browser</tspan>
+    <text font-family="Inter, system-ui, sans-serif" font-size="18" font-weight="500" fill="#52525b" letter-spacing="-0.005em">
+      <tspan x="0" dy="0">Cryptographic copyright deposit</tspan>
+      <tspan x="0" dy="26">Bitcoin · RFC 3161 · GPG · Ethereum</tspan>
+      <tspan x="0" dy="26">Free · Open source · Files never leave your browser</tspan>
     </text>
   </g>
 
