@@ -108,6 +108,11 @@ No single artifact should be marketed as universally sufficient.
 
 Note: Some legal portals expose anti-bot or script-heavy pages; manual legal review is still required.
 
+## Actuality
+
+> ✅ Verified 2026-04-16 — legal references checked, positioning recommendations unchanged.
+> All external legal portal links accessible as of audit date.
+
 ---
 
 ## RU summary

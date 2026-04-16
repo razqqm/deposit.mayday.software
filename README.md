@@ -4,7 +4,7 @@ Open-source cryptographic deposit for source code authorship and timestamp evide
 
 - License: MIT (see [LICENSE](LICENSE)) 
 - Production app: [https://deposit.mayday.software/](https://deposit.mayday.software/)
-- Monorepo: Angular frontend + Cloudflare Worker API relay
+- Monorepo: Angular frontend + Cloudflare Worker API relay + Browser extension (Chrome / Firefox)
 
 ## What this project does
 
@@ -66,12 +66,59 @@ Cloudflare Worker (worker/src/index.ts)
 External timestamp services (RFC 3161 + OTS calendars)
 ```
 
+### Browser extension
+
+Chrome MV3 / Firefox extension that brings deposit and page-capture features directly into the browser toolbar.
+
+```text
+extension/
+├── manifest.json              # Manifest V3 (Chrome)
+├── manifest.firefox.json      # Firefox overrides (gecko.id, background.scripts)
+├── angular.json               # Angular build config (outputHashing: none)
+├── tsconfig.json / tsconfig.app.json
+├── package.json               # Dependencies (Angular 21, webextension-polyfill, asn1js, pkijs, openpgp)
+├── scripts/
+│   └── build.mjs              # Post-build: esbuild for bg/content, manifest copy, _locales
+├── src/
+│   ├── main.ts                # Bootstrap + WORKER_BASE = "https://deposit.mayday.software"
+│   ├── app.config.ts          # Zoneless, animations, inline i18n loader
+│   ├── index.html             # Popup HTML (400×600)
+│   ├── styles.scss            # Design tokens + dark mode via prefers-color-scheme
+│   ├── tokens.scss            # Design tokens (shared with frontend)
+│   ├── popup/                 # Shell with 3 tabs (Deposit / Capture / History)
+│   ├── tabs/
+│   │   ├── deposit/           # Drag-and-drop → SHA-256 → CITATION.cff → anchors
+│   │   ├── capture/           # Page snapshot (HTML + screenshot) → anchors
+│   │   └── dashboard/         # Deposit history, badge, link to website
+│   ├── deposit/               # Hashing, manifest, anchor services (from frontend)
+│   │   └── anchors/           # RFC 3161, OpenTimestamps, Ethereum
+│   ├── ui/                    # UI components (from frontend)
+│   ├── shared/services/       # ExtensionStorageService, CaptureService
+│   ├── background/            # MV3 service worker (badge, context menu)
+│   ├── content/               # Content script for HTML capture (<400 bytes)
+│   └── i18n/                  # EN + RU (inline + _locales)
+└── dist/extension/browser/    # Build output (load in Chrome or Firefox)
+```
+
+Build output sizes (production):
+
+| Component | Size |
+|---|---|
+| Initial (Angular runtime + anchor logic + UI) | ~544 KB |
+| Lazy (animations) | ~68 KB |
+| Background service worker | ~11 KB |
+| Content script | ~400 bytes |
+| Styles | ~6 KB |
+| **Total** | **~630 KB** |
+
 ### Technical notes
 
 - Frontend: Angular 21, static SPA.
+- Extension: Angular 21, MV3 popup (Chrome + Firefox), esbuild for background/content scripts.
 - i18n: EN and RU via `@ngx-translate`.
 - Worker: no user file storage; relay-only model for timestamp requests.
 - Deploy: single Cloudflare Workers deployment from repository root.
+- CI: GitHub Actions — lint, build (frontend + worker), see [.github/workflows/ci.yml](.github/workflows/ci.yml).
 
 ## Local development
 
@@ -103,9 +150,38 @@ cd frontend && npm run build
 
 ## Production build
 
+### Frontend
+
 ```bash
 cd frontend && npm run build
 # output: frontend/dist/mayday-software/browser/
+```
+
+### Browser extension
+
+```bash
+# Chrome
+cd extension && npm install && npm run build
+# output: extension/dist/extension/browser/
+
+# Firefox
+cd extension && npm run build:firefox
+
+# From repository root (Chrome)
+npm run build:ext
+```
+
+Loading the extension:
+
+- **Chrome:** `chrome://extensions` → Developer mode → Load unpacked → select `extension/dist/extension/browser/`
+- **Firefox:** `about:debugging` → This Firefox → Load Temporary Add-on → select `extension/dist/extension/browser/manifest.json`
+
+### Packaging for distribution
+
+```bash
+cd extension
+npm run package:chrome   # → dist/mayday-ext-chrome.zip
+npm run package:firefox  # → dist/mayday-ext-firefox.zip
 ```
 
 ## Deploy
@@ -128,6 +204,7 @@ npm run deploy
 - [docs/PRE_PROD_SPRINT.md](docs/PRE_PROD_SPRINT.md)
 - [docs/MARKETING_REFRESH_2026.md](docs/MARKETING_REFRESH_2026.md)
 - [docs/RESEARCH_CIS.md](docs/RESEARCH_CIS.md)
+- [docs/AUDIT_2026-04-16.md](docs/AUDIT_2026-04-16.md)
 
 ## External references
 
@@ -137,6 +214,11 @@ npm run deploy
 - Cloudflare Workers Static Assets docs: [https://developers.cloudflare.com/workers/static-assets/](https://developers.cloudflare.com/workers/static-assets/)
 
 ---
+
+## Actuality
+
+> ✅ Verified 2026-04-16 — all sections, commands, and links confirmed accurate.
+> Extension (Chrome MV3 + Firefox) added to architecture and build documentation.
 
 ## RU summary
 
@@ -148,5 +230,5 @@ npm run deploy
   - кем подписано (подпись, по roadmap),
   - когда существовало (таймштампы OTS/Bitcoin и RFC 3161).
 - Позиционирование: дополнительный слой доказательств, а не замена государственной регистрации.
-- Архитектура: Angular SPA + Cloudflare Worker relay без хранения пользовательских файлов.
+- Архитектура: Angular SPA + Cloudflare Worker relay + браузерное расширение (Chrome/Firefox) без хранения пользовательских файлов.
 - Подробности по правовым аспектам СНГ: [docs/RESEARCH_CIS.md](docs/RESEARCH_CIS.md).

@@ -76,6 +76,10 @@ Reference:
 
 ---
 
+## Actuality
+
+> ✅ Verified 2026-04-16 — all files, services, and cache policies confirmed operational.
+
 ## RU summary
 
 Этот документ фиксирует рабочую PWA-модель для проекта:

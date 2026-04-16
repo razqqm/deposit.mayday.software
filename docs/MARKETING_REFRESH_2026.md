@@ -98,6 +98,11 @@ Single-card pricing message:
 
 ---
 
+## Actuality
+
+> ✅ Verified 2026-04-16 — landing section order, OG image, and EN/RU parity confirmed.
+> Browser extension (Chrome + Firefox) adds a fifth distribution channel alongside web, PWA, API, and widget.
+
 ## RU summary
 
 Документ фиксирует постоянную маркетинговую структуру лендинга:
@@ -106,3 +111,4 @@ Single-card pricing message:
 - порядок секций страницы,
 - обязательные блоки: risk-reversal, use-cases, comparison, pricing, OG image,
 - правило локализации: EN как основной источник, RU как обязательная эквивалентная версия.
+- Расширение для браузера (Chrome + Firefox) — дополнительный канал дистрибуции.

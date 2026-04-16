@@ -19,6 +19,7 @@ jobs:
           cache-dependency-path: |
             package-lock.json
             frontend/package-lock.json
+            extension/package-lock.json
 
       - name: Install root dependencies
         run: npm ci --prefer-offline --no-audit --no-fund
@@ -37,3 +38,11 @@ jobs:
 
       - name: Check worker compiles
         run: npx wrangler deploy --dry-run --outdir /tmp/worker-check 2>&1 | tail -5
+
+      - name: Install extension dependencies
+        working-directory: extension
+        run: npm ci --prefer-offline --no-audit --no-fund
+
+      - name: Build extension (Chrome)
+        working-directory: extension
+        run: npx ng build --configuration production && node scripts/build.mjs

@@ -53,16 +53,19 @@ A release is production-ready only if all sections below pass.
 
 ## 6. Build and smoke checks
 
-- Frontend build succeeds.
-- Worker local run succeeds.
+- Frontend build succeeds (`cd frontend && npm run build`).
+- Extension build succeeds (`cd extension && npm run build`).
+- Worker local run succeeds (`npx wrangler dev`).
 - Core routes return `200`.
 - `sitemap.xml` serves all required route entries.
 - Language switch EN/RU works for all major pages.
+- Extension loads in Chrome and Firefox without console errors.
 
 ## Suggested command set
 
 ```bash
 cd frontend && npm run build
+cd ../extension && npm run build
 cd .. && npx wrangler dev
 curl -sf http://localhost:8787/
 curl -sf http://localhost:8787/privacy
@@ -75,6 +78,10 @@ curl -s http://localhost:8787/sitemap.xml
 - Product owner: message and legal accuracy.
 - Engineering owner: route/build/runtime correctness.
 - Final legal review: external counsel before legal reliance.
+
+## Actuality
+
+> ✅ Verified 2026-04-16 — all gates checked, extension build added, smoke commands updated.
 
 ---
 
@@ -89,4 +96,4 @@ curl -s http://localhost:8787/sitemap.xml
 - наличие и корректность страниц Privacy/Terms,
 - валидность футера и контактов,
 - OG/Twitter/JSON-LD метаданные,
-- сборка и smoke-проверка маршрутов.
+- сборка фронтенда, расширения и smoke-проверка маршрутов.
