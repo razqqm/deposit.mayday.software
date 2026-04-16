@@ -366,22 +366,21 @@ import { PwaService } from '@/app/shared/services/pwa.service';
             }
 
             .mob-lang {
-                display: flex;
+                display: inline-flex;
                 align-items: center;
-                gap: 0;
-                padding: 4px;
-                background: var(--bg-elev);
-                border: 1px solid var(--border-strong);
-                border-radius: var(--r-lg);
+                padding: 2px;
+                background: var(--bg-mute);
+                border: 1px solid var(--border);
+                border-radius: var(--r-sm);
             }
             .mob-lang-btn {
-                padding: var(--sp-3) var(--sp-6);
-                font-size: var(--fs-base);
-                font-weight: var(--fw-bold);
-                color: var(--text-dim);
+                padding: 4px 10px;
+                font-size: var(--fs-xs);
+                font-weight: var(--fw-semi);
+                color: var(--text-mute);
                 background: none;
                 border: none;
-                border-radius: var(--r-md);
+                border-radius: 4px;
                 letter-spacing: var(--ls-wide);
                 cursor: pointer;
                 font-family: inherit;
@@ -389,9 +388,9 @@ import { PwaService } from '@/app/shared/services/pwa.service';
                             color var(--dur-fast) var(--ease-out);
             }
             .mob-lang-btn.is-on {
-                background: var(--brand);
-                color: var(--brand-text);
-                box-shadow: 0 2px 8px var(--brand-glow);
+                background: var(--bg-elev);
+                color: var(--text);
+                box-shadow: var(--shadow-xs);
             }
 
             .mob-theme-btn {
