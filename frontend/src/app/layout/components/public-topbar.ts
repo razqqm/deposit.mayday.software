@@ -25,14 +25,9 @@ import { PwaService } from '@/app/shared/services/pwa.service';
                 </a>
 
                 <nav class="links" [class.is-open]="menuOpen()">
-                    <a routerLink="/" routerLinkActive="is-active" [routerLinkActiveOptions]="{ exact: true }" class="link" (click)="menuOpen.set(false)">{{ 'nav.home' | translate }}</a>
-                    <a routerLink="/how" routerLinkActive="is-active" class="link" (click)="menuOpen.set(false)">{{ 'info.howEyebrow' | translate }}</a>
-                    <a routerLink="/verify" routerLinkActive="is-active" class="link" (click)="menuOpen.set(false)">{{ 'verify.title' | translate }}</a>
-                    <!-- Language toggle inside mobile menu -->
-                    <div class="mobile-lang" role="group" [attr.aria-label]="'a11y.switchLang' | translate">
-                        <button type="button" class="seg-btn" [class.is-on]="lang.currentLang() === 'en'" (click)="setLang('en'); menuOpen.set(false)">EN</button>
-                        <button type="button" class="seg-btn" [class.is-on]="lang.currentLang() === 'ru'" (click)="setLang('ru'); menuOpen.set(false)">RU</button>
-                    </div>
+                    <a routerLink="/" routerLinkActive="is-active" [routerLinkActiveOptions]="{ exact: true }" class="link">{{ 'nav.home' | translate }}</a>
+                    <a routerLink="/how" routerLinkActive="is-active" class="link">{{ 'info.howEyebrow' | translate }}</a>
+                    <a routerLink="/verify" routerLinkActive="is-active" class="link">{{ 'verify.title' | translate }}</a>
                 </nav>
 
                 <div class="ctrls">
@@ -72,14 +67,53 @@ import { PwaService } from '@/app/shared/services/pwa.service';
                 </div>
             </div>
         </nav>
+
+        <!-- ═══ Mobile fullscreen overlay menu ═══ -->
+        <div class="mob-overlay" [class.is-open]="menuOpen()" (click)="onOverlayClick($event)">
+            <div class="mob-menu">
+                <div class="mob-nav">
+                    <a routerLink="/" routerLinkActive="mob-active" [routerLinkActiveOptions]="{ exact: true }" class="mob-link" (click)="menuOpen.set(false)">
+                        <span class="mob-num">01</span>
+                        <span class="mob-text">{{ 'nav.home' | translate }}</span>
+                        <svg class="mob-arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+                    </a>
+                    <a routerLink="/how" routerLinkActive="mob-active" class="mob-link" (click)="menuOpen.set(false)">
+                        <span class="mob-num">02</span>
+                        <span class="mob-text">{{ 'info.howEyebrow' | translate }}</span>
+                        <svg class="mob-arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+                    </a>
+                    <a routerLink="/verify" routerLinkActive="mob-active" class="mob-link" (click)="menuOpen.set(false)">
+                        <span class="mob-num">03</span>
+                        <span class="mob-text">{{ 'verify.title' | translate }}</span>
+                        <svg class="mob-arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+                    </a>
+                </div>
+                <div class="mob-footer">
+                    <div class="mob-lang" role="group" [attr.aria-label]="'a11y.switchLang' | translate">
+                        <button type="button" class="mob-lang-btn" [class.is-on]="lang.currentLang() === 'en'" (click)="setLang('en')">EN</button>
+                        <button type="button" class="mob-lang-btn" [class.is-on]="lang.currentLang() === 'ru'" (click)="setLang('ru')">RU</button>
+                    </div>
+                    <button type="button" class="mob-theme-btn" (click)="cycleTheme()">
+                        @if (theme.mode() === 'light') {
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+                            <span>Light</span>
+                        } @else if (theme.mode() === 'dark') {
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+                            <span>Dark</span>
+                        } @else {
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 1 0 18z" fill="currentColor"/></svg>
+                            <span>Auto</span>
+                        }
+                    </button>
+                </div>
+            </div>
+        </div>
     `,
     styles: [`
         :host { display: block; }
         .topbar {
             position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
+            top: 0; left: 0; right: 0;
             z-index: 500;
             background: var(--bg-overlay);
             backdrop-filter: blur(12px) saturate(160%);
@@ -106,8 +140,7 @@ import { PwaService } from '@/app/shared/services/pwa.service';
         .brand-mark {
             display: grid;
             place-items: center;
-            width: 28px;
-            height: 28px;
+            width: 28px; height: 28px;
             border-radius: 8px;
             background: var(--text);
             color: var(--bg);
@@ -168,8 +201,7 @@ import { PwaService } from '@/app/shared/services/pwa.service';
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            width: 32px;
-            height: 32px;
+            width: 32px; height: 32px;
             color: var(--text-mute);
             border-radius: var(--r-sm);
             transition: background-color var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out);
@@ -179,48 +211,170 @@ import { PwaService } from '@/app/shared/services/pwa.service';
         .install-btn:hover { background: var(--brand-soft); color: var(--brand-strong); }
         .menu-btn { display: none; }
 
-        /* Mobile language toggle — hidden on desktop, shown inside dropdown on mobile */
-        .mobile-lang { display: none; }
+        /* ═══ Mobile overlay ═══ */
+        .mob-overlay {
+            display: none;
+        }
 
         @media (max-width: 720px) {
             .inner { gap: var(--sp-3); padding: 0 var(--sp-4); }
             .ctrls { margin-left: auto; }
             .menu-btn { display: inline-flex; }
-            /* Hide desktop language segment */
+            .links { display: none; }
             .seg { display: none; }
-            .links {
-                position: absolute;
-                top: 56px;
-                left: 0;
-                right: 0;
-                z-index: 500;
-                flex: none;
-                flex-direction: column;
-                align-items: stretch;
-                gap: 0;
-                background: var(--bg-elev);
-                border-bottom: 1px solid var(--border);
-                padding: var(--sp-2);
-                transform: translateY(-8px);
+
+            .mob-overlay {
+                display: block;
+                position: fixed;
+                inset: 0;
+                z-index: 499;
+                background: color-mix(in oklch, var(--bg) 85%, transparent);
+                backdrop-filter: blur(24px) saturate(180%);
+                -webkit-backdrop-filter: blur(24px) saturate(180%);
                 opacity: 0;
-                pointer-events: none;
-                transition: opacity var(--dur-fast) var(--ease-out), transform var(--dur-fast) var(--ease-out);
+                visibility: hidden;
+                transition: opacity 300ms var(--ease-out), visibility 0s 300ms;
             }
-            .links:not(.is-open) { display: none; }
-            .links.is-open { display: flex; opacity: 1; transform: translateY(0); pointer-events: auto; }
-            .link { padding: var(--sp-3); border-radius: var(--r-sm); }
-            /* Show language toggle inside mobile dropdown */
-            .mobile-lang {
-                display: inline-flex;
+            .mob-overlay.is-open {
+                opacity: 1;
+                visibility: visible;
+                transition: opacity 300ms var(--ease-out), visibility 0s;
+            }
+
+            .mob-menu {
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+                padding: calc(56px + var(--sp-8)) var(--sp-6) var(--sp-8);
+                height: 100%;
+            }
+
+            .mob-nav {
+                display: flex;
+                flex-direction: column;
+                gap: var(--sp-2);
+            }
+
+            .mob-link {
+                display: flex;
                 align-items: center;
-                gap: var(--sp-1);
-                padding: var(--sp-2) var(--sp-3);
-                margin-top: var(--sp-1);
+                gap: var(--sp-4);
+                padding: var(--sp-4) var(--sp-4);
+                border-radius: var(--r-lg);
+                color: var(--text);
+                text-decoration: none;
+                transition: background var(--dur-fast) var(--ease-out),
+                            transform var(--dur-fast) var(--ease-out);
+                border: 1px solid transparent;
+            }
+            .mob-link:hover,
+            .mob-link:active {
+                background: var(--bg-mute);
+                transform: translateX(4px);
+            }
+            .mob-link.mob-active {
+                background: var(--brand-soft);
+                border-color: color-mix(in oklch, var(--brand) 30%, transparent);
+            }
+            .mob-link.mob-active .mob-num {
+                background: var(--brand);
+                color: var(--brand-text);
+                border-color: var(--brand);
+            }
+            .mob-link.mob-active .mob-text {
+                color: var(--brand-strong);
+            }
+            .mob-link.mob-active .mob-arrow {
+                color: var(--brand);
+            }
+
+            .mob-num {
+                display: grid;
+                place-items: center;
+                width: 36px; height: 36px;
+                border-radius: 50%;
+                background: var(--bg-sunk);
+                border: 1px solid var(--border-strong);
+                font-family: var(--font-mono);
+                font-size: var(--fs-xs);
+                font-weight: var(--fw-bold);
+                color: var(--text-mute);
+                letter-spacing: var(--ls-mono);
+                flex-shrink: 0;
+                transition: background var(--dur-fast) var(--ease-out),
+                            color var(--dur-fast) var(--ease-out),
+                            border-color var(--dur-fast) var(--ease-out);
+            }
+            .mob-text {
+                flex: 1;
+                font-size: var(--fs-xl);
+                font-weight: var(--fw-semi);
+                letter-spacing: var(--ls-snug);
+            }
+            .mob-arrow {
+                color: var(--text-dim);
+                opacity: 0;
+                transform: translateX(-8px);
+                transition: opacity var(--dur-fast) var(--ease-out),
+                            transform var(--dur-fast) var(--ease-out),
+                            color var(--dur-fast) var(--ease-out);
+            }
+            .mob-link:hover .mob-arrow,
+            .mob-link.mob-active .mob-arrow {
+                opacity: 1;
+                transform: translateX(0);
+            }
+
+            .mob-footer {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                padding-top: var(--sp-4);
                 border-top: 1px solid var(--border);
             }
-            .mobile-lang .seg-btn {
-                padding: var(--sp-2) var(--sp-3);
+
+            .mob-lang {
+                display: flex;
+                align-items: center;
+                gap: var(--sp-1);
+                padding: 3px;
+                background: var(--bg-sunk);
+                border: 1px solid var(--border);
+                border-radius: var(--r-md);
+            }
+            .mob-lang-btn {
+                padding: var(--sp-2) var(--sp-4);
                 font-size: var(--fs-sm);
+                font-weight: var(--fw-semi);
+                color: var(--text-mute);
+                border-radius: var(--r-sm);
+                letter-spacing: var(--ls-wide);
+                transition: background var(--dur-fast) var(--ease-out),
+                            color var(--dur-fast) var(--ease-out);
+            }
+            .mob-lang-btn.is-on {
+                background: var(--brand);
+                color: var(--brand-text);
+                box-shadow: var(--shadow-sm);
+            }
+
+            .mob-theme-btn {
+                display: inline-flex;
+                align-items: center;
+                gap: var(--sp-2);
+                padding: var(--sp-2) var(--sp-4);
+                font-size: var(--fs-sm);
+                font-weight: var(--fw-medium);
+                color: var(--text-mute);
+                background: var(--bg-sunk);
+                border: 1px solid var(--border);
+                border-radius: var(--r-md);
+                transition: background var(--dur-fast) var(--ease-out),
+                            color var(--dur-fast) var(--ease-out);
+            }
+            .mob-theme-btn:active {
+                background: var(--bg-mute);
+                color: var(--text);
             }
         }
     `],
@@ -232,12 +386,18 @@ export class PublicTopbar {
     readonly pwa = inject(PwaService);
     readonly menuOpen = signal(false);
 
-    /** Close mobile menu when clicking anywhere outside the topbar */
     @HostListener('document:click', ['$event'])
     onDocumentClick(event: MouseEvent): void {
         if (!this.menuOpen()) return;
         const target = event.target as HTMLElement;
         if (!this.elRef.nativeElement.contains(target)) {
+            this.menuOpen.set(false);
+        }
+    }
+
+    onOverlayClick(event: MouseEvent): void {
+        // Close only if clicking the overlay background, not menu content
+        if ((event.target as HTMLElement).classList.contains('mob-overlay')) {
             this.menuOpen.set(false);
         }
     }
