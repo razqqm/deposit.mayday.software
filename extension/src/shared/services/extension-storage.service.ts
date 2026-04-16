@@ -1,5 +1,5 @@
-import { Injectable, signal, computed } from '@angular/core';
-import browser from 'webextension-polyfill';
+import { Injectable, inject, signal, computed } from '@angular/core';
+import { BrowserApiService } from './browser-api.service';
 
 export interface DepositAnchorSummary {
     provider: string;
@@ -31,6 +31,8 @@ const SETTINGS_KEY = 'settings';
 
 @Injectable({ providedIn: 'root' })
 export class ExtensionStorageService {
+    private readonly api = inject(BrowserApiService);
+
     readonly deposits = signal<DepositRecord[]>([]);
     readonly depositCount = computed(() => this.deposits().length);
 
@@ -38,19 +40,20 @@ export class ExtensionStorageService {
 
     constructor() {
         void this.loadDeposits();
-        browser.storage.onChanged.addListener((changes) => {
-            if (changes[DEPOSITS_KEY]) {
-                this.deposits.set((changes[DEPOSITS_KEY].newValue as DepositRecord[]) ?? []);
+        this.api.onStorageChanged((changes) => {
+            if (DEPOSITS_KEY in changes) {
+                const val = changes[DEPOSITS_KEY];
+                this.deposits.set((val.newValue as DepositRecord[]) ?? []);
             }
         });
     }
 
     async loadDeposits(): Promise<DepositRecord[]> {
-        const data = await browser.storage.local.get(DEPOSITS_KEY);
+        const data = await this.api.storageGet(DEPOSITS_KEY);
         const records = (data[DEPOSITS_KEY] as DepositRecord[]) ?? [];
         records.sort((a, b) => b.timestamp.localeCompare(a.timestamp));
         this.deposits.set(records);
-        void this.updateBadge(records.length);
+        void this.api.setBadgeText(records.length > 0 ? String(records.length) : '');
         return records;
     }
 
@@ -62,21 +65,21 @@ export class ExtensionStorageService {
         } else {
             current.unshift(record);
         }
-        await browser.storage.local.set({ [DEPOSITS_KEY]: current });
+        await this.api.storageSet({ [DEPOSITS_KEY]: current });
         this.deposits.set(current);
-        void this.updateBadge(current.length);
+        void this.api.setBadgeText(current.length > 0 ? String(current.length) : '');
     }
 
     async deleteDeposit(digest: string): Promise<void> {
         const current = this.deposits().filter((r) => r.digest !== digest);
-        await browser.storage.local.set({ [DEPOSITS_KEY]: current });
+        await this.api.storageSet({ [DEPOSITS_KEY]: current });
         this.deposits.set(current);
-        void this.updateBadge(current.length);
+        void this.api.setBadgeText(current.length > 0 ? String(current.length) : '');
     }
 
     async getSettings(): Promise<ExtensionSettings> {
         if (this.settingsCache) return this.settingsCache;
-        const data = await browser.storage.local.get(SETTINGS_KEY);
+        const data = await this.api.storageGet(SETTINGS_KEY);
         this.settingsCache = (data[SETTINGS_KEY] as ExtensionSettings) ?? {
             language: 'en',
             defaultAuthor: { givenNames: '', familyNames: '', email: '' },
@@ -86,15 +89,6 @@ export class ExtensionStorageService {
 
     async saveSettings(settings: ExtensionSettings): Promise<void> {
         this.settingsCache = settings;
-        await browser.storage.local.set({ [SETTINGS_KEY]: settings });
-    }
-
-    private async updateBadge(count: number): Promise<void> {
-        try {
-            await browser.action.setBadgeText({ text: count > 0 ? String(count) : '' });
-            await browser.action.setBadgeBackgroundColor({ color: '#f59e0b' });
-        } catch {
-            // action API may not be available in all contexts
-        }
+        await this.api.storageSet({ [SETTINGS_KEY]: settings });
     }
 }

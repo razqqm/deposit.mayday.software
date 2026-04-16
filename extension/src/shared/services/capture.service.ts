@@ -1,5 +1,5 @@
-import { Injectable } from '@angular/core';
-import browser from 'webextension-polyfill';
+import { Injectable, inject } from '@angular/core';
+import { BrowserApiService } from './browser-api.service';
 
 export interface CapturedPage {
     url: string;
@@ -10,30 +10,26 @@ export interface CapturedPage {
 
 @Injectable({ providedIn: 'root' })
 export class CaptureService {
+    private readonly api = inject(BrowserApiService);
+
     async capturePage(includeScreenshot: boolean): Promise<CapturedPage> {
-        const [tab] = await browser.tabs.query({ active: true, currentWindow: true });
+        const tab = await this.api.getActiveTab();
         if (!tab?.id) throw new Error('No active tab');
 
-        // Request HTML from content script
-        const response = await browser.tabs.sendMessage(tab.id, { type: 'CAPTURE_HTML' });
+        const response = await this.api.sendTabMessage(tab.id, { type: 'CAPTURE_HTML' });
         const result: CapturedPage = {
             url: tab.url ?? '',
             title: tab.title ?? '',
             html: (response as { html: string }).html,
         };
 
-        // Capture screenshot if requested
-        if (includeScreenshot) {
-            result.screenshotDataUrl = await browser.tabs.captureVisibleTab(
-                tab.windowId!,
-                { format: 'png' }
-            );
+        if (includeScreenshot && tab.windowId != null) {
+            result.screenshotDataUrl = await this.api.captureVisibleTab(tab.windowId);
         }
 
         return result;
     }
 
-    /** Convert a data URL to a File object. */
     dataUrlToFile(dataUrl: string, filename: string): File {
         const [meta, base64] = dataUrl.split(',');
         const mime = meta.match(/:(.*?);/)?.[1] ?? 'image/png';

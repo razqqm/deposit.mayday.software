@@ -994,191 +994,64 @@
 }
 
 @media (max-width: 640px) {
-    .demo-card {
-        min-height: auto;
-        padding: var(--sp-4);
-    }
-    .demo-pipeline {
-        min-height: auto;
-        padding: var(--sp-2) 0;
-    }
-
-    /* Stage 0: file detect */
-    .stage-file {
-        grid-template-columns: 1fr;
-        gap: var(--sp-3);
-        padding: var(--sp-3);
-    }
-    .file-icon-wrap {
-        width: 56px;
-        height: 68px;
-        margin: 0 auto;
-    }
-    .file-type-icon { font-size: 24px; }
-    .file-name { font-size: var(--fs-sm); white-space: normal; }
-    .file-detail-grid {
-        grid-template-columns: 56px 1fr;
-        padding: var(--sp-2);
-        font-size: var(--fs-xs);
+    /*
+     * Mobile strategy: hide the heavy demo card entirely.
+     * The narration list becomes the sole content — each step
+     * has its own description + inline code sample, which is
+     * much more readable on small screens than a squished
+     * 520px interactive visualization.
+     */
+    .how-split .hero-demo {
+        display: none;
     }
 
-    /* Stage 1: hash */
-    .stage-hash { padding: var(--sp-4); }
-    .hash-output {
-        font-size: 11px;
-        line-height: 1.7;
-        padding: var(--sp-3);
-    }
-
-    /* Stage 3: manifest chips — stack vertically */
-    .stage-proof { grid-template-columns: 1fr; }
-
-    /* Stage 4: anchor terminal */
-    .term-body {
-        font-size: 11px;
-        padding: var(--sp-3);
-        overflow-x: auto;
-    }
-    .term-line {
-        grid-template-columns: 12px auto 1fr;
-        column-gap: var(--sp-1);
-    }
-    .tl-arg {
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
-    .tl-detail { font-size: 9px; }
-    .tl-resp span { font-size: 11px; }
-
-    /* Chain blocks — scrollable with bigger min-width */
-    .chain-blocks {
-        gap: 2px;
-        -webkit-overflow-scrolling: touch;
-    }
-    .chain-block {
-        min-width: 70px;
-        padding: var(--sp-2) var(--sp-2);
-        font-size: 10px;
-    }
-
-    /* Stage 5: certificate */
-    .cert-card { padding: var(--sp-4); }
-    .cert-seal { width: 40px; height: 40px; top: -6px; right: -6px; }
-    .cert-row {
-        grid-template-columns: 56px 1fr;
-        gap: var(--sp-2);
-    }
-    .ca-row { font-size: 12px; }
-}
-
-@media (max-width: 480px) {
     .how-split {
         gap: var(--sp-6);
     }
-    .how-split .hero-demo {
-        max-width: 100%;
-        margin-inline: 0;
-    }
 
     .narr-list { gap: var(--sp-6); }
-    .narr-body h3 { font-size: var(--fs-base); }
-    .narr-body p { font-size: var(--fs-xs); line-height: var(--lh-base); }
-    .narr-code { font-size: 10px; }
-
-    /* Demo card — remove all fixed heights, let content flow */
-    .demo-card {
-        padding: var(--sp-3);
-        border-radius: var(--r-lg);
-    }
-    .demo-pipeline { padding: var(--sp-1) 0; }
-    .demo-controls {
-        right: var(--sp-2);
-        bottom: var(--sp-2);
-    }
-
-    /* Stage 0: file — fully stacked */
-    .stage-file { padding: var(--sp-2); gap: var(--sp-2); }
-    .file-icon-wrap { width: 48px; height: 56px; }
-    .file-type-icon { font-size: 20px; }
-    .file-detail-grid {
-        grid-template-columns: 48px 1fr;
-        gap: var(--sp-1) var(--sp-2);
-        padding: var(--sp-2);
-    }
-    .fd-label { font-size: 10px; }
-    .fd-val { font-size: 11px; }
-    .file-progress { font-size: 10px; padding: 2px var(--sp-2); }
-
-    /* Stage 1: hash */
-    .stage-hash { padding: var(--sp-3); }
-    .hash-label { font-size: 10px; }
-    .hash-pct { font-size: var(--fs-base); }
-    .hash-output {
-        font-size: 10px;
-        line-height: 1.8;
-        padding: var(--sp-2);
-    }
-
-    /* Stage 2: sign */
-    .stage-sign .sign-wrap { padding: var(--sp-3); gap: var(--sp-2); }
-    .sign-header { gap: var(--sp-2); }
-    .sign-label { font-size: var(--fs-xs); }
-    .sign-algo { font-size: 10px; }
-    .sign-pgp-block { padding: var(--sp-2); }
-    .sign-fingerprint { font-size: 10px; }
-
-    /* Stage 3: manifest chips */
-    .proof-chip { padding: var(--sp-3); }
-    .pc-val { font-size: var(--fs-xs); }
-
-    /* Stage 4: anchor terminal */
-    .anch-term { border-radius: var(--r-md); }
-    .term-head { padding: var(--sp-2); }
-    .term-title { font-size: 10px; }
-    .term-dot { width: 6px; height: 6px; }
-    .term-body {
-        font-size: 10px;
-        padding: var(--sp-2);
+    .narr-item {
+        grid-template-columns: 32px 1fr;
         gap: var(--sp-3);
+        opacity: 1;
+        cursor: default;
     }
-    .term-line {
-        grid-template-columns: 10px auto 1fr;
-        column-gap: 4px;
-        font-size: 10px;
-    }
-    .tl-icon { width: 12px; height: 12px; font-size: 8px; }
-    .tl-resp { font-size: 10px; }
-    .tl-detail { font-size: 8px; }
-
-    .chain-vis { padding: var(--sp-2) var(--sp-3); }
-    .chain-label { font-size: 10px; }
-    .chain-block {
-        min-width: 60px;
-        padding: var(--sp-1) var(--sp-2);
-        font-size: 9px;
-    }
-    .cb-n { font-size: 8px; }
-    .cb-you { font-size: 8px; }
-
-    /* Stage 5: certificate */
-    .cert-card { padding: var(--sp-3); gap: var(--sp-2); }
-    .cert-seal { width: 36px; height: 36px; top: -4px; right: -4px; }
-    .cert-row {
-        grid-template-columns: 48px 1fr;
-        gap: 2px var(--sp-2);
-    }
-    .cert-label { font-size: 10px; }
-    .cert-val { font-size: 11px; }
-    .cert-anchors { padding: var(--sp-1); }
-    .ca-row {
-        grid-template-columns: 14px 1fr auto;
-        gap: var(--sp-1);
+    .narr-num {
+        width: 32px;
+        height: 32px;
         font-size: 11px;
-        padding: 2px 0;
     }
-    .ca-icon { width: 14px; height: 14px; font-size: 10px; }
-    .cert-dl { font-size: 11px; padding: var(--sp-2) var(--sp-3); }
+    /* On mobile all steps are visible — no active/done dimming */
+    .narr-item.is-active,
+    .narr-item.is-done { opacity: 1; }
+    .narr-item .narr-num {
+        background: var(--brand);
+        border-color: var(--brand);
+        color: var(--brand-text);
+    }
+    .narr-item.is-active .narr-num {
+        transform: none;
+        box-shadow: none;
+    }
+    .narr-body h3 { font-size: var(--fs-base); }
+    .narr-body p {
+        font-size: var(--fs-sm);
+        line-height: var(--lh-base);
+    }
+    .narr-code {
+        font-size: 11px;
+        word-break: break-all;
+    }
+
+    /* Rail — thinner, always full */
+    .narr-list::before {
+        left: 15px;
+        top: 24px;
+        bottom: 24px;
+        background:
+            linear-gradient(to bottom, var(--brand) 0 100%),
+            none;
+    }
 
     .bottom-cta { margin-top: var(--sp-8); }
 }

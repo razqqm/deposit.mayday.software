@@ -1,0 +1,9 @@
+{
+    "extends": "./tsconfig.json",
+    "compilerOptions": {
+        "outDir": "./dist/out-tsc/spec",
+        "types": ["jasmine", "webextension-polyfill"]
+    },
+    "include": ["src/**/*.spec.ts", "src/**/*.ts"],
+    "exclude": ["src/background/**", "src/content/**"]
+}

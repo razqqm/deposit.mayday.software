@@ -13,6 +13,8 @@ frontend/dist/
 # Angular cache
 frontend/.angular/
 frontend/out-tsc/
+extension/.angular/
+extension/out-tsc/
 
 # IDE
 .idea/
