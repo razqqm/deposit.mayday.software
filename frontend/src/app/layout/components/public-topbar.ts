@@ -189,11 +189,12 @@ import { PwaService } from '@/app/shared/services/pwa.service';
             padding: 4px 10px;
             font-size: var(--fs-xs);
             font-weight: var(--fw-semi);
-            color: var(--text-mute);
+            color: var(--text-dim);
             border-radius: 4px;
             letter-spacing: var(--ls-wide);
             transition: background-color var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out);
         }
+        .seg-btn:hover { color: var(--text); }
         .seg-btn.is-on { background: var(--bg-elev); color: var(--text); box-shadow: var(--shadow-xs); }
 
         .icon-btn {
