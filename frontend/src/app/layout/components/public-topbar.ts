@@ -31,7 +31,6 @@ import { PwaService } from '@/app/shared/services/pwa.service';
                 </nav>
 
                 <div class="ctrls">
-                    <!-- Desktop only: PWA install, lang, theme -->
                     @if (pwa.canInstall()) {
                         <button type="button" class="icon-btn install-btn desktop-only" (click)="installApp()"
                                 [attr.aria-label]="'pwa.install' | translate"
@@ -43,11 +42,11 @@ import { PwaService } from '@/app/shared/services/pwa.service';
                             </svg>
                         </button>
                     }
-                    <div class="seg desktop-only" role="group" [attr.aria-label]="'a11y.switchLang' | translate">
+                    <div class="seg" role="group" [attr.aria-label]="'a11y.switchLang' | translate">
                         <button type="button" class="seg-btn" [class.is-on]="lang.currentLang() === 'en'" (click)="setLang('en')">EN</button>
                         <button type="button" class="seg-btn" [class.is-on]="lang.currentLang() === 'ru'" (click)="setLang('ru')">RU</button>
                     </div>
-                    <button type="button" class="icon-btn desktop-only" (click)="cycleTheme()"
+                    <button type="button" class="icon-btn" (click)="cycleTheme()"
                             [attr.aria-label]="('a11y.themeLabel' | translate:{mode: theme.mode()})"
                             [title]="('a11y.themeLabel' | translate:{mode: theme.mode()})">
                         @if (theme.mode() === 'light') {
@@ -90,8 +89,8 @@ import { PwaService } from '@/app/shared/services/pwa.service';
                     </a>
 
                 </div>
-                <div class="mob-bottom" (click)="$event.stopPropagation()">
-                    @if (pwa.canInstall()) {
+                @if (pwa.canInstall()) {
+                    <div class="mob-bottom" (click)="$event.stopPropagation()">
                         <button type="button" class="mob-install" (click)="installApp(); menuOpen.set(false)">
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                                 <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
@@ -100,26 +99,8 @@ import { PwaService } from '@/app/shared/services/pwa.service';
                             </svg>
                             <span>{{ 'pwa.install' | translate }}</span>
                         </button>
-                    }
-                    <div class="mob-footer">
-                        <div class="mob-lang" role="group" [attr.aria-label]="'a11y.switchLang' | translate">
-                            <button type="button" class="mob-lang-btn" [class.is-on]="lang.currentLang() === 'en'" (click)="setLang('en')">EN</button>
-                            <button type="button" class="mob-lang-btn" [class.is-on]="lang.currentLang() === 'ru'" (click)="setLang('ru')">RU</button>
-                        </div>
-                        <button type="button" class="mob-theme-btn" (click)="cycleTheme()">
-                            @if (theme.mode() === 'light') {
-                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
-                                <span>Light</span>
-                            } @else if (theme.mode() === 'dark') {
-                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
-                                <span>Dark</span>
-                            } @else {
-                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 1 0 18z" fill="currentColor"/></svg>
-                                <span>Auto</span>
-                            }
-                        </button>
                     </div>
-                </div>
+                }
             </div>
         </div>
     `,
