@@ -118,7 +118,7 @@ Build output sizes (production):
 - i18n: EN and RU via `@ngx-translate`.
 - Worker: no user file storage; relay-only model for timestamp requests.
 - Deploy: single Cloudflare Workers deployment from repository root.
-- CI: GitHub Actions — lint, build (frontend + worker), see [.github/workflows/ci.yml](.github/workflows/ci.yml).
+- CI: GitHub Actions — lint, build (frontend + extension + worker), see [.github/workflows/ci.yml](.github/workflows/ci.yml).
 
 ## Local development
 

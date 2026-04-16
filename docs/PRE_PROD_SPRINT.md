@@ -65,12 +65,13 @@ A release is production-ready only if all sections below pass.
 
 ```bash
 cd frontend && npm run build
-cd ../extension && npm run build
+cd ../extension && npm install && npm run build
 cd .. && npx wrangler dev
 curl -sf http://localhost:8787/
 curl -sf http://localhost:8787/privacy
 curl -sf http://localhost:8787/terms
 curl -s http://localhost:8787/sitemap.xml
+# Then: Load extension/dist/extension/browser/ in Chrome or Firefox
 ```
 
 ## Ownership
