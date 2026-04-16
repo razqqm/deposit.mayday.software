@@ -89,16 +89,6 @@ import { PwaService } from '@/app/shared/services/pwa.service';
                         <svg class="mob-arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
                     </a>
 
-                    @if (pwa.canInstall()) {
-                        <button type="button" class="mob-install" (click)="installApp(); menuOpen.set(false)">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                                <polyline points="7 10 12 15 17 10"/>
-                                <line x1="12" y1="15" x2="12" y2="3"/>
-                            </svg>
-                            <span>{{ 'pwa.install' | translate }}</span>
-                        </button>
-                    }
                 </div>
                 <div class="mob-footer">
                     <div class="mob-lang" role="group" [attr.aria-label]="'a11y.switchLang' | translate">
