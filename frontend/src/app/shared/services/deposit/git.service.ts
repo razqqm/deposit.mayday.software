@@ -53,7 +53,7 @@ export class GitService {
 
         const headContent = (await readText(headFile)).trim();
         let headCommit = '';
-        let branch = '';
+        let branch: string;
 
         if (headContent.startsWith('ref: ')) {
             // HEAD points to a ref like refs/heads/main

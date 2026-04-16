@@ -200,8 +200,8 @@ function extractTstInfo(content: object): TstInfoExtract | null {
 
 function bytesToHex(bytes: Uint8Array): string {
     let hex = '';
-    for (let i = 0; i < bytes.length; i++) {
-        hex += bytes[i].toString(16).padStart(2, '0');
+    for (const byte of bytes) {
+        hex += byte.toString(16).padStart(2, '0');
     }
     return hex;
 }

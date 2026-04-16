@@ -115,7 +115,7 @@ export class SigningService {
             await sig.verified;
             valid = true;
         } catch {
-            valid = false;
+            // valid remains false
         }
 
         const userIdPacket = publicKey.users[0]?.userID;

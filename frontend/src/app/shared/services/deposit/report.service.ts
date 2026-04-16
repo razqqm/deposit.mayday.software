@@ -2,6 +2,18 @@ import { Injectable, inject } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { CertificateData } from './certificate.service';
 
+interface PdfCell {
+    text: string;
+    bold?: boolean;
+    fontSize?: number;
+    font?: string;
+    alignment?: string;
+    color?: string;
+    italics?: boolean;
+    margin?: number[];
+    background?: string;
+}
+
 @Injectable({ providedIn: 'root' })
 export class ReportService {
     private readonly translate = inject(TranslateService);
@@ -9,7 +21,10 @@ export class ReportService {
     async generate(data: CertificateData): Promise<void> {
         const pdfMake = await import('pdfmake/build/pdfmake');
         const pdfFonts = await import('pdfmake/build/vfs_fonts');
-        (pdfMake as any).vfs = (pdfFonts as any).vfs ?? (pdfFonts as any).default?.vfs;
+        const mod = pdfMake as Record<string, unknown>;
+        const fonts = pdfFonts as Record<string, unknown>;
+        const defaultExport = fonts['default'] as Record<string, unknown> | undefined;
+        mod['vfs'] = fonts['vfs'] ?? defaultExport?.['vfs'];
 
         const t = (key: string): string => this.translate.instant(key);
         const { input, manifest, anchors, gpgSignature } = data;
@@ -20,7 +35,7 @@ export class ReportService {
         const confirmedAnchors = anchors.filter(a => a.status === 'confirmed');
 
         // --- Build file table ---
-        const fileTableBody: any[][] = [
+        const fileTableBody: PdfCell[][] = [
             [
                 { text: t('report.file'), bold: true, fontSize: 8 },
                 { text: t('report.size'), bold: true, fontSize: 8 },
@@ -34,7 +49,7 @@ export class ReportService {
         ];
 
         // --- Build anchor table ---
-        const anchorTableBody: any[][] = [
+        const anchorTableBody: PdfCell[][] = [
             [
                 { text: t('report.provider'), bold: true, fontSize: 8 },
                 { text: t('report.timestamp'), bold: true, fontSize: 8 },
@@ -48,9 +63,9 @@ export class ReportService {
         ];
 
         // --- WHO section content ---
-        const whoContent: any[] = [
+        const whoContent: PdfCell[] = [
             { text: author, fontSize: 14, bold: true, margin: [0, 4, 0, 2] },
-            input.authorEmail ? { text: input.authorEmail, fontSize: 10, color: '#666' } : {},
+            input.authorEmail ? { text: input.authorEmail, fontSize: 10, color: '#666' } : { text: '' },
         ];
 
         if (gpgSignature) {
@@ -65,7 +80,7 @@ export class ReportService {
         }
 
         // --- Legal section ---
-        const legalContent: any[] = [
+        const legalContent: PdfCell[] = [
             { text: t('legal.p1'), fontSize: 9, margin: [0, 0, 0, 6] },
             { text: t('legal.p2'), fontSize: 9, margin: [0, 0, 0, 6] },
             { text: t('legal.p3'), fontSize: 9, margin: [0, 0, 0, 6] },
@@ -73,7 +88,7 @@ export class ReportService {
         ];
 
         // --- Verification instructions ---
-        const verifyContent: any[] = [];
+        const verifyContent: PdfCell[] = [];
         if (confirmedAnchors.some(a => a.kind === 'rfc3161')) {
             verifyContent.push(
                 { text: t('report.verifyRfc3161'), fontSize: 9, margin: [0, 4, 0, 2] },
@@ -93,7 +108,7 @@ export class ReportService {
             );
         }
 
-        const docDefinition: any = {
+        const docDefinition: Record<string, unknown> = {
             pageSize: 'A4',
             pageMargins: [50, 60, 50, 60],
             footer: (currentPage: number, pageCount: number) => ({
@@ -163,7 +178,8 @@ export class ReportService {
             ],
         };
 
-        const pdf = pdfMake.createPdf(docDefinition);
+        const create = pdfMake['createPdf'] as (dd: Record<string, unknown>) => { download: (name: string) => void };
+        const pdf = create(docDefinition);
         pdf.download(`mayday-report-${manifest.sha256.slice(0, 12)}.pdf`);
     }
 }

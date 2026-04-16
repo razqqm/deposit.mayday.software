@@ -299,7 +299,7 @@ async function handleApiV1(url: URL, request: Request, env: Env): Promise<Respon
         const apiKey = request.headers.get('X-API-Key') || url.searchParams.get('api_key');
         if (env.API_KEYS && apiKey) {
             const validKeys = env.API_KEYS.split(',').map(k => k.trim());
-            if (!validKeys.includes(apiKey)) {
+            if (!validKeys.some(k => timingSafeEqual(k, apiKey))) {
                 return withCors(jsonResponse({ error: 'Invalid API key' }, 403));
             }
         }
@@ -397,6 +397,16 @@ function withCors(resp: Response): Response {
     for (const [k, v] of Object.entries(corsHeaders())) headers.set(k, v);
     for (const [k, v] of Object.entries(API_SECURITY_HEADERS)) headers.set(k, v);
     return new Response(resp.body, { status: resp.status, headers });
+}
+
+function timingSafeEqual(a: string, b: string): boolean {
+    if (a.length !== b.length) return false;
+    const enc = new TextEncoder();
+    const bufA = enc.encode(a);
+    const bufB = enc.encode(b);
+    let diff = 0;
+    for (let i = 0; i < bufA.length; i++) diff |= bufA[i] ^ bufB[i];
+    return diff === 0;
 }
 
 function jsonResponse(data: unknown, status = 200): Response {

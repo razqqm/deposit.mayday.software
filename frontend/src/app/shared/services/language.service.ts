@@ -1,5 +1,7 @@
-import { Injectable, inject, signal, DOCUMENT } from '@angular/core';
+import { Injectable, inject, signal, DOCUMENT, DestroyRef } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TranslateService } from '@ngx-translate/core';
+import { switchMap } from 'rxjs';
 import { PrimeNG } from 'primeng/config';
 
 @Injectable({ providedIn: 'root' })
@@ -7,6 +9,7 @@ export class LanguageService {
     private readonly translate = inject(TranslateService);
     private readonly primeng = inject(PrimeNG);
     private readonly document = inject(DOCUMENT);
+    private readonly destroyRef = inject(DestroyRef);
 
     readonly supportedLanguages = ['en', 'ru'];
     readonly currentLang = signal('en');
@@ -37,15 +40,18 @@ export class LanguageService {
 
         this.use(lang);
 
-        this.translate.onLangChange.subscribe(({ lang: newLang }) => {
-            this.currentLang.set(newLang);
-            this.document.documentElement.lang = newLang;
-            this.applySeoTags(newLang);
-            this.translate.get('primeng').subscribe(res => {
-                if (res && typeof res === 'object') {
-                    this.primeng.setTranslation(res);
-                }
-            });
+        this.translate.onLangChange.pipe(
+            switchMap(({ lang: newLang }) => {
+                this.currentLang.set(newLang);
+                this.document.documentElement.lang = newLang;
+                this.applySeoTags(newLang);
+                return this.translate.get('primeng');
+            }),
+            takeUntilDestroyed(this.destroyRef),
+        ).subscribe(res => {
+            if (res && typeof res === 'object') {
+                this.primeng.setTranslation(res);
+            }
         });
     }
 

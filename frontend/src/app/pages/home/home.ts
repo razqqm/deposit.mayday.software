@@ -233,7 +233,7 @@ export class HomePage {
         this.hashing.set(false);
         this.manifest.set(null);
 
-        this.gitSvc.extractMetadata(files).then(meta => this.gitMeta.set(meta)).catch(() => {});
+        this.gitSvc.extractMetadata(files).then(meta => this.gitMeta.set(meta)).catch(() => { /* non-critical */ });
     }
 
     async generate(): Promise<void> {

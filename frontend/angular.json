@@ -28,15 +28,9 @@
                                 "input": "public"
                             }
                         ],
-                        "styles": [
-                            "src/assets/styles.scss",
-                            "src/assets/tailwind.css"
-                        ],
+                        "styles": ["src/assets/styles.scss", "src/assets/tailwind.css"],
                         "scripts": [],
-                        "allowedCommonJsDependencies": [
-                            "pdfmake",
-                            "pvtsutils"
-                        ]
+                        "allowedCommonJsDependencies": ["pdfmake", "pvtsutils"]
                     },
                     "configurations": {
                         "production": {
@@ -94,19 +88,22 @@
                     "options": {
                         "tsConfig": "tsconfig.spec.json",
                         "inlineStyleLanguage": "scss",
-                        "assets": [
-                            "src/assets"
-                        ],
-                        "styles": [
-                            "src/assets/styles.scss"
-                        ],
+                        "assets": ["src/assets"],
+                        "styles": ["src/assets/styles.scss"],
                         "scripts": []
+                    }
+                },
+                "lint": {
+                    "builder": "@angular-eslint/builder:lint",
+                    "options": {
+                        "lintFilePatterns": ["src/**/*.ts", "src/**/*.html"]
                     }
                 }
             }
         }
     },
     "cli": {
-        "analytics": false
+        "analytics": false,
+        "schematicCollections": ["angular-eslint"]
     }
 }

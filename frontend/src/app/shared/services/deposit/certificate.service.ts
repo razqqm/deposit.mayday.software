@@ -143,7 +143,7 @@ export class CertificateService {
         win.document.open();
         win.document.write(`<!doctype html><html><head><meta charset="utf-8"><title>${escapeXml(this.translate.instant('cert.title'))}</title>
 <style>html,body{margin:0;padding:0;background:#0b0f1a;}svg{display:block;width:100vw;height:auto;max-height:100vh;}@media print{@page{size:landscape;margin:0;}body{background:#fff;}svg{width:100%;height:auto;}}</style>
-</head><body>${svg}<script>window.addEventListener('load',()=>setTimeout(()=>window.print(),200));<\/script></body></html>`);
+</head><body>${svg}<script>window.addEventListener('load',()=>setTimeout(()=>window.print(),200));${"</"}script></body></html>`);
         win.document.close();
     }
 }

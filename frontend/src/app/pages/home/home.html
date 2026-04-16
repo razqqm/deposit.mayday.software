@@ -138,7 +138,7 @@
                             </label>
                         </div>
 
-                        <div class="gpg-toggle" (click)="toggleGpg()">
+                        <div class="gpg-toggle" role="button" tabindex="0" (click)="toggleGpg()" (keydown.enter)="toggleGpg()" (keydown.space)="toggleGpg(); $event.preventDefault()">
                             <span class="gpg-caret" [class.is-open]="gpgOpen()">▸</span>
                             <span class="gpg-title">{{ 'gpg.title' | translate }}</span>
                             <ui-badge>{{ 'gpg.optional' | translate }}</ui-badge>

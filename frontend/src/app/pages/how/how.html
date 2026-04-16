@@ -13,7 +13,9 @@
                     <li class="narr-item"
                         [class.is-active]="currentStage() === i"
                         [class.is-done]="currentStage() > i"
+                        tabindex="0" role="tab"
                         (click)="goToStage(i)"
+                        (keydown.enter)="goToStage(i)"
                         [attr.aria-current]="currentStage() === i ? 'step' : null">
                         <span class="narr-num">{{ '0' + (i + 1) }}</span>
                         <div class="narr-body">
@@ -81,12 +83,14 @@
                     <span class="demo-step mono">{{ currentStage() + 1 }} / {{ stageCount }}</span>
                 </div>
 
-                <div class="demo-pipeline"
+                <div class="demo-pipeline" role="tabpanel"
                      [attr.data-stage]="currentStage()"
-                     (click)="nextStage($event)">
+                     tabindex="0"
+                     (click)="nextStage($event)"
+                     (keydown.enter)="nextStage($event)">
 
                     <!-- ─────── Stage 0 · DETECT ─────── -->
-                    <div class="stage stage-file" [class.is-active]="currentStage() === 0" (click)="goToStage(0)">
+                    <div class="stage stage-file" [class.is-active]="currentStage() === 0" role="tab" tabindex="0" (click)="goToStage(0)" (keydown.enter)="goToStage(0)">
                         <div class="file-icon-wrap">
                             <svg class="file-svg file-svg--generic" viewBox="0 0 40 48" fill="none">
                                 <path d="M4 6a4 4 0 0 1 4-4h16l12 12v28a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4V6z" fill="var(--bg-sunk)" stroke="var(--border-strong)" stroke-width="1.5"/>
@@ -115,7 +119,7 @@
                     </div>
 
                     <!-- ─────── Stage 1 · HASH ─────── -->
-                    <div class="stage stage-hash" [class.is-active]="currentStage() === 1" (click)="goToStage(1)">
+                    <div class="stage stage-hash" [class.is-active]="currentStage() === 1" role="tab" tabindex="0" (click)="goToStage(1)" (keydown.enter)="goToStage(1)">
                         <div class="hash-head">
                             <span class="hash-label mono">SHA-256</span>
                             <span class="hash-pct mono" aria-live="polite"></span>
@@ -127,7 +131,7 @@
                     </div>
 
                     <!-- ─────── Stage 2 · SIGN ─────── -->
-                    <div class="stage stage-sign" [class.is-active]="currentStage() === 2" (click)="goToStage(2)">
+                    <div class="stage stage-sign" [class.is-active]="currentStage() === 2" role="tab" tabindex="0" (click)="goToStage(2)" (keydown.enter)="goToStage(2)">
                         <div class="sign-wrap">
                             <div class="sign-header">
                                 <svg class="sign-key-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>
@@ -150,7 +154,7 @@
                     </div>
 
                     <!-- ─────── Stage 3 · MANIFEST / PROOF ─────── -->
-                    <div class="stage stage-proof" [class.is-active]="currentStage() === 3" (click)="goToStage(3)">
+                    <div class="stage stage-proof" [class.is-active]="currentStage() === 3" role="tab" tabindex="0" (click)="goToStage(3)" (keydown.enter)="goToStage(3)">
                         <div class="proof-chip proof-chip--what">
                             <span class="pc-key">{{ 'hero.bento.what' | translate }}</span>
                             <span class="pc-val mono">{{ demoFrame().sha256.slice(0, 8) }}…{{ demoFrame().sha256.slice(-4) }}</span>
@@ -167,7 +171,7 @@
                     </div>
 
                     <!-- ─────── Stage 4 · ANCHOR (parallel!) ─────── -->
-                    <div class="stage stage-anchor" [class.is-active]="currentStage() === 4" (click)="goToStage(4)">
+                    <div class="stage stage-anchor" [class.is-active]="currentStage() === 4" role="tab" tabindex="0" (click)="goToStage(4)" (keydown.enter)="goToStage(4)">
                         <div class="anch-term">
                             <div class="term-head">
                                 <span class="term-dot"></span>
@@ -257,7 +261,7 @@
                     </div>
 
                     <!-- ─────── Stage 5 · CERTIFICATE ─────── -->
-                    <div class="stage stage-seal" [class.is-active]="currentStage() === 5" (click)="goToStage(5)">
+                    <div class="stage stage-seal" [class.is-active]="currentStage() === 5" role="tab" tabindex="0" (click)="goToStage(5)" (keydown.enter)="goToStage(5)">
                         <div class="cert-card">
                             <div class="cert-header">
                                 <svg class="cert-icon" viewBox="0 0 24 24" fill="none" stroke="var(--brand)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><path d="M9 15l2 2 4-4"/></svg>

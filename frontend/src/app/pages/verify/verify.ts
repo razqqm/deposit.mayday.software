@@ -260,8 +260,8 @@ export class VerifyPage {
         }
 
         const manifestHashes = new Map<string, string>();
-        const fileRegex = /^  - path:\s*"?(.+?)"?\s*$/gm;
-        const hashRegex = /^    sha256:\s*([0-9a-f]{64})\s*$/gm;
+        const fileRegex = /^ {2}- path:\s*"?(.+?)"?\s*$/gm;
+        const hashRegex = /^ {4}sha256:\s*([0-9a-f]{64})\s*$/gm;
         const paths = [...manifestText.matchAll(fileRegex)].map(m => m[1]);
         const hashes = [...manifestText.matchAll(hashRegex)].map(m => m[1]);
         for (let i = 0; i < Math.min(paths.length, hashes.length); i++) {

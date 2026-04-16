@@ -24,8 +24,8 @@ export class GostHashingService {
 
     private async load(): Promise<(data: Uint8Array) => Uint8Array> {
         if (!this.streebogFn) {
-            const mod: any = await import('@li0ard/streebog');
-            this.streebogFn = mod.streebog256 ?? mod.default;
+            const mod: Record<string, unknown> = await import('@li0ard/streebog');
+            this.streebogFn = (mod['streebog256'] ?? mod['default']) as (data: Uint8Array) => Uint8Array;
         }
         return this.streebogFn!;
     }
@@ -51,6 +51,6 @@ export class GostHashingService {
 
 function bytesToHex(bytes: Uint8Array): string {
     let hex = '';
-    for (let i = 0; i < bytes.length; i++) hex += bytes[i].toString(16).padStart(2, '0');
+    for (const byte of bytes) hex += byte.toString(16).padStart(2, '0');
     return hex;
 }
