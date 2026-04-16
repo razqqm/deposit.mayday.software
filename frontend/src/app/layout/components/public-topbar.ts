@@ -24,7 +24,7 @@ import { PwaService } from '@/app/shared/services/pwa.service';
                     <span class="brand-word">deposit</span>
                 </a>
 
-                <nav class="links" [class.is-open]="menuOpen()">
+                <nav class="links">
                     <a routerLink="/" routerLinkActive="is-active" [routerLinkActiveOptions]="{ exact: true }" class="link">{{ 'nav.home' | translate }}</a>
                     <a routerLink="/how" routerLinkActive="is-active" class="link">{{ 'info.howEyebrow' | translate }}</a>
                     <a routerLink="/verify" routerLinkActive="is-active" class="link">{{ 'verify.title' | translate }}</a>
@@ -42,10 +42,9 @@ import { PwaService } from '@/app/shared/services/pwa.service';
                             </svg>
                         </button>
                     }
-                    <div class="seg desktop-only" role="group" [attr.aria-label]="'a11y.switchLang' | translate">
-                        <button type="button" class="seg-btn" [class.is-on]="lang.currentLang() === 'en'" (click)="setLang('en')">EN</button>
-                        <button type="button" class="seg-btn" [class.is-on]="lang.currentLang() === 'ru'" (click)="setLang('ru')">RU</button>
-                    </div>
+                    <button type="button" class="icon-btn lang-btn" (click)="lang.switchLanguage()" [title]="lang.currentLang() === 'ru' ? 'Switch to English' : 'Переключить на русский'">
+                        {{ lang.currentLang() === 'ru' ? 'EN' : 'RU' }}
+                    </button>
                     <button type="button" class="icon-btn" (click)="cycleTheme()"
                             [attr.aria-label]="('a11y.themeLabel' | translate:{mode: theme.mode()})"
                             [title]="('a11y.themeLabel' | translate:{mode: theme.mode()})">
@@ -87,7 +86,6 @@ import { PwaService } from '@/app/shared/services/pwa.service';
                         <span class="mob-text">{{ 'verify.title' | translate }}</span>
                         <svg class="mob-arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
                     </a>
-
                 </div>
                 <div class="mob-bottom" (click)="$event.stopPropagation()">
                     <button type="button" class="mob-install" (click)="installOrOpen(); menuOpen.set(false)">
@@ -98,10 +96,6 @@ import { PwaService } from '@/app/shared/services/pwa.service';
                         </svg>
                         <span>{{ 'pwa.install' | translate }}</span>
                     </button>
-                    <div class="mob-lang" role="group">
-                        <button type="button" class="mob-lang-btn" [class.is-on]="lang.currentLang() === 'en'" (click)="setLang('en')">EN</button>
-                        <button type="button" class="mob-lang-btn" [class.is-on]="lang.currentLang() === 'ru'" (click)="setLang('ru')">RU</button>
-                    </div>
                 </div>
             </div>
         </div>
@@ -175,26 +169,6 @@ import { PwaService } from '@/app/shared/services/pwa.service';
             gap: var(--sp-2);
         }
 
-        .seg {
-            display: inline-flex;
-            align-items: center;
-            padding: 2px;
-            background: var(--bg-mute);
-            border: 1px solid var(--border);
-            border-radius: var(--r-sm);
-        }
-        .seg-btn {
-            padding: 4px 10px;
-            font-size: var(--fs-xs);
-            font-weight: var(--fw-semi);
-            color: var(--text-dim);
-            border-radius: 4px;
-            letter-spacing: var(--ls-wide);
-            transition: background-color var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out);
-        }
-        .seg-btn:hover { color: var(--text); }
-        .seg-btn.is-on { background: var(--bg-elev); color: var(--text); box-shadow: var(--shadow-xs); }
-
         .icon-btn {
             display: inline-flex;
             align-items: center;
@@ -208,6 +182,14 @@ import { PwaService } from '@/app/shared/services/pwa.service';
             transition: background-color var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out);
         }
         .icon-btn:hover { background: var(--bg-mute); color: var(--text); }
+
+        .lang-btn {
+            font-size: var(--fs-xs);
+            font-weight: var(--fw-bold);
+            font-family: inherit;
+            letter-spacing: var(--ls-wide);
+        }
+
         .install-btn { color: var(--brand-strong); }
         .install-btn:hover { background: var(--brand-soft); color: var(--brand-strong); }
         .menu-btn { display: none; }
@@ -262,7 +244,7 @@ import { PwaService } from '@/app/shared/services/pwa.service';
                 display: flex;
                 align-items: center;
                 gap: var(--sp-4);
-                padding: var(--sp-4) var(--sp-4);
+                padding: var(--sp-4);
                 border-radius: var(--r-lg);
                 color: var(--text);
                 text-decoration: none;
@@ -284,12 +266,8 @@ import { PwaService } from '@/app/shared/services/pwa.service';
                 color: var(--brand-text);
                 border-color: var(--brand);
             }
-            .mob-link.mob-active .mob-text {
-                color: var(--brand-strong);
-            }
-            .mob-link.mob-active .mob-arrow {
-                color: var(--brand);
-            }
+            .mob-link.mob-active .mob-text { color: var(--brand-strong); }
+            .mob-link.mob-active .mob-arrow { color: var(--brand); }
 
             .mob-num {
                 display: grid;
@@ -304,9 +282,6 @@ import { PwaService } from '@/app/shared/services/pwa.service';
                 color: var(--text-mute);
                 letter-spacing: var(--ls-mono);
                 flex-shrink: 0;
-                transition: background var(--dur-fast) var(--ease-out),
-                            color var(--dur-fast) var(--ease-out),
-                            border-color var(--dur-fast) var(--ease-out);
             }
             .mob-text {
                 flex: 1;
@@ -319,8 +294,7 @@ import { PwaService } from '@/app/shared/services/pwa.service';
                 opacity: 0;
                 transform: translateX(-8px);
                 transition: opacity var(--dur-fast) var(--ease-out),
-                            transform var(--dur-fast) var(--ease-out),
-                            color var(--dur-fast) var(--ease-out);
+                            transform var(--dur-fast) var(--ease-out);
             }
             .mob-link:hover .mob-arrow,
             .mob-link.mob-active .mob-arrow {
@@ -339,13 +313,13 @@ import { PwaService } from '@/app/shared/services/pwa.service';
                 align-items: center;
                 gap: var(--sp-3);
                 padding: var(--sp-4);
-                margin-top: var(--sp-2);
                 border-radius: var(--r-lg);
                 background: var(--brand);
                 color: var(--brand-text);
                 font-size: var(--fs-base);
                 font-weight: var(--fw-semi);
                 letter-spacing: var(--ls-snug);
+                font-family: inherit;
                 width: 100%;
                 border: none;
                 cursor: pointer;
@@ -355,61 +329,6 @@ import { PwaService } from '@/app/shared/services/pwa.service';
             .mob-install:active {
                 background: var(--brand-strong);
                 transform: scale(0.98);
-            }
-
-            .mob-footer {
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
-                padding-top: var(--sp-4);
-                border-top: 1px solid var(--border);
-            }
-
-            .mob-lang {
-                display: inline-flex;
-                align-items: center;
-                padding: 2px;
-                background: var(--bg-mute);
-                border: 1px solid var(--border);
-                border-radius: var(--r-sm);
-            }
-            .mob-lang-btn {
-                padding: 4px 10px;
-                font-size: var(--fs-xs);
-                font-weight: var(--fw-semi);
-                color: var(--text-mute);
-                background: none;
-                border: none;
-                border-radius: 4px;
-                letter-spacing: var(--ls-wide);
-                cursor: pointer;
-                font-family: inherit;
-                transition: background var(--dur-fast) var(--ease-out),
-                            color var(--dur-fast) var(--ease-out);
-            }
-            .mob-lang-btn.is-on {
-                background: var(--bg-elev);
-                color: var(--text);
-                box-shadow: var(--shadow-xs);
-            }
-
-            .mob-theme-btn {
-                display: inline-flex;
-                align-items: center;
-                gap: var(--sp-2);
-                padding: var(--sp-2) var(--sp-4);
-                font-size: var(--fs-sm);
-                font-weight: var(--fw-medium);
-                color: var(--text-mute);
-                background: var(--bg-sunk);
-                border: 1px solid var(--border);
-                border-radius: var(--r-md);
-                transition: background var(--dur-fast) var(--ease-out),
-                            color var(--dur-fast) var(--ease-out);
-            }
-            .mob-theme-btn:active {
-                background: var(--bg-mute);
-                color: var(--text);
             }
         }
     `],
@@ -428,12 +347,6 @@ export class PublicTopbar {
         if (this.pwa.canInstall()) {
             await this.pwa.install();
         }
-        // If can't install (already installed or not available), button still shows as branding
-    }
-
-    setLang(code: 'en' | 'ru'): void {
-        if (this.lang.currentLang() === code) return;
-        this.lang.switchLanguage();
     }
 
     toggleMenu(): void { this.menuOpen.update(v => !v); }
