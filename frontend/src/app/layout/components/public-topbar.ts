@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, HostListener, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ElementRef, HostListener, inject, signal } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { LanguageService } from '@/app/shared/services/language.service';
@@ -24,13 +24,15 @@ import { PwaService } from '@/app/shared/services/pwa.service';
                     <span class="brand-word">deposit</span>
                 </a>
 
-                @if (menuOpen()) {
-                    <div class="menu-backdrop" (click)="menuOpen.set(false)"></div>
-                }
                 <nav class="links" [class.is-open]="menuOpen()">
                     <a routerLink="/" routerLinkActive="is-active" [routerLinkActiveOptions]="{ exact: true }" class="link" (click)="menuOpen.set(false)">{{ 'nav.home' | translate }}</a>
                     <a routerLink="/how" routerLinkActive="is-active" class="link" (click)="menuOpen.set(false)">{{ 'info.howEyebrow' | translate }}</a>
                     <a routerLink="/verify" routerLinkActive="is-active" class="link" (click)="menuOpen.set(false)">{{ 'verify.title' | translate }}</a>
+                    <!-- Language toggle inside mobile menu -->
+                    <div class="mobile-lang" role="group" [attr.aria-label]="'a11y.switchLang' | translate">
+                        <button type="button" class="seg-btn" [class.is-on]="lang.currentLang() === 'en'" (click)="setLang('en'); menuOpen.set(false)">EN</button>
+                        <button type="button" class="seg-btn" [class.is-on]="lang.currentLang() === 'ru'" (click)="setLang('ru'); menuOpen.set(false)">RU</button>
+                    </div>
                 </nav>
 
                 <div class="ctrls">
@@ -60,7 +62,7 @@ import { PwaService } from '@/app/shared/services/pwa.service';
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 1 0 18z" fill="currentColor"/></svg>
                         }
                     </button>
-                    <button type="button" class="icon-btn menu-btn" (click)="toggleMenu()" [attr.aria-expanded]="menuOpen()" aria-label="Menu">
+                    <button type="button" class="icon-btn menu-btn" (click)="toggleMenu(); $event.stopPropagation()" [attr.aria-expanded]="menuOpen()" aria-label="Menu">
                         @if (menuOpen()) {
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6l-12 12"/></svg>
                         } @else {
@@ -176,21 +178,16 @@ import { PwaService } from '@/app/shared/services/pwa.service';
         .install-btn { color: var(--brand-strong); }
         .install-btn:hover { background: var(--brand-soft); color: var(--brand-strong); }
         .menu-btn { display: none; }
-        .menu-backdrop { display: none; }
+
+        /* Mobile language toggle — hidden on desktop, shown inside dropdown on mobile */
+        .mobile-lang { display: none; }
 
         @media (max-width: 720px) {
-            .menu-backdrop {
-                display: block;
-                position: fixed;
-                inset: 56px 0 0 0;
-                z-index: 490;
-                background: rgba(0, 0, 0, 0.3);
-                backdrop-filter: blur(2px);
-                -webkit-backdrop-filter: blur(2px);
-            }
             .inner { gap: var(--sp-3); padding: 0 var(--sp-4); }
             .ctrls { margin-left: auto; }
             .menu-btn { display: inline-flex; }
+            /* Hide desktop language segment */
+            .seg { display: none; }
             .links {
                 position: absolute;
                 top: 56px;
@@ -212,15 +209,38 @@ import { PwaService } from '@/app/shared/services/pwa.service';
             .links:not(.is-open) { display: none; }
             .links.is-open { display: flex; opacity: 1; transform: translateY(0); pointer-events: auto; }
             .link { padding: var(--sp-3); border-radius: var(--r-sm); }
-            .seg { display: none; }
+            /* Show language toggle inside mobile dropdown */
+            .mobile-lang {
+                display: inline-flex;
+                align-items: center;
+                gap: var(--sp-1);
+                padding: var(--sp-2) var(--sp-3);
+                margin-top: var(--sp-1);
+                border-top: 1px solid var(--border);
+            }
+            .mobile-lang .seg-btn {
+                padding: var(--sp-2) var(--sp-3);
+                font-size: var(--fs-sm);
+            }
         }
     `],
 })
 export class PublicTopbar {
+    private readonly elRef = inject(ElementRef);
     readonly lang = inject(LanguageService);
     readonly theme = inject(ThemeService);
     readonly pwa = inject(PwaService);
     readonly menuOpen = signal(false);
+
+    /** Close mobile menu when clicking anywhere outside the topbar */
+    @HostListener('document:click', ['$event'])
+    onDocumentClick(event: MouseEvent): void {
+        if (!this.menuOpen()) return;
+        const target = event.target as HTMLElement;
+        if (!this.elRef.nativeElement.contains(target)) {
+            this.menuOpen.set(false);
+        }
+    }
 
     async installApp(): Promise<void> {
         await this.pwa.install();
