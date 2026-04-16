@@ -411,9 +411,9 @@
         "h5": "5. Children",
         "p5": "This service is not directed at children under 16 and we do not knowingly collect any data that could identify a minor.",
         "h6": "6. Changes to this policy",
-        "p6": "Substantive changes are tracked in Git history at github.com/iarestov/mayday.software. The Last updated field at the top of this page reflects the most recent revision.",
+        "p6": "Substantive changes are tracked in Git history at github.com/razqqm/deposit.mayday.software. The Last updated field at the top of this page reflects the most recent revision.",
         "h7": "7. Contact",
-        "p7": "For privacy questions, open an issue at github.com/iarestov/mayday.software/issues — we respond in the open."
+        "p7": "For privacy questions, open an issue at github.com/razqqm/deposit.mayday.software/issues — we respond in the open."
     },
     "terms": {
         "eyebrow": "Terms",
@@ -443,10 +443,7 @@
         "followUs": "Find us elsewhere",
         "social": {
             "github": "GitHub source code",
-            "twitter": "Follow on X (coming soon)",
-            "telegram": "Join our Telegram (coming soon)",
-            "linkedin": "LinkedIn page (coming soon)",
-            "email": "Email (coming soon)"
+            "website": "Author's website"
         },
         "badge": {
             "angular": "Angular 21",

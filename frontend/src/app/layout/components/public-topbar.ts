@@ -71,8 +71,10 @@ import { PwaService } from '@/app/shared/services/pwa.service';
     styles: [`
         :host { display: block; }
         .topbar {
-            position: sticky;
+            position: fixed;
             top: 0;
+            left: 0;
+            right: 0;
             z-index: 500;
             background: var(--bg-overlay);
             backdrop-filter: blur(12px) saturate(160%);
