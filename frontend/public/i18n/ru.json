@@ -453,6 +453,29 @@
             "citation": "Citation File Format"
         }
     },
+    "qr": {
+        "eyebrow": "Визитка",
+        "tagline": "Криптографическое депонирование авторства — Bitcoin и RFC 3161.",
+        "scanHint": "Покажите экран — кто угодно отсканирует и попадёт на сайт",
+        "shareTitle": "Поделиться сайтом",
+        "linksTitle": "Быстрые ссылки",
+        "shareNative": "Поделиться",
+        "shareCopy": "Копировать",
+        "shareCopied": "Скопировано",
+        "shareEmail": "Email",
+        "shareEmailSubject": "mayday.software — докажи, что создал первым",
+        "shareMessage": "mayday.software — криптографическое депонирование авторства, бесплатно, без регистрации.",
+        "shareTelegram": "Telegram",
+        "shareWhatsApp": "WhatsApp",
+        "shareVk": "ВКонтакте",
+        "shareX": "X",
+        "shareFacebook": "Facebook",
+        "shareLinkedIn": "LinkedIn",
+        "linkSite": "Открыть сайт",
+        "linkHow": "Как это работает",
+        "linkVerify": "Проверить",
+        "linkGithub": "GitHub"
+    },
     "faq": {
         "eyebrow": "Частые вопросы",
         "title": "Вопросы и ответы",

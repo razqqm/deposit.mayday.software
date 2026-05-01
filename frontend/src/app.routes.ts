@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import { PublicLayout } from '@/app/layout/components/public-layout';
 
 export const appRoutes: Routes = [
+    { path: 'qr', loadComponent: () => import('@/app/pages/qr/qr').then((c) => c.QrPage) },
     {
         path: '',
         component: PublicLayout,

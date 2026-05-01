@@ -48,7 +48,7 @@ const MaydayPreset = definePreset(Material, {
     }
 });
 
-const I18N_VERSION = '2026-04-06.1';
+const I18N_VERSION = '2026-05-01.1';
 
 export const appConfig: ApplicationConfig = {
     providers: [

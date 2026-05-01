@@ -75,7 +75,7 @@ import { LanguageService } from '../../shared/services/language.service';
 
             <div class="bar">
                 <span class="dot" aria-hidden="true"></span>
-                <span>© {{ year }} mayday.software</span>
+                <span>© <a class="ft-secret" routerLink="/qr">{{ year }}</a> mayday.software</span>
                 <span class="sep">·</span>
                 <span>{{ 'footer.tagline' | translate }}</span>
 
@@ -206,6 +206,14 @@ import { LanguageService } from '../../shared/services/language.service';
             transition: color var(--dur-fast) var(--ease-out);
         }
         .links a:hover { color: var(--text); }
+
+        .ft-secret {
+            color: inherit;
+            text-decoration: none;
+            cursor: pointer;
+            transition: color var(--dur-base) var(--ease-out);
+        }
+        .ft-secret:hover { color: var(--brand); }
 
         .bar {
             display: flex;

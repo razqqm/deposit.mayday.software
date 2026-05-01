@@ -453,6 +453,29 @@
             "citation": "Citation File Format"
         }
     },
+    "qr": {
+        "eyebrow": "Card",
+        "tagline": "Cryptographic copyright deposit — anchored in Bitcoin & RFC 3161.",
+        "scanHint": "Show this screen — anyone can scan to open the site",
+        "shareTitle": "Share this site",
+        "linksTitle": "Quick links",
+        "shareNative": "Share",
+        "shareCopy": "Copy",
+        "shareCopied": "Copied",
+        "shareEmail": "Email",
+        "shareEmailSubject": "mayday.software — prove you created it first",
+        "shareMessage": "mayday.software — cryptographic copyright deposit, free, no account.",
+        "shareTelegram": "Telegram",
+        "shareWhatsApp": "WhatsApp",
+        "shareVk": "VK",
+        "shareX": "X",
+        "shareFacebook": "Facebook",
+        "shareLinkedIn": "LinkedIn",
+        "linkSite": "Open site",
+        "linkHow": "How it works",
+        "linkVerify": "Verify",
+        "linkGithub": "GitHub"
+    },
     "faq": {
         "eyebrow": "FAQ",
         "title": "Frequently asked questions",
