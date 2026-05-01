@@ -455,8 +455,8 @@
     },
     "qr": {
         "eyebrow": "Card",
-        "tagline": "Cryptographic copyright deposit — anchored in Bitcoin & RFC 3161.",
-        "scanHint": "Show this screen — anyone can scan to open the site",
+        "tagline": "Prove you created your files first. Hash in browser + anchor in Bitcoin and RFC 3161 = proof valid forever.",
+        "scanHint": "Scan to anchor authorship of your files in Bitcoin in 2 minutes. Free, no account, files never leave your browser.",
         "shareTitle": "Share this site",
         "linksTitle": "Quick links",
         "shareNative": "Share",

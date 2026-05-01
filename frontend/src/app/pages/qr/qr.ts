@@ -27,52 +27,48 @@ type ShareKind =
 interface ShareItem {
     kind: ShareKind;
     labelKey: string;
-    iconKey: string;
+    accent: string;
 }
 
 const ICON_SVGS: Record<string, string> = {
     native:
-        '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>',
+        '<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/><polyline points="16 6 12 2 8 6" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/><line x1="12" y1="2" x2="12" y2="15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
     copy:
-        '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>',
+        '<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2" stroke="currentColor" stroke-width="2" fill="none" stroke-linejoin="round"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" stroke="currentColor" stroke-width="2" fill="none" stroke-linejoin="round"/></svg>',
     check:
-        '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>',
+        '<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><polyline points="20 6 9 17 4 12" stroke="currentColor" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>',
     email:
-        '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>',
+        '<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" stroke="currentColor" stroke-width="2" fill="none" stroke-linejoin="round"/><polyline points="22,6 12,13 2,6" stroke="currentColor" stroke-width="2" fill="none" stroke-linejoin="round"/></svg>',
     linkedin:
-        '<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M20.45 20.45h-3.56v-5.56c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.13 1.45-2.13 2.94v5.66H9.35V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.06 2.06 0 1 1 0-4.13 2.06 2.06 0 0 1 0 4.13zM7.12 20.45H3.56V9h3.56v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.72v20.56C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.72V1.72C24 .77 23.2 0 22.22 0z"/></svg>',
+        '<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.063 2.063 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" fill="currentColor"/></svg>',
     facebook:
-        '<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M9.101 23.691v-7.98H6.627v-3.667h2.474v-1.58c0-4.085 1.848-5.978 5.858-5.978.401 0 .955.042 1.468.103a8.68 8.68 0 0 1 1.141.195v3.325a8.62 8.62 0 0 0-.653-.036 26 26 0 0 0-.733-.009c-.707 0-1.259.096-1.675.309a1.7 1.7 0 0 0-.679.622c-.258.42-.374.995-.374 1.752v1.297h3.919l-.386 2.103-.287 1.564h-3.246v8.245C19.396 23.238 24 18.179 24 12.044c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.628 3.874 10.35 9.101 11.647Z"/></svg>',
+        '<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" fill="currentColor"/></svg>',
     whatsapp:
-        '<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.83 9.83 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.82 11.82 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.88 11.88 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893A11.82 11.82 0 0 0 20.464 3.488"/></svg>',
+        '<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347zM12.04 21.785h-.003a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982 1-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.002-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.888 9.884zm8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.49-8.413z" fill="currentColor"/></svg>',
     telegram:
-        '<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>',
+        '<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M9.78 18.65l.28-4.23 7.68-6.92c.34-.31-.07-.46-.52-.19L7.74 13.3 3.64 12c-.88-.25-.89-.86.2-1.3l15.97-6.16c.73-.33 1.43.18 1.15 1.3l-2.72 12.81c-.19.91-.74 1.13-1.5.71L12.6 16.3l-1.99 1.93c-.23.23-.42.42-.83.42z" fill="currentColor"/></svg>',
     x:
-        '<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>',
+        '<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24h-6.66l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" fill="currentColor"/></svg>',
     vk:
-        '<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M15.07 2H8.93C3.33 2 2 3.33 2 8.93v6.14C2 20.67 3.33 22 8.93 22h6.14c5.6 0 6.93-1.33 6.93-6.93V8.93C22 3.33 20.66 2 15.07 2zm3.07 14.27h-1.45c-.55 0-.72-.44-1.71-1.43-.86-.83-1.24-.94-1.45-.94-.3 0-.39.08-.39.5v1.31c0 .36-.12.58-1.06.58-1.56 0-3.29-.95-4.51-2.71-1.83-2.58-2.34-4.52-2.34-4.92 0-.22.08-.42.5-.42h1.45c.38 0 .52.17.66.58.71 2.06 1.91 3.86 2.4 3.86.18 0 .27-.08.27-.55V10.6c-.06-.99-.58-1.07-.58-1.42 0-.16.14-.33.37-.33h2.28c.32 0 .43.17.43.55v2.88c0 .31.14.43.23.43.18 0 .34-.11.69-.46 1.07-1.2 1.83-3.05 1.83-3.05.1-.21.27-.41.66-.41h1.45c.43 0 .53.22.43.53-.18.83-1.93 3.31-1.93 3.31-.15.25-.21.36 0 .64.15.21.65.64.99 1.04.62.71 1.1 1.31 1.23 1.72.13.42-.09.63-.51.63z"/></svg>',
-    arrow:
-        '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>',
-    arrowOut:
-        '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7"/><path d="M8 7h9v9"/></svg>',
+        '<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M12.785 16.241s.288-.032.435-.193c.135-.148.131-.425.131-.425s-.019-1.298.581-1.493c.592-.193 1.351 1.282 2.155 1.85.609.43 1.072.336 1.072.336l2.151-.031s1.124-.07.591-.962c-.043-.073-.31-.661-1.596-1.866-1.346-1.262-1.166-1.057.456-3.246.988-1.333 1.384-2.146 1.26-2.495-.117-.332-.852-.244-.852-.244l-2.444.015s-.181-.025-.315.056c-.131.079-.215.262-.215.262s-.384 1.034-.896 1.913c-1.08 1.853-1.512 1.951-1.69 1.836-.412-.267-.309-1.075-.309-1.648 0-1.793.272-2.541-.526-2.733-.265-.064-.461-.107-1.139-.114-.872-.009-1.61.003-2.027.207-.278.137-.492.441-.362.458.161.022.526.099.72.362.249.341.241 1.103.241 1.103s.143 2.094-.335 2.355c-.328.18-.776-.187-1.74-1.851-.493-.852-.866-1.793-.866-1.793s-.072-.176-.201-.27c-.156-.114-.375-.15-.375-.15l-2.323.015s-.349.01-.477.161c-.114.135-.009.413-.009.413s1.819 4.256 3.879 6.401c1.889 1.967 4.034 1.838 4.034 1.838h.971z" fill="currentColor"/></svg>',
     sun:
-        '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>',
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>',
     moon:
-        '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>',
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>',
     auto:
-        '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 1 0 18z" fill="currentColor"/></svg>'
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 1 0 18z" fill="currentColor"/></svg>'
 };
 
-const SHARE_ITEMS: ShareItem[] = [
-    { kind: 'native',   labelKey: 'qr.shareNative',   iconKey: 'native' },
-    { kind: 'copy',     labelKey: 'qr.shareCopy',     iconKey: 'copy' },
-    { kind: 'email',    labelKey: 'qr.shareEmail',    iconKey: 'email' },
-    { kind: 'linkedin', labelKey: 'qr.shareLinkedIn', iconKey: 'linkedin' },
-    { kind: 'facebook', labelKey: 'qr.shareFacebook', iconKey: 'facebook' },
-    { kind: 'whatsapp', labelKey: 'qr.shareWhatsApp', iconKey: 'whatsapp' },
-    { kind: 'telegram', labelKey: 'qr.shareTelegram', iconKey: 'telegram' },
-    { kind: 'x',        labelKey: 'qr.shareX',        iconKey: 'x' },
-    { kind: 'vk',       labelKey: 'qr.shareVk',       iconKey: 'vk' }
+const SHARE_LAYOUT: ShareItem[] = [
+    { kind: 'native',   labelKey: 'qr.shareNative',   accent: 'var(--brand)' },
+    { kind: 'copy',     labelKey: 'qr.shareCopy',     accent: 'var(--brand)' },
+    { kind: 'email',    labelKey: 'qr.shareEmail',    accent: '#94a3b8' },
+    { kind: 'linkedin', labelKey: 'qr.shareLinkedIn', accent: '#0a66c2' },
+    { kind: 'facebook', labelKey: 'qr.shareFacebook', accent: '#1877f2' },
+    { kind: 'whatsapp', labelKey: 'qr.shareWhatsApp', accent: '#25d366' },
+    { kind: 'telegram', labelKey: 'qr.shareTelegram', accent: '#2aabee' },
+    { kind: 'x',        labelKey: 'qr.shareX',        accent: 'var(--text)' },
+    { kind: 'vk',       labelKey: 'qr.shareVk',       accent: '#0077ff' }
 ];
 
 @Component({
@@ -81,482 +77,503 @@ const SHARE_ITEMS: ShareItem[] = [
     imports: [TranslateModule],
     changeDetection: ChangeDetectionStrategy.OnPush,
     template: `
-        <div class="qr-bg" aria-hidden="true">
-            <span class="glow glow--1"></span>
-            <span class="glow glow--2"></span>
-            <span class="glow glow--3"></span>
-            <span class="grid-overlay"></span>
-            <span class="noise"></span>
-        </div>
+        <main class="qr">
+            <div class="qr-bg" aria-hidden="true">
+                <div class="qr-grid"></div>
+                <div class="qr-glow qr-glow-a"></div>
+                <div class="qr-glow qr-glow-b"></div>
+                <div class="qr-glow qr-glow-c"></div>
+            </div>
 
-        <main class="qr-shell">
             <article class="qr-card">
                 <header class="qr-head">
-                    <a href="/" class="qr-logo" [attr.aria-label]="'a11y.homeLink' | translate">
-                        <span class="qr-logo__mark" aria-hidden="true">
+                    <a class="qr-brand" href="/" [attr.aria-label]="'a11y.homeLink' | translate">
+                        <span class="qr-mark" aria-hidden="true">
                             <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M7 10 L12 15 L17 10" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
                                 <path d="M12 4 L12 14" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/>
                                 <path d="M5 19 L19 19" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/>
                             </svg>
                         </span>
-                        <span class="qr-logo__text">deposit</span>
+                        <span class="qr-brand-word">deposit</span>
                     </a>
 
-                    <div class="qr-head__right">
-                        <button type="button" class="qr-icon-btn" (click)="switchLang()"
-                                [title]="lang.currentLang() === 'ru' ? 'Switch to English' : 'Переключить на русский'"
-                                [attr.aria-label]="lang.currentLang() === 'ru' ? 'Switch to English' : 'Переключить на русский'">
-                            {{ lang.currentLang() === 'ru' ? 'EN' : 'RU' }}
-                        </button>
-                        <button type="button" class="qr-icon-btn qr-icon-btn--svg" (click)="cycleTheme()"
+                    <div class="qr-controls">
+                        <button type="button" class="qr-ctrl" (click)="cycleTheme()"
                                 [attr.aria-label]="('a11y.themeLabel' | translate:{mode: theme.mode()})"
                                 [title]="('a11y.themeLabel' | translate:{mode: theme.mode()})">
                             @if (theme.mode() === 'light') {
-                                <span class="qr-icon" [innerHTML]="trustedIcons['sun']"></span>
+                                <span class="qr-ico" [innerHTML]="trustedIcons['sun']"></span>
                             } @else if (theme.mode() === 'dark') {
-                                <span class="qr-icon" [innerHTML]="trustedIcons['moon']"></span>
+                                <span class="qr-ico" [innerHTML]="trustedIcons['moon']"></span>
                             } @else {
-                                <span class="qr-icon" [innerHTML]="trustedIcons['auto']"></span>
+                                <span class="qr-ico" [innerHTML]="trustedIcons['auto']"></span>
                             }
                         </button>
+
+                        <button type="button" class="qr-ctrl qr-ctrl--lang" (click)="switchLang()"
+                                [attr.aria-label]="lang.currentLang() === 'ru' ? 'Switch to English' : 'Переключить на русский'"
+                                [title]="lang.currentLang() === 'ru' ? 'Switch to English' : 'Переключить на русский'">
+                            {{ lang.currentLang() === 'ru' ? 'EN' : 'RU' }}
+                        </button>
+
                         <span class="qr-eyebrow">{{ 'qr.eyebrow' | translate }}</span>
                     </div>
                 </header>
 
-                <section class="qr-hero">
-                    <h1 class="qr-domain">mayday.software</h1>
-                    <p class="qr-tagline">{{ 'qr.tagline' | translate }}</p>
-                </section>
+                <p class="qr-tagline">{{ 'qr.tagline' | translate }}</p>
 
-                <section class="qr-code" aria-label="QR">
-                    <div class="qr-code__frame">
-                        <div class="qr-code__svg" [innerHTML]="qrSvg()"></div>
-                        <span class="qr-code__badge" aria-hidden="true">
-                            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M7 10 L12 15 L17 10" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
-                                <path d="M12 4 L12 14" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/>
-                                <path d="M5 19 L19 19" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/>
-                            </svg>
-                        </span>
+                <div class="qr-frame">
+                    <span class="qr-corner qr-corner-tl"></span>
+                    <span class="qr-corner qr-corner-tr"></span>
+                    <span class="qr-corner qr-corner-bl"></span>
+                    <span class="qr-corner qr-corner-br"></span>
+                    <div class="qr-svg" [innerHTML]="qrSvg()"></div>
+                    <div class="qr-emblem" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M7 10 L12 15 L17 10" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M12 4 L12 14" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/>
+                            <path d="M5 19 L19 19" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/>
+                        </svg>
                     </div>
-                    <p class="qr-scan-hint">{{ 'qr.scanHint' | translate }}</p>
-                </section>
+                </div>
 
-                <section class="qr-share" [attr.aria-label]="'qr.shareTitle' | translate">
+                <p class="qr-scan-hint">{{ 'qr.scanHint' | translate }}</p>
+
+                <section class="qr-section">
                     <h2 class="qr-section-title">{{ 'qr.shareTitle' | translate }}</h2>
-                    <div class="qr-grid">
-                        @for (item of shareItems; track item.kind) {
-                            <button type="button" class="qr-chip" (click)="onShare(item.kind)">
-                                <span class="qr-chip__icon">
+                    <div class="qr-grid-9">
+                        @for (item of items; track item.kind) {
+                            <button type="button"
+                                    class="chip"
+                                    [class.chip--ok]="item.kind === 'copy' && copied()"
+                                    [style.--chip-accent]="item.accent"
+                                    (click)="onShare(item.kind)"
+                                    [attr.aria-label]="(item.kind === 'copy' && copied() ? 'qr.shareCopied' : item.labelKey) | translate">
+                                <span class="chip-ico">
                                     @if (item.kind === 'copy' && copied()) {
                                         <span [innerHTML]="trustedIcons['check']"></span>
                                     } @else {
-                                        <span [innerHTML]="trustedIcons[item.iconKey]"></span>
+                                        <span [innerHTML]="trustedIcons[item.kind]"></span>
                                     }
                                 </span>
-                                <span class="qr-chip__label">
-                                    @if (item.kind === 'copy' && copied()) {
-                                        {{ 'qr.shareCopied' | translate }}
-                                    } @else {
-                                        {{ item.labelKey | translate }}
-                                    }
+                                <span class="chip-label">
+                                    {{ (item.kind === 'copy' && copied() ? 'qr.shareCopied' : item.labelKey) | translate }}
                                 </span>
                             </button>
                         }
                     </div>
                 </section>
 
-                <section class="qr-links" [attr.aria-label]="'qr.linksTitle' | translate">
+                <section class="qr-section">
                     <h2 class="qr-section-title">{{ 'qr.linksTitle' | translate }}</h2>
-                    <a class="qr-link" href="/">
-                        <span>{{ 'qr.linkSite' | translate }}</span>
-                        <span class="qr-link__arrow" [innerHTML]="trustedIcons['arrow']"></span>
-                    </a>
-                    <a class="qr-link" href="/how">
-                        <span>{{ 'qr.linkHow' | translate }}</span>
-                        <span class="qr-link__arrow" [innerHTML]="trustedIcons['arrow']"></span>
-                    </a>
-                    <a class="qr-link" href="/verify">
-                        <span>{{ 'qr.linkVerify' | translate }}</span>
-                        <span class="qr-link__arrow" [innerHTML]="trustedIcons['arrow']"></span>
-                    </a>
-                    <a class="qr-link" href="https://github.com/razqqm/deposit.mayday.software" target="_blank" rel="noopener noreferrer">
-                        <span>{{ 'qr.linkGithub' | translate }}</span>
-                        <span class="qr-link__arrow" [innerHTML]="trustedIcons['arrowOut']"></span>
-                    </a>
+                    <ul class="qr-links">
+                        <li>
+                            <a class="lnk" href="/">
+                                <span class="lnk-label">{{ 'qr.linkSite' | translate }}</span>
+                                <span class="lnk-arrow">→</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a class="lnk" href="/how">
+                                <span class="lnk-label">{{ 'qr.linkHow' | translate }}</span>
+                                <span class="lnk-arrow">→</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a class="lnk" href="/verify">
+                                <span class="lnk-label">{{ 'qr.linkVerify' | translate }}</span>
+                                <span class="lnk-arrow">→</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a class="lnk" href="https://github.com/razqqm/deposit.mayday.software" target="_blank" rel="noopener noreferrer">
+                                <span class="lnk-label">{{ 'qr.linkGithub' | translate }}</span>
+                                <span class="lnk-arrow">↗</span>
+                            </a>
+                        </li>
+                    </ul>
                 </section>
             </article>
         </main>
     `,
     styles: [`
-        :host {
-            display: block;
-            position: fixed;
-            inset: 0;
-            overflow-y: auto;
-            background: var(--bg);
-            color: var(--text);
-        }
+        :host { display: block; min-height: 100vh; }
 
-        /* ── Background ────────────────────────────────────── */
-        .qr-bg {
-            position: fixed;
-            inset: 0;
-            z-index: 0;
-            pointer-events: none;
-            background:
-                linear-gradient(135deg,
-                    color-mix(in oklch, var(--brand) 8%, var(--bg)) 0%,
-                    var(--bg) 50%,
-                    color-mix(in oklch, var(--brand-strong) 6%, var(--bg)) 100%);
-            overflow: hidden;
-        }
-        .glow {
-            position: absolute;
-            border-radius: 50%;
-            filter: blur(90px);
-            opacity: 0.55;
-            animation: qr-float 22s ease-in-out infinite;
-        }
-        .glow--1 {
-            width: 420px; height: 420px;
-            top: -10%; left: -8%;
-            background: var(--brand);
-            animation-delay: 0s;
-        }
-        .glow--2 {
-            width: 340px; height: 340px;
-            bottom: -15%; right: -10%;
-            background: var(--brand-strong);
-            animation-delay: -8s;
-            animation-duration: 26s;
-        }
-        .glow--3 {
-            width: 260px; height: 260px;
-            top: 45%; left: 60%;
-            background: color-mix(in oklch, var(--brand) 60%, var(--info));
-            animation-delay: -14s;
-            animation-duration: 30s;
-            opacity: 0.4;
-        }
-        @keyframes qr-float {
-            0%, 100% { transform: translate(0, 0) scale(1); }
-            33%      { transform: translate(40px, -30px) scale(1.08); }
-            66%      { transform: translate(-30px, 40px) scale(0.95); }
-        }
-        .grid-overlay {
-            position: absolute;
-            inset: 0;
-            background-image:
-                linear-gradient(to right, color-mix(in oklch, var(--text) 6%, transparent) 1px, transparent 1px),
-                linear-gradient(to bottom, color-mix(in oklch, var(--text) 6%, transparent) 1px, transparent 1px);
-            background-size: 48px 48px;
-            mask-image: radial-gradient(ellipse at center, #000 25%, transparent 75%);
-            -webkit-mask-image: radial-gradient(ellipse at center, #000 25%, transparent 75%);
-        }
-        .noise {
-            position: absolute;
-            inset: 0;
-            opacity: 0.04;
-            background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2'/></filter><rect width='100%25' height='100%25' filter='url(%23n)' opacity='0.6'/></svg>");
-        }
-
-        /* ── Shell + card ──────────────────────────────────── */
-        .qr-shell {
+        .qr {
             position: relative;
-            z-index: 1;
-            min-height: 100%;
+            min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: var(--sp-6) var(--sp-4);
+            padding: 1.5rem 1rem;
+            overflow: hidden;
+            isolation: isolate;
         }
+
+        /* ---- mesh background ---- */
+        .qr-bg {
+            position: absolute;
+            inset: 0;
+            z-index: 0;
+            background:
+                linear-gradient(135deg,
+                    color-mix(in oklch, var(--brand) 6%, var(--bg)) 0%,
+                    var(--bg) 50%,
+                    color-mix(in oklch, var(--brand-strong) 4%, var(--bg)) 100%);
+        }
+        .qr-grid {
+            position: absolute; inset: 0;
+            background-image:
+                linear-gradient(color-mix(in oklch, var(--brand) 8%, transparent) 1px, transparent 1px),
+                linear-gradient(90deg, color-mix(in oklch, var(--brand) 8%, transparent) 1px, transparent 1px);
+            background-size: 36px 36px;
+            mask-image: radial-gradient(ellipse 80% 70% at 50% 40%, black 30%, transparent 80%);
+            -webkit-mask-image: radial-gradient(ellipse 80% 70% at 50% 40%, black 30%, transparent 80%);
+        }
+        .qr-glow {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(90px);
+            opacity: .55;
+            animation: qr-float 22s ease-in-out infinite;
+        }
+        .qr-glow-a {
+            top: -10%; left: -10%; width: 380px; height: 380px;
+            background: radial-gradient(circle, color-mix(in oklch, var(--brand) 60%, transparent), transparent 70%);
+        }
+        .qr-glow-b {
+            bottom: -10%; right: -8%; width: 420px; height: 420px;
+            background: radial-gradient(circle, color-mix(in oklch, var(--brand-strong) 35%, transparent), transparent 70%);
+            animation-duration: 26s;
+            animation-delay: -8s;
+        }
+        .qr-glow-c {
+            top: 30%; right: -20%; width: 320px; height: 320px;
+            background: radial-gradient(circle, color-mix(in oklch, var(--info) 30%, transparent), transparent 70%);
+            animation-duration: 30s;
+            animation-delay: -14s;
+        }
+        @keyframes qr-float {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(30px, -20px) scale(1.05); }
+            66% { transform: translate(-20px, 30px) scale(.95); }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .qr-glow { animation: none; }
+        }
+
+        /* ---- card ---- */
         .qr-card {
+            position: relative;
+            z-index: 1;
             width: 100%;
             max-width: 460px;
-            display: flex;
-            flex-direction: column;
-            gap: var(--sp-6);
-            padding: var(--sp-8) var(--sp-6) var(--sp-7);
-            background: color-mix(in oklch, var(--bg-elev) 86%, transparent);
-            backdrop-filter: blur(20px) saturate(160%);
-            -webkit-backdrop-filter: blur(20px) saturate(160%);
-            border: 1px solid var(--border);
-            border-radius: var(--r-2xl);
-            box-shadow: var(--shadow-xl);
-            animation: qr-rise 600ms var(--ease-out) both;
+            padding: 1.6rem 1.6rem 1.4rem;
+            background: color-mix(in oklch, var(--bg-elev) 88%, transparent);
+            border: 1px solid color-mix(in oklch, var(--brand) 12%, var(--border));
+            border-radius: 1.4rem;
+            box-shadow:
+                0 30px 80px -20px color-mix(in oklch, var(--text) 18%, transparent),
+                0 0 0 1px color-mix(in oklch, var(--bg-elev) 60%, transparent) inset;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            text-align: center;
+            animation: qr-pop .6s cubic-bezier(.2,.8,.2,1) both;
         }
-        @keyframes qr-rise {
+        @keyframes qr-pop {
             from { opacity: 0; transform: translateY(16px); }
             to   { opacity: 1; transform: translateY(0); }
         }
 
-        /* ── Header ────────────────────────────────────────── */
+        /* ---- header ---- */
         .qr-head {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            gap: var(--sp-3);
+            margin-bottom: 1.1rem;
+            gap: .5rem;
         }
-        .qr-logo {
+        .qr-brand {
             display: inline-flex;
             align-items: center;
-            gap: var(--sp-2);
+            gap: .55rem;
             color: var(--text);
             text-decoration: none;
+            transition: transform var(--dur-fast) var(--ease-out);
         }
-        .qr-logo__mark {
-            display: grid;
-            place-items: center;
-            width: 28px; height: 28px;
-            border-radius: 8px;
-            background: var(--text);
-            color: var(--bg);
+        .qr-brand:hover { transform: translateX(-1px); }
+        .qr-mark {
+            width: 36px; height: 36px;
+            display: inline-flex; align-items: center; justify-content: center;
+            color: var(--brand);
+            background: linear-gradient(135deg,
+                color-mix(in oklch, var(--brand) 22%, transparent),
+                color-mix(in oklch, var(--brand) 6%, transparent));
+            border-radius: 10px;
+            flex-shrink: 0;
         }
-        .qr-logo__mark svg { width: 18px; height: 18px; }
-        .qr-logo__text {
+        .qr-mark svg { width: 22px; height: 22px; }
+        .qr-brand-word {
             font-family: var(--font-brand);
-            font-size: var(--fs-lg);
-            font-weight: var(--fw-semi);
+            font-size: 1.05rem;
+            font-weight: 600;
             letter-spacing: -0.02em;
             line-height: 1;
         }
 
-        .qr-head__right {
+        .qr-controls {
             display: inline-flex;
             align-items: center;
-            gap: var(--sp-2);
+            gap: .25rem;
         }
-        .qr-icon-btn {
+        .qr-ctrl {
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            width: 28px; height: 28px;
-            background: var(--bg-elev);
-            border: 1px solid var(--border);
-            border-radius: var(--r-full);
-            color: var(--text-mute);
-            font-size: 10px;
-            font-weight: var(--fw-bold);
+            height: 28px;
+            min-width: 28px;
+            padding: 0 .45rem;
             font-family: inherit;
-            letter-spacing: 0.04em;
+            font-size: .68rem;
+            font-weight: 600;
+            letter-spacing: .03em;
+            line-height: 1;
+            color: var(--text-mute);
+            background: transparent;
+            border: 1px solid transparent;
+            border-radius: 8px;
             cursor: pointer;
-            transition: color var(--dur-fast) var(--ease-out),
-                        background var(--dur-fast) var(--ease-out),
+            transition: background var(--dur-fast) var(--ease-out),
+                        color var(--dur-fast) var(--ease-out),
                         border-color var(--dur-fast) var(--ease-out);
         }
-        .qr-icon-btn:hover {
+        .qr-ico { display: inline-flex; align-items: center; justify-content: center; }
+        .qr-ico ::ng-deep svg { width: 14px; height: 14px; display: block; }
+        .qr-ctrl:hover {
+            background: var(--bg-mute);
             color: var(--text);
             border-color: var(--border-strong);
-            background: var(--bg-mute);
         }
-        .qr-icon { display: inline-flex; }
-        .qr-icon ::ng-deep svg { display: block; }
+        .qr-ctrl--lang {
+            font-family: var(--font-mono);
+            letter-spacing: .04em;
+        }
 
         .qr-eyebrow {
             display: inline-flex;
             align-items: center;
-            padding: 4px 10px;
-            border-radius: var(--r-full);
-            background: var(--brand-soft);
-            border: 1px solid color-mix(in oklch, var(--brand) 30%, transparent);
-            color: var(--brand-strong);
-            font-size: 10px;
-            font-weight: var(--fw-bold);
-            letter-spacing: var(--ls-wide);
+            padding: .28rem .65rem;
+            font-size: .58rem;
+            font-weight: 700;
+            letter-spacing: .22em;
             text-transform: uppercase;
-            line-height: 1;
+            color: var(--brand-strong);
+            background: var(--brand-soft);
+            border: 1px solid color-mix(in oklch, var(--brand) 22%, transparent);
+            border-radius: 999px;
+            margin-left: .35rem;
+            white-space: nowrap;
         }
 
-        /* ── Hero ──────────────────────────────────────────── */
-        .qr-hero {
-            display: flex;
-            flex-direction: column;
-            gap: var(--sp-2);
-            text-align: left;
-        }
-        .qr-domain {
-            font-family: var(--font-brand);
-            font-size: var(--fs-3xl);
-            font-weight: var(--fw-bold);
-            letter-spacing: -0.025em;
-            line-height: 1.05;
-            background: linear-gradient(135deg, var(--text) 0%, var(--brand-strong) 100%);
-            -webkit-background-clip: text;
-            background-clip: text;
-            -webkit-text-fill-color: transparent;
-            color: transparent;
-        }
+        /* ---- tagline ---- */
         .qr-tagline {
-            font-size: var(--fs-sm);
+            margin: 0 auto 1.3rem;
+            font-size: .9rem;
+            line-height: 1.5;
             color: var(--text-mute);
-            line-height: var(--lh-base);
-            max-width: 38ch;
+            max-width: 36ch;
         }
 
-        /* ── QR ────────────────────────────────────────────── */
-        .qr-code {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: var(--sp-3);
-        }
-        .qr-code__frame {
+        /* ---- QR ---- */
+        .qr-frame {
             position: relative;
             width: 280px;
             height: 280px;
-            padding: 12px;
-            background: #ffffff;
-            border-radius: var(--r-lg);
-            box-shadow: var(--shadow-md);
-            overflow: hidden;
+            margin: 0 auto .7rem;
+            padding: 14px;
+            background: #fff;
+            border-radius: 1rem;
+            box-shadow:
+                0 4px 16px color-mix(in oklch, var(--text) 12%, transparent),
+                0 0 0 1px color-mix(in oklch, var(--text) 8%, transparent);
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
-        .qr-code__svg {
-            width: 100%;
-            height: 100%;
-            line-height: 0;
-        }
-        .qr-code__svg ::ng-deep svg {
-            width: 100%;
-            height: 100%;
+        .qr-svg { width: 100%; height: 100%; line-height: 0; }
+        .qr-svg ::ng-deep svg {
+            width: 100% !important;
+            height: 100% !important;
             display: block;
         }
-        .qr-code__badge {
+        .qr-emblem {
             position: absolute;
             top: 50%; left: 50%;
             transform: translate(-50%, -50%);
-            display: grid;
-            place-items: center;
             width: 56px; height: 56px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, var(--brand), var(--brand-strong));
+            color: #fff;
             border-radius: 14px;
-            background: #ffffff;
-            box-shadow: 0 0 0 4px #ffffff, 0 4px 12px rgba(0, 0, 0, 0.15);
-            color: #0a0a0c;
+            box-shadow:
+                0 0 0 6px #fff,
+                0 6px 18px color-mix(in oklch, var(--brand) 35%, transparent);
         }
-        .qr-code__badge svg { width: 28px; height: 28px; }
+        .qr-emblem svg { width: 30px; height: 30px; }
+
+        .qr-corner {
+            position: absolute;
+            width: 16px; height: 16px;
+            border-color: var(--brand);
+            border-style: solid;
+            border-width: 0;
+            pointer-events: none;
+        }
+        .qr-corner-tl { top: -2px;    left: -2px;   border-top-width: 3px;    border-left-width: 3px;   border-top-left-radius: .9rem; }
+        .qr-corner-tr { top: -2px;    right: -2px;  border-top-width: 3px;    border-right-width: 3px;  border-top-right-radius: .9rem; }
+        .qr-corner-bl { bottom: -2px; left: -2px;   border-bottom-width: 3px; border-left-width: 3px;   border-bottom-left-radius: .9rem; }
+        .qr-corner-br { bottom: -2px; right: -2px;  border-bottom-width: 3px; border-right-width: 3px;  border-bottom-right-radius: .9rem; }
+
         .qr-scan-hint {
-            font-size: var(--fs-xs);
+            margin: 0 auto 1.4rem;
+            font-size: .72rem;
             color: var(--text-dim);
-            text-align: center;
-            max-width: 32ch;
+            font-style: italic;
+            max-width: 36ch;
+            line-height: 1.5;
             text-wrap: balance;
         }
 
-        /* ── Section title ─────────────────────────────────── */
+        /* ---- sections ---- */
+        .qr-section { margin-top: 1.1rem; }
         .qr-section-title {
-            display: flex;
-            align-items: center;
-            gap: var(--sp-3);
-            font-size: 10px;
-            font-weight: var(--fw-bold);
-            letter-spacing: var(--ls-wide);
+            display: block;
+            margin: 0 0 .55rem;
+            font-size: .58rem;
+            font-weight: 700;
+            letter-spacing: .2em;
             text-transform: uppercase;
             color: var(--text-dim);
-            margin-bottom: var(--sp-3);
-        }
-        .qr-section-title::after {
-            content: '';
-            flex: 1;
-            height: 1px;
-            background: var(--border-soft);
+            text-align: left;
+            border-top: 1px dashed var(--border);
+            padding-top: .8rem;
         }
 
-        /* ── Share grid ────────────────────────────────────── */
-        .qr-share { display: flex; flex-direction: column; }
-        .qr-grid {
+        /* ---- 3x3 share grid ---- */
+        .qr-grid-9 {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: var(--sp-2);
+            gap: .5rem;
         }
-        .qr-chip {
-            display: flex;
-            flex-direction: column;
+        .chip {
+            display: inline-flex;
             align-items: center;
-            justify-content: center;
-            gap: 6px;
+            justify-content: flex-start;
+            gap: .55rem;
             min-width: 0;
-            padding: 12px 6px;
-            background: var(--bg-elev);
-            border: 1px solid var(--border);
-            border-radius: var(--r-md);
-            color: var(--text);
+            padding: .65rem .7rem;
+            font-size: .76rem;
+            font-weight: 600;
             font-family: inherit;
-            font-size: var(--fs-xs);
-            font-weight: var(--fw-semi);
-            text-align: center;
-            cursor: pointer;
-            overflow: hidden;
-            transition: color var(--dur-fast) var(--ease-out),
-                        background var(--dur-fast) var(--ease-out),
-                        border-color var(--dur-fast) var(--ease-out),
-                        transform var(--dur-fast) var(--ease-out);
-        }
-        .qr-chip:hover {
-            border-color: var(--border-strong);
+            color: var(--text);
             background: var(--bg-mute);
-            transform: translateY(-1px);
+            border: 1px solid var(--border);
+            border-radius: .65rem;
+            cursor: pointer;
+            text-align: left;
+            overflow: hidden;
+            transition: transform var(--dur-fast) var(--ease-out),
+                        background var(--dur-base) var(--ease-out),
+                        color var(--dur-base) var(--ease-out),
+                        border-color var(--dur-base) var(--ease-out),
+                        box-shadow var(--dur-base) var(--ease-out);
         }
-        .qr-chip:active { transform: translateY(0); }
-        .qr-chip__icon {
+        .chip:hover {
+            transform: translateY(-1px);
+            color: var(--chip-accent);
+            border-color: color-mix(in oklch, var(--chip-accent) 45%, transparent);
+            background: color-mix(in oklch, var(--chip-accent) 8%, var(--bg-elev));
+            box-shadow: 0 4px 12px color-mix(in oklch, var(--chip-accent) 18%, transparent);
+        }
+        .chip:active { transform: translateY(0); }
+        .chip--ok {
+            color: var(--success) !important;
+            border-color: color-mix(in oklch, var(--success) 45%, transparent) !important;
+            background: var(--success-soft) !important;
+        }
+        .chip-ico {
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            width: 20px; height: 20px;
-            color: var(--brand);
+            width: 18px; height: 18px;
             flex-shrink: 0;
         }
-        .qr-chip__icon ::ng-deep svg { display: block; }
-        .qr-chip__label {
+        .chip-ico ::ng-deep svg {
+            width: 18px; height: 18px;
+            display: block;
+        }
+        .chip-label {
             min-width: 0;
-            max-width: 100%;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
         }
 
-        /* ── Quick links ───────────────────────────────────── */
-        .qr-links { display: flex; flex-direction: column; }
-        .qr-link {
+        /* ---- quick links ---- */
+        .qr-links {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            gap: .3rem;
+        }
+        .lnk {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            gap: var(--sp-3);
-            padding: 10px 12px;
-            border-radius: var(--r-sm);
+            padding: .65rem .85rem;
+            font-size: .82rem;
+            font-weight: 600;
             color: var(--text);
-            font-size: var(--fs-sm);
-            font-weight: var(--fw-medium);
-            text-decoration: none;
+            background: transparent;
             border: 1px solid transparent;
-            transition: background var(--dur-fast) var(--ease-out),
-                        border-color var(--dur-fast) var(--ease-out);
+            border-radius: .55rem;
+            text-decoration: none;
+            transition: background var(--dur-base) var(--ease-out),
+                        border-color var(--dur-base) var(--ease-out),
+                        color var(--dur-base) var(--ease-out);
         }
-        .qr-link:hover {
+        .lnk:hover {
             background: var(--bg-mute);
-            border-color: var(--border-soft);
+            border-color: var(--border);
         }
-        .qr-link__arrow {
-            display: inline-flex;
-            color: var(--text-dim);
-            transition: color var(--dur-fast) var(--ease-out),
-                        transform var(--dur-fast) var(--ease-out);
-        }
-        .qr-link__arrow ::ng-deep svg { display: block; }
-        .qr-link:hover .qr-link__arrow {
+        .lnk-arrow {
             color: var(--brand);
-            transform: translateX(2px);
+            font-weight: 600;
+            transition: transform var(--dur-base) var(--ease-out);
         }
+        .lnk:hover .lnk-arrow { transform: translateX(2px); }
 
-        /* ── Adaptive ──────────────────────────────────────── */
+        /* ---- mobile ---- */
         @media (max-width: 480px) {
-            .qr-card {
-                padding: var(--sp-6) var(--sp-4) var(--sp-5);
-                border-radius: var(--r-xl);
-                gap: var(--sp-5);
+            .qr { padding: 1rem .8rem; }
+            .qr-card { padding: 1.3rem 1rem 1.1rem; border-radius: 1.1rem; }
+            .qr-frame { width: 240px; height: 240px; }
+
+            .chip {
+                flex-direction: column;
+                gap: .35rem;
+                padding: .65rem .35rem;
+                font-size: .65rem;
+                text-align: center;
+                justify-content: center;
+                line-height: 1.2;
             }
-            .qr-domain { font-size: var(--fs-2xl); }
-            .qr-code__frame { width: 240px; height: 240px; }
+            .chip-label { white-space: normal; }
         }
     `]
 })
@@ -569,7 +586,7 @@ export class QrPage implements OnInit {
 
     readonly origin = signal('https://mayday.software');
     readonly copied = signal(false);
-    readonly shareItems = SHARE_ITEMS;
+    readonly items = SHARE_LAYOUT;
 
     readonly trustedIcons: Record<string, SafeHtml> = Object.fromEntries(
         Object.entries(ICON_SVGS).map(([k, v]) => [k, this.sanitizer.bypassSecurityTrustHtml(v)])
